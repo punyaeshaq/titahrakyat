@@ -14,13 +14,12 @@ export interface Article {
 }
 
 export const categories = [
-  { id: "nasional", label: "Nasional", color: "news-red" },
-  { id: "politik", label: "Politik", color: "news-blue" },
-  { id: "ekonomi", label: "Ekonomi", color: "news-yellow" },
-  { id: "teknologi", label: "Teknologi", color: "news-blue" },
-  { id: "olahraga", label: "Olahraga", color: "news-red" },
-  { id: "hiburan", label: "Hiburan", color: "news-yellow" },
-  { id: "internasional", label: "Internasional", color: "news-blue" },
+  { id: "publik", label: "Publik", color: "news-red" },
+  { id: "hukum", label: "Hukum", color: "news-blue" },
+  { id: "lingkungan", label: "Lingkungan", color: "news-yellow" },
+  { id: "daerah", label: "Daerah", color: "news-red" },
+  { id: "nasional", label: "Nasional", color: "news-blue" },
+  { id: "opini", label: "Opini", color: "news-yellow" },
 ];
 
 export const articles: Article[] = [
@@ -39,7 +38,7 @@ export const articles: Article[] = [
 <p>Pertama, pembangunan infrastruktur digital di seluruh wilayah Indonesia, termasuk daerah terpencil. Kedua, program pelatihan digital massal untuk 10 juta tenaga kerja dalam 3 tahun ke depan. Ketiga, insentif pajak bagi startup dan perusahaan teknologi yang berinvestasi di Indonesia.</p>
 
 <p>Para pengamat ekonomi menyambut positif kebijakan ini. "Langkah yang tepat dan terukur. Jika dieksekusi dengan baik, Indonesia bisa menjadi hub teknologi terbesar di kawasan," kata Dr. Ahmad Syarif, ekonom senior dari Universitas Indonesia.</p>`,
-    category: "ekonomi",
+    category: "publik",
     author: "Rina Kartika",
     publishedAt: "2026-02-09T10:30:00Z",
     imageUrl: "",
@@ -49,18 +48,18 @@ export const articles: Article[] = [
   },
   {
     id: "2",
-    title: "Timnas Indonesia Raih Kemenangan Bersejarah di Kualifikasi Piala Dunia",
-    slug: "timnas-kemenangan-kualifikasi",
-    excerpt: "Gol spektakuler di menit akhir membawa Indonesia meraih tiket ke putaran final untuk pertama kalinya dalam sejarah.",
-    content: `<p>Stadion Gelora Bung Karno bergemuruh saat peluit akhir dibunyikan. Timnas Indonesia berhasil meraih kemenangan 2-1 yang mengantarkan mereka ke putaran final Piala Dunia untuk pertama kalinya dalam sejarah sepak bola nasional.</p>
+    title: "Mahkamah Agung Putuskan Sengketa Lahan Masyarakat Adat di Kalimantan",
+    slug: "putusan-ma-lahan-adat-kalimantan",
+    excerpt: "Putusan bersejarah MA mengakui hak masyarakat adat atas tanah ulayat yang telah dikuasai perusahaan perkebunan.",
+    content: `<p>Mahkamah Agung Republik Indonesia mengeluarkan putusan bersejarah yang mengakui hak masyarakat adat Dayak atas tanah ulayat di Kalimantan Barat. Putusan ini membatalkan izin konsesi yang sebelumnya diberikan kepada perusahaan perkebunan sawit.</p>
 
-<p>Gol penentu dicetak oleh striker andalan pada menit ke-89, sebuah tendangan voli yang tak terbendung oleh kiper lawan. Momen bersejarah ini disambut euforia oleh lebih dari 80.000 penonton yang memadati stadion.</p>
+<p>Hakim Agung menyatakan bahwa hak masyarakat adat atas tanah ulayat dilindungi oleh konstitusi. "Negara wajib melindungi hak-hak masyarakat adat, termasuk hak atas tanah yang telah dikelola secara turun-temurun," ujar Ketua Majelis Hakim.</p>
 
-<blockquote>"Ini adalah momen yang telah dinanti-nantikan oleh seluruh rakyat Indonesia selama puluhan tahun."</blockquote>
+<blockquote>"Putusan ini menjadi preseden penting bagi perlindungan hak masyarakat adat di seluruh Indonesia."</blockquote>
 
-<p>Pelatih kepala menyatakan bahwa kemenangan ini adalah buah dari persiapan matang dan kerja keras seluruh tim. "Kami telah mempersiapkan ini dengan sangat baik. Pemain-pemain menunjukkan mentalitas juara yang luar biasa," katanya.</p>`,
-    category: "olahraga",
-    author: "Budi Santoso",
+<p>Aktivis lingkungan dan HAM menyambut baik putusan ini sebagai langkah maju dalam penegakan keadilan bagi masyarakat adat yang selama ini terpinggirkan.</p>`,
+    category: "hukum",
+    author: "Hendra Wijaya",
     publishedAt: "2026-02-09T08:15:00Z",
     imageUrl: "",
     views: 45230,
@@ -68,13 +67,13 @@ export const articles: Article[] = [
   },
   {
     id: "3",
-    title: "Startup AI Asal Bandung Raih Pendanaan Seri B Senilai Rp 500 Miliar",
-    slug: "startup-ai-bandung-pendanaan",
-    excerpt: "Perusahaan rintisan berbasis kecerdasan buatan ini berhasil menarik investor global dengan teknologi NLP bahasa Indonesia.",
-    content: `<p>Sebuah startup kecerdasan buatan (AI) yang berbasis di Bandung berhasil meraih pendanaan Seri B senilai Rp 500 miliar dari konsorsium investor global. Pendanaan ini dipimpin oleh Sequoia Capital Southeast Asia dengan partisipasi dari beberapa venture capital terkemuka.</p>
+    title: "Deforestasi di Sumatera Turun 30% Berkat Program Rehabilitasi Hutan",
+    slug: "deforestasi-sumatera-turun",
+    excerpt: "Program rehabilitasi hutan nasional menunjukkan hasil positif dengan penurunan signifikan laju deforestasi.",
+    content: `<p>Kementerian Lingkungan Hidup dan Kehutanan mengumumkan bahwa laju deforestasi di Pulau Sumatera mengalami penurunan hingga 30% dibandingkan tahun sebelumnya. Pencapaian ini merupakan hasil dari program rehabilitasi hutan nasional yang dimulai tiga tahun lalu.</p>
 
-<p>Startup yang didirikan pada 2023 ini mengembangkan teknologi Natural Language Processing (NLP) yang secara khusus dioptimalkan untuk bahasa Indonesia dan bahasa daerah. Teknologi mereka telah digunakan oleh lebih dari 200 perusahaan di Indonesia.</p>`,
-    category: "teknologi",
+<p>"Kami berhasil merehabilitasi lebih dari 500.000 hektare lahan kritis di Sumatera. Partisipasi masyarakat lokal menjadi kunci keberhasilan program ini," kata Menteri LHK dalam konferensi pers.</p>`,
+    category: "lingkungan",
     author: "Dewi Lestari",
     publishedAt: "2026-02-09T07:00:00Z",
     imageUrl: "",
@@ -88,7 +87,7 @@ export const articles: Article[] = [
     content: `<p>Dewan Perwakilan Rakyat (DPR) secara resmi mengesahkan Rancangan Undang-Undang Perlindungan Data Pribadi yang telah diperbarui. UU baru ini membawa perubahan signifikan dalam hal perlindungan data warga negara Indonesia di era digital.</p>
 
 <p>Beberapa perubahan utama meliputi pembentukan otoritas perlindungan data independen, sanksi pidana yang lebih berat bagi pelanggar, serta kewajiban bagi perusahaan untuk melaporkan kebocoran data dalam waktu 72 jam.</p>`,
-    category: "politik",
+    category: "nasional",
     author: "Hendra Wijaya",
     publishedAt: "2026-02-08T16:45:00Z",
     imageUrl: "",
@@ -96,13 +95,13 @@ export const articles: Article[] = [
   },
   {
     id: "5",
-    title: "Bank Indonesia Pertahankan Suku Bunga Acuan di Tengah Tekanan Global",
-    slug: "bi-suku-bunga-acuan",
-    excerpt: "Keputusan ini diambil untuk menjaga stabilitas nilai tukar rupiah dan mendukung pemulihan ekonomi domestik.",
-    content: `<p>Bank Indonesia memutuskan untuk mempertahankan suku bunga acuan (BI Rate) pada level 5,75% dalam Rapat Dewan Gubernur yang berlangsung selama dua hari. Keputusan ini sejalan dengan upaya menjaga stabilitas makroekonomi dan sistem keuangan.</p>
+    title: "Pelayanan Publik Digital Masih Timpang di Daerah Terpencil",
+    slug: "pelayanan-publik-digital-timpang",
+    excerpt: "Survei menunjukkan akses layanan publik digital masih sulit dijangkau masyarakat di daerah 3T.",
+    content: `<p>Hasil survei Ombudsman RI menunjukkan bahwa akses pelayanan publik berbasis digital masih sangat timpang antara kota besar dan daerah terpencil (3T). Sebagian besar daerah tertinggal, terdepan, dan terluar belum memiliki infrastruktur memadai untuk mengakses layanan pemerintah secara online.</p>
 
-<p>Gubernur BI menyatakan bahwa keputusan ini mempertimbangkan berbagai faktor global dan domestik. "Kami melihat inflasi masih terkendali dan pertumbuhan ekonomi berada di jalur yang tepat," ujarnya dalam konferensi pers.</p>`,
-    category: "ekonomi",
+<p>"Digitalisasi pelayanan publik memang penting, tetapi tidak boleh meninggalkan masyarakat yang belum terjangkau infrastruktur," kata Ketua Ombudsman RI.</p>`,
+    category: "publik",
     author: "Rina Kartika",
     publishedAt: "2026-02-08T14:20:00Z",
     imageUrl: "",
@@ -110,13 +109,13 @@ export const articles: Article[] = [
   },
   {
     id: "6",
-    title: "Film Indonesia Masuk Nominasi Festival Film Internasional Cannes 2026",
-    slug: "film-indonesia-cannes-2026",
-    excerpt: "Karya sineas muda Indonesia berhasil menembus seleksi ketat dan menjadi satu-satunya wakil Asia Tenggara.",
-    content: `<p>Sebuah film karya sineas muda Indonesia berhasil masuk dalam nominasi resmi Festival Film Internasional Cannes 2026. Film berjudul "Tanah Air" ini menjadi satu-satunya wakil dari Asia Tenggara yang berhasil menembus seleksi ketat panitia festival.</p>
+    title: "Banjir Bandang Terjang Kabupaten Luwu, Ratusan Warga Mengungsi",
+    slug: "banjir-bandang-luwu",
+    excerpt: "Hujan deras selama dua hari menyebabkan banjir bandang yang merendam puluhan rumah di Kabupaten Luwu.",
+    content: `<p>Banjir bandang melanda Kabupaten Luwu, Sulawesi Selatan, setelah hujan deras mengguyur wilayah tersebut selama dua hari berturut-turut. Ratusan warga terpaksa mengungsi ke tempat yang lebih tinggi.</p>
 
-<p>Film yang mengangkat tema tentang identitas dan tanah kelahiran ini mendapat pujian dari kritikus internasional sejak pemutaran perdananya di festival film regional.</p>`,
-    category: "hiburan",
+<p>BPBD Kabupaten Luwu telah mendirikan posko pengungsian dan menyalurkan bantuan logistik. "Kami fokus pada evakuasi dan pemenuhan kebutuhan dasar pengungsi," kata Kepala BPBD setempat.</p>`,
+    category: "daerah",
     author: "Maya Putri",
     publishedAt: "2026-02-08T11:00:00Z",
     imageUrl: "",
@@ -138,13 +137,13 @@ export const articles: Article[] = [
   },
   {
     id: "8",
-    title: "Indonesia dan Jepang Tandatangani Perjanjian Kerja Sama Energi Terbarukan",
-    slug: "indonesia-jepang-energi-terbarukan",
-    excerpt: "Kedua negara sepakat mengembangkan proyek energi surya dan hidrogen hijau senilai USD 2 miliar.",
-    content: `<p>Indonesia dan Jepang resmi menandatangani perjanjian kerja sama bilateral di bidang energi terbarukan. Perjanjian ini mencakup pengembangan proyek energi surya dan hidrogen hijau dengan total investasi senilai USD 2 miliar.</p>
+    title: "Transparansi Anggaran Desa Masih Jadi Pekerjaan Rumah Besar",
+    slug: "transparansi-anggaran-desa",
+    excerpt: "Laporan ICW menunjukkan banyak desa belum menerapkan prinsip transparansi dalam pengelolaan dana desa.",
+    content: `<p>Indonesia Corruption Watch (ICW) merilis laporan yang menunjukkan bahwa transparansi pengelolaan anggaran desa masih menjadi tantangan besar. Dari 1.000 desa yang disurvei, hanya 35% yang secara terbuka mempublikasikan penggunaan dana desa kepada masyarakat.</p>
 
-<p>Menteri Energi dan Sumber Daya Mineral menyatakan bahwa kerja sama ini akan mempercepat transisi energi Indonesia menuju net zero emission pada 2060.</p>`,
-    category: "internasional",
+<p>"Akuntabilitas dan transparansi adalah kunci agar dana desa benar-benar bermanfaat bagi masyarakat," kata Koordinator Divisi Monitoring ICW.</p>`,
+    category: "publik",
     author: "Siti Nurhaliza",
     publishedAt: "2026-02-07T15:00:00Z",
     imageUrl: "",
@@ -152,23 +151,27 @@ export const articles: Article[] = [
   },
   {
     id: "9",
-    title: "Harga Beras Premium Turun 5% Setelah Panen Raya di Jawa",
-    slug: "harga-beras-turun",
-    excerpt: "Panen raya yang melimpah di Pulau Jawa berhasil menekan harga beras di pasar tradisional dan modern.",
-    content: `<p>Harga beras premium di pasaran mengalami penurunan sekitar 5% menyusul panen raya yang berlangsung di berbagai wilayah di Pulau Jawa. Penurunan ini dirasakan baik di pasar tradisional maupun modern.</p>`,
-    category: "ekonomi",
-    author: "Rina Kartika",
+    title: "Opini: Mengapa Literasi Hukum Penting bagi Masyarakat",
+    slug: "opini-literasi-hukum",
+    excerpt: "Rendahnya pemahaman hukum di masyarakat menjadi hambatan serius dalam mewujudkan keadilan yang merata.",
+    content: `<p>Literasi hukum adalah kemampuan masyarakat untuk memahami hak dan kewajiban mereka di hadapan hukum. Sayangnya, tingkat literasi hukum di Indonesia masih rendah, terutama di kalangan masyarakat pedesaan.</p>
+
+<p>Rendahnya pemahaman hukum membuat masyarakat rentan terhadap ketidakadilan. Banyak kasus di mana hak-hak masyarakat dilanggar namun mereka tidak tahu bagaimana cara memperjuangkannya.</p>`,
+    category: "opini",
+    author: "Prof. Dr. Bambang Sutrisno",
     publishedAt: "2026-02-07T09:15:00Z",
     imageUrl: "",
     views: 7650,
   },
   {
     id: "10",
-    title: "Peluncuran Satelit Nusantara-3 Sukses dari Biak Papua",
-    slug: "peluncuran-satelit-nusantara-3",
-    excerpt: "Indonesia kembali menunjukkan kemampuan antariksa dengan meluncurkan satelit komunikasi generasi terbaru.",
-    content: `<p>Indonesia berhasil meluncurkan satelit komunikasi Nusantara-3 dari fasilitas peluncuran di Biak, Papua. Satelit generasi terbaru ini akan memperluas jangkauan internet dan telekomunikasi di seluruh wilayah Indonesia.</p>`,
-    category: "teknologi",
+    title: "Polusi Udara Jakarta Kembali Masuk Level Tidak Sehat",
+    slug: "polusi-udara-jakarta-tidak-sehat",
+    excerpt: "Indeks kualitas udara Jakarta memasuki kategori tidak sehat, warga diminta mengurangi aktivitas luar ruangan.",
+    content: `<p>Kualitas udara di Jakarta kembali memasuki kategori tidak sehat berdasarkan pemantauan IQAir. Indeks kualitas udara tercatat di angka 168 pada Senin pagi, jauh di atas batas aman yang ditetapkan WHO.</p>
+
+<p>Dinas Lingkungan Hidup DKI Jakarta mengimbau warga untuk mengurangi aktivitas luar ruangan, terutama bagi kelompok rentan seperti anak-anak dan lansia.</p>`,
+    category: "lingkungan",
     author: "Dewi Lestari",
     publishedAt: "2026-02-07T07:00:00Z",
     imageUrl: "",
@@ -177,10 +180,10 @@ export const articles: Article[] = [
 ];
 
 export const breakingNews = [
-  "BREAKING: Timnas Indonesia lolos ke Piala Dunia 2026 setelah kemenangan dramatis 2-1",
+  "BREAKING: MA putuskan hak tanah ulayat masyarakat adat Kalimantan dalam putusan bersejarah",
   "UPDATE: Gempa 5,8 SR guncang Sulawesi Tengah, tidak berpotensi tsunami",
   "TERKINI: Pemerintah umumkan kebijakan baru percepatan ekonomi digital",
-  "FLASH: Startup AI Bandung raih pendanaan Rp 500 miliar dari investor global",
+  "FLASH: Deforestasi Sumatera turun 30% berkat program rehabilitasi hutan nasional",
 ];
 
 export function getArticleBySlug(slug: string): Article | undefined {

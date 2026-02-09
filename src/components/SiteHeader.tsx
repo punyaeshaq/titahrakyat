@@ -29,13 +29,14 @@ const SiteHeader = () => {
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <Link to="/" className="flex items-center gap-2">
+          <Link to="/" className="flex items-center gap-1">
             <span className="text-xl font-black font-serif text-primary tracking-tight">
-              KABAR
+              Menara
             </span>
             <span className="text-xl font-light font-serif text-foreground tracking-tight">
-              HARI INI
+              Publik
             </span>
+            <span className="text-xs font-medium text-muted-foreground">.News</span>
           </Link>
         </div>
 
@@ -49,6 +50,12 @@ const SiteHeader = () => {
               {cat.label}
             </Link>
           ))}
+          <Link
+            to="/tentang"
+            className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent"
+          >
+            Tentang
+          </Link>
         </nav>
 
         <div className="flex items-center gap-2">
@@ -96,6 +103,13 @@ const SiteHeader = () => {
                 {cat.label}
               </Link>
             ))}
+            <Link
+              to="/tentang"
+              onClick={() => setMenuOpen(false)}
+              className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors"
+            >
+              Tentang
+            </Link>
           </div>
         </nav>
       )}

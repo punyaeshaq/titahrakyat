@@ -83,12 +83,29 @@ function ArticlesManager() {
   const [editing, setEditing] = useState<any>(null);
   const [creating, setCreating] = useState(false);
   const [page, setPage] = useState(1);
+  const [filterCategory, setFilterCategory] = useState<string>("all");
+  const [filterStatus, setFilterStatus] = useState<string>("all");
+  const [searchQuery, setSearchQuery] = useState("");
   const queryClient = useQueryClient();
   const { toast } = useToast();
 
+  const filtered = articles.filter((a: any) => {
+    if (filterCategory !== "all" && a.category_id !== filterCategory) return false;
+    if (filterStatus !== "all" && a.status !== filterStatus) return false;
+    if (searchQuery.trim() && !a.title.toLowerCase().includes(searchQuery.toLowerCase())) return false;
+    return true;
+  });
+
   const ITEMS_PER_PAGE = 10;
-  const totalPages = Math.max(1, Math.ceil(articles.length / ITEMS_PER_PAGE));
-  const paginated = articles.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
+  const totalPages = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
+  const safeePage = Math.min(page, totalPages);
+  const paginated = filtered.slice((safeePage - 1) * ITEMS_PER_PAGE, safeePage * ITEMS_PER_PAGE);
+
+  // Reset page when filters change
+  const updateFilter = (setter: Function, value: string) => {
+    setter(value);
+    setPage(1);
+  };
 
   const handleDelete = async (id: string) => {
     if (!confirm("Hapus berita ini?")) return;
@@ -117,14 +134,46 @@ function ArticlesManager() {
   return (
     <div>
       <div className="flex justify-between items-center mb-4">
-        <h2 className="text-lg font-bold font-serif text-foreground">Daftar Berita ({articles.length})</h2>
+        <h2 className="text-lg font-bold font-serif text-foreground">Daftar Berita ({filtered.length})</h2>
         <Button size="sm" onClick={() => setCreating(true)}>
           <Plus size={16} /> Tambah Berita
         </Button>
       </div>
 
+      {/* Filters */}
+      <div className="flex flex-wrap gap-3 mb-4">
+        <input
+          type="text"
+          value={searchQuery}
+          onChange={(e) => updateFilter(setSearchQuery, e.target.value)}
+          placeholder="Cari judul..."
+          className="h-9 px-3 rounded-md border border-input bg-background text-sm flex-1 min-w-[150px] max-w-[280px]"
+        />
+        <select
+          value={filterCategory}
+          onChange={(e) => updateFilter(setFilterCategory, e.target.value)}
+          className="h-9 px-3 rounded-md border border-input bg-background text-sm"
+        >
+          <option value="all">Semua Kategori</option>
+          {categories.map((c: any) => (
+            <option key={c.id} value={c.id}>{c.label}</option>
+          ))}
+        </select>
+        <select
+          value={filterStatus}
+          onChange={(e) => updateFilter(setFilterStatus, e.target.value)}
+          className="h-9 px-3 rounded-md border border-input bg-background text-sm"
+        >
+          <option value="all">Semua Status</option>
+          <option value="published">Terbit</option>
+          <option value="draft">Draft</option>
+        </select>
+      </div>
+
       {isLoading ? (
         <p className="text-muted-foreground">Memuat...</p>
+      ) : filtered.length === 0 ? (
+        <p className="text-muted-foreground text-sm py-4">Tidak ada berita yang cocok dengan filter.</p>
       ) : (
         <>
           <div className="space-y-2">
@@ -154,15 +203,15 @@ function ArticlesManager() {
           </div>
           {totalPages > 1 && (
             <div className="flex items-center justify-center gap-2 mt-4">
-              <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+              <Button variant="outline" size="icon" disabled={safeePage <= 1} onClick={() => setPage((p) => p - 1)}>
                 <ChevronLeft size={16} />
               </Button>
               {Array.from({ length: totalPages }, (_, i) => (
-                <Button key={i + 1} variant={page === i + 1 ? "default" : "outline"} size="sm" onClick={() => setPage(i + 1)}>
+                <Button key={i + 1} variant={safeePage === i + 1 ? "default" : "outline"} size="sm" onClick={() => setPage(i + 1)}>
                   {i + 1}
                 </Button>
               ))}
-              <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+              <Button variant="outline" size="icon" disabled={safeePage >= totalPages} onClick={() => setPage((p) => p + 1)}>
                 <ChevronRight size={16} />
               </Button>
             </div>

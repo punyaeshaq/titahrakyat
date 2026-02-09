@@ -29,10 +29,13 @@ const SiteHeader = () => {
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
           <Link to="/" className="flex items-center gap-2">
-            <img src={logoMenara} alt="MenaraPublik.News" className="h-9 w-9 rounded-full object-cover" />
-            <span className="text-lg font-black font-serif text-primary tracking-tight hidden sm:inline">
-              MenaraPublik<span className="text-muted-foreground font-medium text-sm">.News</span>
-            </span>
+            <img src={logoMenara} alt="MenaraPublik.News" className="h-11 w-11 rounded-full object-cover" />
+            <div className="hidden sm:flex flex-col leading-none">
+              <span className="text-xl font-black font-serif text-primary tracking-tight">
+                MenaraPublik<span className="text-muted-foreground font-medium text-sm">.News</span>
+              </span>
+              <span className="text-[10px] font-medium text-muted-foreground tracking-widest uppercase">Mengawal Kepentingan Publik</span>
+            </div>
           </Link>
         </div>
 

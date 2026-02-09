@@ -8,30 +8,56 @@ export function useAuth() {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    let isMounted = true;
+
+    const checkRoles = async (userId: string) => {
+      try {
+        const { data } = await supabase
+          .from("user_roles")
+          .select("role")
+          .eq("user_id", userId);
+        const roles = data?.map((r) => r.role) ?? [];
+        if (isMounted) setIsAdmin(roles.includes("admin") || roles.includes("editor"));
+      } catch {
+        if (isMounted) setIsAdmin(false);
+      }
+    };
+
+    // Listener for ongoing auth changes (does NOT control loading)
     const { data: { subscription } } = supabase.auth.onAuthStateChange(
-      async (_event, session) => {
+      (_event, session) => {
+        if (!isMounted) return;
         const currentUser = session?.user ?? null;
         setUser(currentUser);
-
         if (currentUser) {
-          const { data } = await supabase
-            .from("user_roles")
-            .select("role")
-            .eq("user_id", currentUser.id);
-          const roles = data?.map((r) => r.role) ?? [];
-          setIsAdmin(roles.includes("admin") || roles.includes("editor"));
+          checkRoles(currentUser.id);
         } else {
           setIsAdmin(false);
         }
-        setLoading(false);
       }
     );
 
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      if (!session) setLoading(false);
-    });
+    // Initial load — controls loading state
+    const initAuth = async () => {
+      try {
+        const { data: { session } } = await supabase.auth.getSession();
+        if (!isMounted) return;
+        const currentUser = session?.user ?? null;
+        setUser(currentUser);
+        if (currentUser) {
+          await checkRoles(currentUser.id);
+        }
+      } finally {
+        if (isMounted) setLoading(false);
+      }
+    };
 
-    return () => subscription.unsubscribe();
+    initAuth();
+
+    return () => {
+      isMounted = false;
+      subscription.unsubscribe();
+    };
   }, []);
 
   const signIn = (email: string, password: string) =>

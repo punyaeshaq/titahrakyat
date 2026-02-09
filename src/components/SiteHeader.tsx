@@ -2,6 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, Menu, X } from "lucide-react";
 import { categories } from "@/data/articles";
 import { useState } from "react";
+import logoMenara from "@/assets/logo-menara.jpg";
 
 const SiteHeader = () => {
   const [searchOpen, setSearchOpen] = useState(false);
@@ -29,14 +30,11 @@ const SiteHeader = () => {
           >
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
-          <Link to="/" className="flex items-center gap-1">
-            <span className="text-xl font-black font-serif text-primary tracking-tight">
-              Menara
+          <Link to="/" className="flex items-center gap-2">
+            <img src={logoMenara} alt="MenaraPublik.News" className="h-9 w-9 rounded-full object-cover" />
+            <span className="text-lg font-black font-serif text-primary tracking-tight hidden sm:inline">
+              MenaraPublik<span className="text-muted-foreground font-medium text-sm">.News</span>
             </span>
-            <span className="text-xl font-light font-serif text-foreground tracking-tight">
-              Publik
-            </span>
-            <span className="text-xs font-medium text-muted-foreground">.News</span>
           </Link>
         </div>
 

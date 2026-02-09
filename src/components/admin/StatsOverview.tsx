@@ -14,7 +14,7 @@ const StatsOverview = () => {
 
   // Articles per category
   const categoryStats = categories.map((cat: any) => {
-    const catArticles = articles.filter((a) => a.category === cat.id);
+    const catArticles = articles.filter((a) => a.categoryId === cat.id);
     return {
       name: cat.label,
       articles: catArticles.length,

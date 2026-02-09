@@ -1,7 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCategories } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { settingsApi } from "@/lib/api";
 import logoMenara from "@/assets/logo-menara.png";
 
 const SiteFooter = () => {
@@ -10,12 +10,7 @@ const SiteFooter = () => {
   const { data: socialLinks = [] } = useQuery({
     queryKey: ["social_links_active"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("social_links")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
+      const data = await settingsApi.getSocialLinks();
       return (data || []).filter((l: any) => l.url);
     },
   });

@@ -8,9 +8,15 @@ import { useArticlesByCategory, useCategories } from "@/hooks/useArticles";
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
   const { data: categories = [] } = useCategories();
-  const { data: categoryArticles = [], isLoading } = useArticlesByCategory(id || "");
 
-  const category = categories.find((c) => c.id === id);
+  // Helper to normalize label to slug
+  const normalizeSlug = (label: string) => label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+
+  // Find category by ID (old) or Slug (new)
+  const category = categories.find((c) => c.id === id || normalizeSlug(c.label) === id);
+  const categoryId = category?.id || "";
+
+  const { data: categoryArticles = [], isLoading } = useArticlesByCategory(categoryId);
 
   if (!isLoading && !category) {
     return (

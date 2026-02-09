@@ -1,8 +1,9 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAllArticles, useAllBreakingNews, useCategories } from "@/hooks/useArticles";
-import { supabase } from "@/integrations/supabase/client";
+import { articlesApi, breakingNewsApi, settingsApi } from "@/lib/api";
+import { useSettings } from "@/hooks/useSettings";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -33,8 +34,15 @@ const AdminDashboard = () => {
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
       navigate("/admin/login");
+    } else if (!authLoading && user) {
+      // Enforce role-based paths
+      if (location.pathname.startsWith('/admin') && user.role === 'editor') {
+        navigate('/editor');
+      } else if (location.pathname.startsWith('/editor') && user.role === 'admin') {
+        navigate('/admin');
+      }
     }
-  }, [authLoading, user, isAdmin, navigate]);
+  }, [authLoading, user, isAdmin, navigate, location.pathname]);
 
   if (authLoading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Memuat...</div>;
   if (!user || !isAdmin) return null;
@@ -50,13 +58,26 @@ const AdminDashboard = () => {
     { id: "users", label: "Pengguna", icon: <Users size={16} /> },
     { id: "settings", label: "Pengaturan", icon: <Settings size={16} /> },
     { id: "logs", label: "Log", icon: <Activity size={16} /> },
-  ];
+  ].filter((tab) => {
+    // Admin sees everything
+    if (user?.role === 'admin') return true;
+
+    // Editor sees content management only
+    if (user?.role === 'editor') {
+      return ['stats', 'articles', 'breaking', 'comments', 'videos'].includes(tab.id);
+    }
+
+    // Default (shouldn't happen for dashboard users)
+    return false;
+  }) as { id: Tab; label: string; icon: React.ReactNode }[];
 
   return (
     <div className="min-h-screen bg-background">
       <header className="bg-card border-b border-border shadow-sm">
         <div className="container flex items-center justify-between h-14">
-          <h1 className="font-bold font-serif text-foreground text-lg">Dashboard Admin</h1>
+          <h1 className="font-bold font-serif text-foreground text-lg">
+            {location.pathname.startsWith('/editor') ? 'Dashboard Editor' : 'Dashboard Admin'}
+          </h1>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
             <ThemeToggle />
@@ -148,11 +169,15 @@ function ArticlesManager() {
   const handleDelete = async (id: string) => {
     if (!confirm("Hapus berita ini?")) return;
     const article = articles.find((a: any) => a.id === id);
-    await supabase.from("articles").delete().eq("id", id);
-    logActivity("menghapus berita", "article", article?.title || "");
-    queryClient.invalidateQueries({ queryKey: ["admin_articles"] });
-    queryClient.invalidateQueries({ queryKey: ["articles"] });
-    toast({ title: "Berita dihapus" });
+    try {
+      await articlesApi.delete(id);
+      logActivity("menghapus berita", "article", article?.title || "");
+      queryClient.invalidateQueries({ queryKey: ["admin_articles"] });
+      queryClient.invalidateQueries({ queryKey: ["articles"] });
+      toast({ title: "Berita dihapus" });
+    } catch (error: any) {
+      toast({ title: "Gagal menghapus", description: error.message, variant: "destructive" });
+    }
   };
 
   if (creating || editing) {
@@ -234,7 +259,18 @@ function ArticlesManager() {
                     <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${a.status === "published" ? "bg-green-100 text-green-700" : a.status === "scheduled" ? "bg-blue-100 text-blue-700" : "bg-yellow-100 text-yellow-700"}`}>
                       {a.status === "published" ? "Terbit" : a.status === "scheduled" ? "Terjadwal" : "Draft"}
                     </span>
-                    <span>{a.category_id}</span>
+                    <span>{categories.find((c: any) => c.id === a.category_id)?.label || "-"}</span>
+                    <span>
+                      {a.published_at
+                        ? new Date(a.published_at).toLocaleDateString("id-ID", {
+                          day: "numeric",
+                          month: "short",
+                          year: "numeric",
+                          hour: "2-digit",
+                          minute: "2-digit"
+                        })
+                        : "-"}
+                    </span>
                     <span>{a.author}</span>
                   </div>
                 </div>
@@ -328,14 +364,19 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
       scheduled_at: isScheduled ? new Date(form.scheduled_at).toISOString() : null,
     };
 
-    if (isEdit) {
-      const { error } = await supabase.from("articles").update(payload).eq("id", article.id);
-      if (error) toast({ title: "Gagal menyimpan", description: error.message, variant: "destructive" });
-      else { logActivity("mengedit berita", "article", form.title); toast({ title: "Berita diperbarui" }); onSaved(); }
-    } else {
-      const { error } = await supabase.from("articles").insert(payload);
-      if (error) toast({ title: "Gagal menyimpan", description: error.message, variant: "destructive" });
-      else { logActivity("menambah berita", "article", form.title); toast({ title: "Berita ditambahkan" }); onSaved(); }
+    try {
+      if (isEdit) {
+        await articlesApi.update(article.id, payload);
+        logActivity("mengedit berita", "article", form.title);
+        toast({ title: "Berita diperbarui" });
+      } else {
+        await articlesApi.create(payload);
+        logActivity("menambah berita", "article", form.title);
+        toast({ title: "Berita ditambahkan" });
+      }
+      onSaved();
+    } catch (error: any) {
+      toast({ title: "Gagal menyimpan", description: error.response?.data?.message || error.message, variant: "destructive" });
     }
     setSaving(false);
   };
@@ -488,41 +529,106 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
 /* =================== BREAKING NEWS MANAGER =================== */
 function BreakingNewsManager() {
   const { data: items = [], isLoading } = useAllBreakingNews();
+  const { data: settings = {} } = useSettings();
   const [text, setText] = useState("");
   const [saving, setSaving] = useState(false);
+  const [localSpeed, setLocalSpeed] = useState<number | null>(null);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  useEffect(() => {
+    if (settings.breaking_news_speed) {
+      setLocalSpeed(parseInt(settings.breaking_news_speed));
+    } else {
+      setLocalSpeed(30);
+    }
+  }, [settings.breaking_news_speed]);
+
+  const handleSpeedChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const newSpeed = parseInt(e.target.value);
+    setLocalSpeed(newSpeed);
+  };
+
+  const saveSpeed = async () => {
+    if (localSpeed === null) return;
+    try {
+      await settingsApi.update({ breaking_news_speed: String(localSpeed) });
+      queryClient.invalidateQueries({ queryKey: ["settings"] });
+    } catch (error) {
+      console.error("Failed to update speed", error);
+    }
+  };
+
+  // Debounce save effect
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      if (localSpeed !== null) saveSpeed();
+    }, 500);
+    return () => clearTimeout(timer);
+  }, [localSpeed]);
+
+  const currentSpeed = localSpeed ?? 30;
 
   const handleAdd = async () => {
     if (!text.trim()) return;
     setSaving(true);
-    await supabase.from("breaking_news").insert({ text: text.trim() });
-    logActivity("menambah breaking news", "breaking_news", text.trim());
-    setText("");
-    queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
-    queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
-    toast({ title: "Breaking news ditambahkan" });
+    try {
+      await breakingNewsApi.create(text.trim());
+      logActivity("menambah breaking news", "breaking_news", text.trim());
+      setText("");
+      queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
+      queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
+      toast({ title: "Breaking news ditambahkan" });
+    } catch (error: any) {
+      toast({ title: "Gagal menambah", description: error.message, variant: "destructive" });
+    }
     setSaving(false);
   };
 
   const handleToggle = async (id: string, active: boolean) => {
-    await supabase.from("breaking_news").update({ is_active: !active }).eq("id", id);
-    queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
-    queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
+    try {
+      await breakingNewsApi.update(id, { is_active: !active });
+      queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
+      queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
+    } catch (error: any) {
+      toast({ title: "Gagal mengubah", description: error.message, variant: "destructive" });
+    }
   };
 
   const handleDelete = async (id: string) => {
     const item = items.find((i: any) => i.id === id);
-    await supabase.from("breaking_news").delete().eq("id", id);
-    logActivity("menghapus breaking news", "breaking_news", item?.text || "");
-    queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
-    queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
-    toast({ title: "Breaking news dihapus" });
+    try {
+      await breakingNewsApi.delete(id);
+      logActivity("menghapus breaking news", "breaking_news", item?.text || "");
+      queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
+      queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
+      toast({ title: "Breaking news dihapus" });
+    } catch (error: any) {
+      toast({ title: "Gagal menghapus", description: error.message, variant: "destructive" });
+    }
   };
 
   return (
     <div>
       <h2 className="text-lg font-bold font-serif text-foreground mb-4">Breaking News</h2>
+
+      <div className="bg-card border border-border rounded-lg p-4 mb-6">
+        <Label>Kecepatan Scroll (detik)</Label>
+        <div className="flex items-center gap-4 mt-2">
+          <Input
+            type="range"
+            min="10"
+            max="100"
+            step="5"
+            value={currentSpeed}
+            onChange={handleSpeedChange}
+            className="flex-1 cursor-pointer"
+          />
+          <span className="w-16 text-center font-mono font-bold bg-muted p-2 rounded">{currentSpeed}s</span>
+        </div>
+        <p className="text-xs text-muted-foreground mt-1">Semakin kecil angkanya, semakin cepat gerakannya.</p>
+      </div>
+
       <div className="flex gap-2 mb-4">
         <Input value={text} onChange={(e) => setText(e.target.value)} placeholder="Teks breaking news..." className="flex-1" />
         <Button onClick={handleAdd} disabled={saving}><Plus size={16} /> Tambah</Button>

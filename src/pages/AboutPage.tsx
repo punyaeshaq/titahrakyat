@@ -4,35 +4,62 @@ import { Shield, Scale, Eye, BookOpen, Users, Globe } from "lucide-react";
 import logoMenara from "@/assets/logo-menara.png";
 import { useEditorialStaff } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { settingsApi, socialLinksApi } from "@/lib/api";
 
 const AboutPage = () => {
   const { data: editorialStaff = [] } = useEditorialStaff();
 
-  const { data: settings = [] } = useQuery({
+  const { data: settings = {} } = useQuery({
     queryKey: ["site_settings"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("site_settings").select("*");
-      if (error) throw error;
-      return data || [];
+      const data = await settingsApi.getAll();
+      return data || {};
     },
   });
 
   const { data: socialLinks = [] } = useQuery({
     queryKey: ["social_links_active"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("social_links")
-        .select("*")
-        .eq("is_active", true)
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
-      return (data || []).filter((l: any) => l.url);
+      const data = await socialLinksApi.getAll();
+      return (data || []).filter((l: any) => l.url && l.is_active);
     },
   });
 
-  const getSetting = (key: string) => settings.find((s: any) => s.key === key)?.value || "";
+  const getSetting = (key: string) => (settings as any)[key] || "";
   const misiItems = getSetting("misi").split("\n").filter((m: string) => m.trim());
+
+  // Default Data
+  const DEFAULT_RUBRICS = [
+    { name: "Publik", desc: "Kebijakan, pelayanan, isu masyarakat" },
+    { name: "Hukum", desc: "Putusan pengadilan, regulasi, keadilan" },
+    { name: "Lingkungan", desc: "Sumber daya alam, dampak kebijakan" },
+    { name: "Daerah", desc: "Isu lokal dan regional" },
+    { name: "Nasional", desc: "Isu nasional strategis" },
+    { name: "Opini", desc: "Pandangan publik & analisis" },
+  ];
+
+  const DEFAULT_PRINCIPLES = [
+    { text: "Independen" }, { text: "Berimbang" }, { text: "Akurat" }, { text: "Bertanggung Jawab" }, { text: "Taat Kode Etik Jurnalistik" }
+  ];
+
+  // Helper to parse JSON settings safely
+  const parseSetting = (key: string) => {
+    const value = (settings as any)[key];
+    if (!value) return null;
+    try {
+      if (value.startsWith("[")) {
+        const parsed = JSON.parse(value);
+        // If array is empty, treat as null so we show defaults
+        return Array.isArray(parsed) && parsed.length > 0 ? parsed : null;
+      }
+      return null; // Return null for non-JSON strings (legacy HTML will be handled separately if needed, but we prefer defaults now)
+    } catch (e) {
+      return null;
+    }
+  };
+
+  const rubricationItems = parseSetting("rubrication") || DEFAULT_RUBRICS;
+  const principleItems = (parseSetting("editorial_principles") || DEFAULT_PRINCIPLES).map((p: any) => typeof p === 'string' ? { text: p } : p);
 
   return (
     <div className="min-h-screen bg-background">
@@ -138,15 +165,8 @@ const AboutPage = () => {
             <h2 className="text-xl font-bold font-serif text-foreground">Rubrikasi</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
-            {[
-              { name: "Publik", desc: "Kebijakan, pelayanan, isu masyarakat" },
-              { name: "Hukum", desc: "Putusan pengadilan, regulasi, keadilan" },
-              { name: "Lingkungan", desc: "Sumber daya alam, dampak kebijakan" },
-              { name: "Daerah", desc: "Isu lokal dan regional" },
-              { name: "Nasional", desc: "Isu nasional strategis" },
-              { name: "Opini", desc: "Pandangan publik & analisis" },
-            ].map((item) => (
-              <div key={item.name} className="bg-secondary rounded-md p-3">
+            {rubricationItems.map((item: any, i: number) => (
+              <div key={i} className="bg-secondary rounded-md p-3">
                 <p className="text-sm font-bold text-foreground">{item.name}</p>
                 <p className="text-xs text-muted-foreground">{item.desc}</p>
               </div>
@@ -161,12 +181,12 @@ const AboutPage = () => {
             <h2 className="text-xl font-bold font-serif text-foreground">Prinsip Redaksi</h2>
           </div>
           <div className="flex flex-wrap gap-3">
-            {["Independen", "Berimbang", "Akurat", "Bertanggung Jawab", "Taat Kode Etik Jurnalistik"].map((p) => (
+            {principleItems.map((p: any, i: number) => (
               <span
-                key={p}
+                key={i}
                 className="px-4 py-2 bg-primary/10 text-primary text-sm font-medium rounded-full border border-primary/20"
               >
-                {p}
+                {p.text}
               </span>
             ))}
           </div>

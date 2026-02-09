@@ -40,11 +40,14 @@ const SiteHeader = () => {
         </div>
 
         <nav className="hidden lg:flex items-center gap-1">
-          {categories.map((cat) => (
-            <Link key={cat.id} to={`/kategori/${cat.id}`} className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
-              {cat.label}
-            </Link>
-          ))}
+          {categories.map((cat) => {
+            const slug = cat.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+            return (
+              <Link key={cat.id} to={`/kategori/${slug}`} className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
+                {cat.label}
+              </Link>
+            );
+          })}
           <Link to="/video" className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
             Video
           </Link>
@@ -71,11 +74,14 @@ const SiteHeader = () => {
       {menuOpen && (
         <nav className="lg:hidden border-t border-border bg-card px-4 py-3">
           <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => (
-              <Link key={cat.id} to={`/kategori/${cat.id}`} onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
-                {cat.label}
-              </Link>
-            ))}
+            {categories.map((cat) => {
+              const slug = cat.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+              return (
+                <Link key={cat.id} to={`/kategori/${slug}`} onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
+                  {cat.label}
+                </Link>
+              );
+            })}
             <Link to="/video" onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
               Video
             </Link>

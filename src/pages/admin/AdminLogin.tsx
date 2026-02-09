@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -14,10 +14,20 @@ const AdminLogin = () => {
   const { user, isAdmin, loading: authLoading, signIn } = useAuth();
   const navigate = useNavigate();
 
-  // Redirect to admin if already logged in as admin
+  const location = useLocation();
+  const isEditorPath = location.pathname.startsWith("/editor");
+
+  // Redirect to appropriate dashboard if already logged in
   useEffect(() => {
-    if (!authLoading && user && isAdmin) {
-      navigate("/admin");
+    if (!authLoading && user) {
+      if (user.role === 'admin') {
+        navigate("/admin");
+      } else if (user.role === 'editor') {
+        navigate("/editor");
+      } else {
+        // Fallback for regular users (if any)
+        navigate("/");
+      }
     }
   }, [authLoading, user, isAdmin, navigate]);
 
@@ -42,7 +52,7 @@ const AdminLogin = () => {
       <div className="w-full max-w-sm bg-card border border-border rounded-lg p-6 shadow-sm">
         <div className="flex flex-col items-center mb-6">
           <img src={logoMenara} alt="Logo" className="h-12 w-12 rounded-full mb-3" />
-          <h1 className="text-xl font-bold font-serif text-foreground">Admin Login</h1>
+          <h1 className="text-xl font-bold font-serif text-foreground">{isEditorPath ? "Editor Login" : "Admin Login"}</h1>
           <p className="text-sm text-muted-foreground">MenaraPublik.News</p>
         </div>
 

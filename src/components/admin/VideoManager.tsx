@@ -1,13 +1,13 @@
 import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { videosApi, uploadApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { logActivity } from "@/lib/activityLog";
-import { Plus, Pencil, Trash2, Video, X, ChevronLeft, ChevronRight, Upload, Link as LinkIcon, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, Video, X, Star, Link as LinkIcon } from "lucide-react";
 
 function extractYouTubeId(url: string): string | null {
   const match = url.match(/(?:youtu\.be\/|youtube\.com\/(?:watch\?v=|embed\/|shorts\/))([a-zA-Z0-9_-]{11})/);
@@ -28,23 +28,22 @@ export default function VideoManager() {
   const { data: videos = [], isLoading } = useQuery({
     queryKey: ["admin_videos"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("videos")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
+      const data = await videosApi.getAll();
+      return data?.data || data || [];
     },
   });
 
   const handleDelete = async (id: string, title: string) => {
     if (!confirm("Hapus video ini?")) return;
-    const { error } = await supabase.from("videos").delete().eq("id", id);
-    if (error) { toast({ title: "Gagal menghapus", variant: "destructive" }); return; }
-    logActivity("menghapus video", "video", title);
-    queryClient.invalidateQueries({ queryKey: ["admin_videos"] });
-    queryClient.invalidateQueries({ queryKey: ["videos"] });
-    toast({ title: "Video dihapus" });
+    try {
+      await videosApi.delete(id);
+      logActivity("menghapus video", "video", title);
+      queryClient.invalidateQueries({ queryKey: ["admin_videos"] });
+      queryClient.invalidateQueries({ queryKey: ["videos"] });
+      toast({ title: "Video dihapus" });
+    } catch (error: any) {
+      toast({ title: "Gagal menghapus", variant: "destructive" });
+    }
   };
 
   if (creating || editing) {
@@ -94,15 +93,12 @@ export default function VideoManager() {
                     <Star size={10} /> Featured
                   </span>
                 )}
-                <span className="absolute top-2 right-2 bg-background/80 text-foreground text-xs px-2 py-0.5 rounded">
-                  {v.video_type === "upload" ? "Upload" : "URL"}
-                </span>
               </div>
               <div className="p-3">
                 <h3 className="font-semibold text-sm text-foreground truncate">{v.title}</h3>
                 <p className="text-xs text-muted-foreground mt-1 line-clamp-2">{v.description}</p>
                 <div className="flex items-center justify-between mt-3">
-                  <span className="text-xs text-muted-foreground">{v.views} views</span>
+                  <span className="text-xs text-muted-foreground">{v.views || 0} views</span>
                   <div className="flex gap-1">
                     <Button variant="ghost" size="icon" onClick={() => setEditing(v)}>
                       <Pencil size={14} />
@@ -126,73 +122,39 @@ function VideoForm({ video, onClose, onSaved }: { video?: any; onClose: () => vo
   const [form, setForm] = useState({
     title: video?.title || "",
     description: video?.description || "",
-    video_url: video?.video_url || "",
+    youtube_url: video?.youtube_url || video?.video_url || "",
     thumbnail_url: video?.thumbnail_url || "",
-    video_type: video?.video_type || "url",
-    duration: video?.duration || "",
     is_featured: video?.is_featured || false,
   });
   const [uploading, setUploading] = useState(false);
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
 
-  const handleVideoUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
-    const file = e.target.files?.[0];
-    if (!file) return;
-
-    if (file.size > 50 * 1024 * 1024) {
-      toast({ title: "File terlalu besar (maks 50MB)", variant: "destructive" });
-      return;
-    }
-
-    setUploading(true);
-    const ext = file.name.split(".").pop();
-    const path = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-
-    const { error } = await supabase.storage.from("videos").upload(path, file);
-    if (error) {
-      toast({ title: "Gagal upload video", description: error.message, variant: "destructive" });
-      setUploading(false);
-      return;
-    }
-
-    const { data: urlData } = supabase.storage.from("videos").getPublicUrl(path);
-    setForm((f) => ({ ...f, video_url: urlData.publicUrl, video_type: "upload" }));
-    setUploading(false);
-    toast({ title: "Video berhasil diupload" });
-  };
-
   const handleThumbnailUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (!file) return;
 
     setUploading(true);
-    const ext = file.name.split(".").pop();
-    const path = `thumbnails/${Date.now()}.${ext}`;
-
-    const { error } = await supabase.storage.from("videos").upload(path, file);
-    if (error) {
-      toast({ title: "Gagal upload thumbnail", variant: "destructive" });
-      setUploading(false);
-      return;
+    try {
+      const response = await uploadApi.uploadImage(file);
+      setForm((f) => ({ ...f, thumbnail_url: response.url }));
+      toast({ title: "Thumbnail berhasil diupload" });
+    } catch (error: any) {
+      toast({ title: "Gagal upload thumbnail", description: error.message, variant: "destructive" });
     }
-
-    const { data: urlData } = supabase.storage.from("videos").getPublicUrl(path);
-    setForm((f) => ({ ...f, thumbnail_url: urlData.publicUrl }));
     setUploading(false);
   };
 
   const handleUrlChange = (url: string) => {
     setForm((f) => ({
       ...f,
-      video_url: url,
-      video_type: "url",
+      youtube_url: url,
       thumbnail_url: f.thumbnail_url || getYouTubeThumbnail(url),
     }));
   };
 
   const handleSave = async () => {
-    if (!form.title || !form.video_url) {
+    if (!form.title || !form.youtube_url) {
       toast({ title: "Judul dan URL video wajib diisi", variant: "destructive" });
       return;
     }
@@ -201,21 +163,24 @@ function VideoForm({ video, onClose, onSaved }: { video?: any; onClose: () => vo
     const payload = {
       title: form.title,
       description: form.description,
-      video_url: form.video_url,
+      youtube_url: form.youtube_url,
       thumbnail_url: form.thumbnail_url,
-      video_type: form.video_type,
-      duration: form.duration || null,
       is_featured: form.is_featured,
     };
 
-    if (isEdit) {
-      const { error } = await supabase.from("videos").update(payload).eq("id", video.id);
-      if (error) toast({ title: "Gagal menyimpan", description: error.message, variant: "destructive" });
-      else { logActivity("mengedit video", "video", form.title); toast({ title: "Video diperbarui" }); onSaved(); }
-    } else {
-      const { error } = await supabase.from("videos").insert(payload);
-      if (error) toast({ title: "Gagal menyimpan", description: error.message, variant: "destructive" });
-      else { logActivity("menambah video", "video", form.title); toast({ title: "Video ditambahkan" }); onSaved(); }
+    try {
+      if (isEdit) {
+        await videosApi.update(video.id, payload);
+        logActivity("mengedit video", "video", form.title);
+        toast({ title: "Video diperbarui" });
+      } else {
+        await videosApi.create(payload);
+        logActivity("menambah video", "video", form.title);
+        toast({ title: "Video ditambahkan" });
+      }
+      onSaved();
+    } catch (error: any) {
+      toast({ title: "Gagal menyimpan", description: error.response?.data?.message || error.message, variant: "destructive" });
     }
     setSaving(false);
   };
@@ -237,10 +202,6 @@ function VideoForm({ video, onClose, onSaved }: { video?: any; onClose: () => vo
             <Label>Deskripsi</Label>
             <Textarea value={form.description} onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))} rows={3} />
           </div>
-          <div>
-            <Label>Durasi (opsional)</Label>
-            <Input value={form.duration} onChange={(e) => setForm((f) => ({ ...f, duration: e.target.value }))} placeholder="cth: 5:30" />
-          </div>
           <label className="flex items-center gap-2 text-sm">
             <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm((f) => ({ ...f, is_featured: e.target.checked }))} />
             Featured Video
@@ -249,28 +210,12 @@ function VideoForm({ video, onClose, onSaved }: { video?: any; onClose: () => vo
 
         <div className="space-y-4">
           <div>
-            <Label className="flex items-center gap-1"><LinkIcon size={14} /> URL Video (YouTube / URL langsung)</Label>
+            <Label className="flex items-center gap-1"><LinkIcon size={14} /> URL Video (YouTube)</Label>
             <Input
-              value={form.video_type === "url" ? form.video_url : ""}
+              value={form.youtube_url}
               onChange={(e) => handleUrlChange(e.target.value)}
               placeholder="https://www.youtube.com/watch?v=..."
             />
-          </div>
-
-          <div className="text-center text-xs text-muted-foreground">— atau —</div>
-
-          <div>
-            <Label className="flex items-center gap-1"><Upload size={14} /> Upload File Video (maks 50MB)</Label>
-            <input
-              type="file"
-              accept="video/*"
-              onChange={handleVideoUpload}
-              disabled={uploading}
-              className="w-full text-sm file:mr-3 file:py-2 file:px-4 file:rounded-md file:border-0 file:bg-primary file:text-primary-foreground file:text-sm file:font-medium hover:file:bg-primary/90 file:cursor-pointer"
-            />
-            {form.video_type === "upload" && form.video_url && (
-              <p className="text-xs text-green-600 mt-1">✓ Video diupload</p>
-            )}
           </div>
 
           <div>

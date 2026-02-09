@@ -6,7 +6,7 @@ import { formatFullDate } from "@/data/articles";
 import { getArticleImage } from "@/data/images";
 import ArticleCard from "@/components/ArticleCard";
 import CommentSection from "@/components/CommentSection";
-import { ArrowLeft, Share2, Facebook, Twitter } from "lucide-react";
+import { ArrowLeft, Share2, Facebook } from "lucide-react";
 
 const ArticleDetail = () => {
   const { slug } = useParams<{ slug: string }>();
@@ -66,8 +66,34 @@ const ArticleDetail = () => {
           />
           <div className="flex items-center gap-3 border-t border-b border-border py-4 mb-8">
             <span className="text-sm font-medium text-muted-foreground flex items-center gap-1"><Share2 size={16} /> Bagikan:</span>
-            <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-secondary text-muted-foreground hover:text-primary transition-colors"><Facebook size={18} /></a>
-            <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-secondary text-muted-foreground hover:text-primary transition-colors"><Twitter size={18} /></a>
+            <a
+              href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full bg-blue-100 text-blue-600 hover:bg-blue-200 transition-colors"
+              title="Bagikan ke Facebook"
+            >
+              <Facebook size={18} />
+            </a>
+            <a
+              href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full bg-black/10 text-black hover:bg-black/20 transition-colors"
+              title="Bagikan ke X"
+            >
+              {/* X Logo using simple SVG path since Lucide might not have it yet or we stick to Twitter icon if preferred, but user asked for X */}
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-twitter"><path d="M4 4l11.733 16h8.267l-15.733-16-8.267 16 11.733-16z" /><path d="M4 20l6.768-6.768m2.46-2.46l6.772-6.772" /></svg>
+            </a>
+            <a
+              href={`https://wa.me/?text=${encodeURIComponent(`${article.title} - ${shareUrl}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="p-2 rounded-full bg-green-100 text-green-600 hover:bg-green-200 transition-colors"
+              title="Bagikan ke WhatsApp"
+            >
+              <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="lucide lucide-message-circle"><path d="M7.9 20A9 9 0 1 0 4 16.1L2 22Z" /></svg>
+            </a>
           </div>
 
           <CommentSection articleId={article.id} />

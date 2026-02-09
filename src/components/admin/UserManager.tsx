@@ -1,150 +1,212 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { usersApi, authApi } from "@/lib/api";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { Plus, Trash2, Key, UserPlus, Shield } from "lucide-react";
+import { Trash2, Key, UserPlus, Users } from "lucide-react";
+import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
 
 const UserManager = () => {
   const { user } = useAuth();
   const { toast } = useToast();
   const queryClient = useQueryClient();
 
-  // Change password
+  // Change Password State
+  const [currentPassword, setCurrentPassword] = useState("");
   const [newPassword, setNewPassword] = useState("");
-  const [changingPw, setChangingPw] = useState(false);
+  const [confirmPassword, setConfirmPassword] = useState("");
+  const [isChangingPassword, setIsChangingPassword] = useState(false);
 
-  // Add editor
-  const [editorEmail, setEditorEmail] = useState("");
-  const [editorPassword, setEditorPassword] = useState("");
-  const [addingEditor, setAddingEditor] = useState(false);
+  // Add User State
+  const [newUserEmail, setNewUserEmail] = useState("");
+  const [newUserPassword, setNewUserPassword] = useState("");
+  const [newName, setNewName] = useState("");
+  const [newRole, setNewRole] = useState("editor");
+  const [isAddingUser, setIsAddingUser] = useState(false);
 
-  // List editors/admins
   const { data: users = [], isLoading } = useQuery({
     queryKey: ["admin_users"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("user_roles")
-        .select("id, user_id, role");
-      if (error) throw error;
-
-      // Get profiles for display names
-      const userIds = data.map((r) => r.user_id);
-      const { data: profiles } = await supabase
-        .from("profiles")
-        .select("user_id, display_name")
-        .in("user_id", userIds);
-
-      return data.map((r) => ({
-        ...r,
-        display_name: profiles?.find((p) => p.user_id === r.user_id)?.display_name || r.user_id,
-      }));
+      const data = await usersApi.getAll();
+      return data || [];
     },
   });
 
-  const handleChangePassword = async () => {
-    if (newPassword.length < 6) {
-      toast({ title: "Password minimal 6 karakter", variant: "destructive" });
+  const handleChangePassword = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (newPassword !== confirmPassword) {
+      toast({ title: "Validasi Gagal", description: "Konfirmasi password tidak cocok", variant: "destructive" });
       return;
     }
-    setChangingPw(true);
-    const { error } = await supabase.auth.updateUser({ password: newPassword });
-    if (error) {
-      toast({ title: "Gagal", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Password berhasil diubah" });
+
+    setIsChangingPassword(true);
+    try {
+      await authApi.changePassword({
+        current_password: currentPassword,
+        password: newPassword,
+        password_confirmation: confirmPassword
+      });
+      toast({ title: "Berhasil", description: "Password berhasil diubah" });
+      setCurrentPassword("");
       setNewPassword("");
+      setConfirmPassword("");
+    } catch (error: any) {
+      toast({ title: "Gagal", description: error.response?.data?.message || "Gagal mengubah password", variant: "destructive" });
+    } finally {
+      setIsChangingPassword(false);
     }
-    setChangingPw(false);
   };
 
-  const handleAddEditor = async () => {
-    if (!editorEmail || !editorPassword) {
-      toast({ title: "Email dan password wajib diisi", variant: "destructive" });
-      return;
-    }
-    setAddingEditor(true);
-
-    const { data, error } = await supabase.functions.invoke("manage-users", {
-      body: { action: "create_editor", email: editorEmail, password: editorPassword },
-    });
-
-    if (error || data?.error) {
-      toast({ title: "Gagal", description: data?.error || error?.message, variant: "destructive" });
-    } else {
-      toast({ title: "Editor berhasil ditambahkan" });
-      setEditorEmail("");
-      setEditorPassword("");
+  const handleAddUser = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setIsAddingUser(true);
+    try {
+      await usersApi.create({
+        name: newName || newUserEmail.split('@')[0],
+        email: newUserEmail,
+        password: newUserPassword,
+        role: newRole
+      });
+      toast({ title: "Berhasil", description: "Pengguna baru berhasil ditambahkan" });
+      setNewUserEmail("");
+      setNewUserPassword("");
+      setNewName("");
       queryClient.invalidateQueries({ queryKey: ["admin_users"] });
+    } catch (error: any) {
+      toast({ title: "Gagal", description: error.response?.data?.message || "Gagal menambah pengguna", variant: "destructive" });
+    } finally {
+      setIsAddingUser(false);
     }
-    setAddingEditor(false);
   };
 
-  const handleRemoveRole = async (roleId: string, displayName: string) => {
-    if (!confirm(`Hapus role dari ${displayName}?`)) return;
-    const { error } = await supabase.from("user_roles").delete().eq("id", roleId);
-    if (error) {
-      toast({ title: "Gagal", description: error.message, variant: "destructive" });
-    } else {
-      toast({ title: "Role dihapus" });
+  const handleRemoveUser = async (userId: string, email: string) => {
+    if (!confirm(`Hapus pengguna ${email}?`)) return;
+    try {
+      await usersApi.delete(userId);
+      toast({ title: "Pengguna dihapus" });
       queryClient.invalidateQueries({ queryKey: ["admin_users"] });
+    } catch (error: any) {
+      toast({ title: "Gagal", description: error.response?.data?.message || error.message, variant: "destructive" });
     }
   };
 
   return (
     <div className="space-y-8">
-      {/* Change password */}
+      {/* Change Password Section */}
       <div>
         <h2 className="text-lg font-bold font-serif text-foreground mb-4 flex items-center gap-2">
           <Key size={18} /> Ganti Password
         </h2>
-        <div className="bg-card border border-border rounded-lg p-4">
-          <p className="text-sm text-muted-foreground mb-3">Akun: {user?.email}</p>
-          <div className="flex gap-3 max-w-md">
-            <div className="flex-1">
-              <Label className="text-xs">Password Baru</Label>
-              <Input type="password" value={newPassword} onChange={(e) => setNewPassword(e.target.value)} placeholder="Min. 6 karakter" />
+        <div className="bg-card border border-border rounded-lg p-6">
+          <p className="text-sm text-muted-foreground mb-4">Akun: <span className="font-medium text-foreground">{user?.email}</span></p>
+          <form onSubmit={handleChangePassword} className="space-y-4 max-w-md">
+            <div>
+              <Label htmlFor="current_password">Password Lama</Label>
+              <Input
+                id="current_password"
+                type="password"
+                value={currentPassword}
+                onChange={(e) => setCurrentPassword(e.target.value)}
+                required
+                placeholder="Masukkan password saat ini"
+              />
             </div>
-            <div className="flex items-end">
-              <Button onClick={handleChangePassword} disabled={changingPw} size="sm">
-                {changingPw ? "Mengubah..." : "Ubah Password"}
-              </Button>
+            <div>
+              <Label htmlFor="new_password">Password Baru</Label>
+              <Input
+                id="new_password"
+                type="password"
+                value={newPassword}
+                onChange={(e) => setNewPassword(e.target.value)}
+                required
+                placeholder="Min. 8 karakter"
+              />
             </div>
-          </div>
+            <div>
+              <Label htmlFor="confirm_password">Konfirmasi Password Baru</Label>
+              <Input
+                id="confirm_password"
+                type="password"
+                value={confirmPassword}
+                onChange={(e) => setConfirmPassword(e.target.value)}
+                required
+                placeholder="Ulangi password baru"
+              />
+            </div>
+            <Button type="submit" disabled={isChangingPassword} className="bg-red-600 hover:bg-red-700 text-white">
+              {isChangingPassword ? "Memproses..." : "Ubah Password"}
+            </Button>
+          </form>
         </div>
       </div>
 
-      {/* Add editor */}
+      {/* Add User Section */}
       <div>
         <h2 className="text-lg font-bold font-serif text-foreground mb-4 flex items-center gap-2">
-          <UserPlus size={18} /> Tambah Editor
+          <UserPlus size={18} /> Tambah Editor / Pengguna
         </h2>
-        <div className="bg-card border border-border rounded-lg p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-3 gap-3 max-w-2xl">
-            <div>
-              <Label className="text-xs">Email</Label>
-              <Input type="email" value={editorEmail} onChange={(e) => setEditorEmail(e.target.value)} placeholder="editor@email.com" />
+        <div className="bg-card border border-border rounded-lg p-6">
+          <form onSubmit={handleAddUser} className="grid grid-cols-1 md:grid-cols-2 gap-4 items-end">
+            <div className="space-y-2">
+              <Label htmlFor="new_name">Nama</Label>
+              <Input
+                id="new_name"
+                placeholder="Nama Lengkap"
+                value={newName}
+                onChange={(e) => setNewName(e.target.value)}
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new_email">Email</Label>
+              <Input
+                id="new_email"
+                type="email"
+                placeholder="email@example.com"
+                value={newUserEmail}
+                onChange={(e) => setNewUserEmail(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new_user_password">Password</Label>
+              <Input
+                id="new_user_password"
+                type="password"
+                placeholder="Password pengguna"
+                value={newUserPassword}
+                onChange={(e) => setNewUserPassword(e.target.value)}
+                required
+              />
+            </div>
+            <div className="space-y-2">
+              <Label htmlFor="new_role">Role</Label>
+              <Select value={newRole} onValueChange={setNewRole}>
+                <SelectTrigger>
+                  <SelectValue placeholder="Pilih Role" />
+                </SelectTrigger>
+                <SelectContent>
+                  <SelectItem value="editor">Editor</SelectItem>
+                  <SelectItem value="admin">Admin</SelectItem>
+                  <SelectItem value="user">User</SelectItem>
+                </SelectContent>
+              </Select>
             </div>
             <div>
-              <Label className="text-xs">Password</Label>
-              <Input type="password" value={editorPassword} onChange={(e) => setEditorPassword(e.target.value)} placeholder="Min. 6 karakter" />
-            </div>
-            <div className="flex items-end">
-              <Button onClick={handleAddEditor} disabled={addingEditor} size="sm">
-                <Plus size={16} /> {addingEditor ? "Menambah..." : "Tambah Editor"}
+              <Button type="submit" disabled={isAddingUser} className="w-full bg-red-600 hover:bg-red-700 text-white">
+                {isAddingUser ? "Menambahkan..." : "+ Tambah Pengguna"}
               </Button>
             </div>
-          </div>
+          </form>
         </div>
       </div>
 
       {/* User list */}
       <div>
         <h2 className="text-lg font-bold font-serif text-foreground mb-4 flex items-center gap-2">
-          <Shield size={18} /> Daftar Pengguna
+          <Users size={18} /> Daftar Pengguna
         </h2>
         {isLoading ? (
           <p className="text-muted-foreground">Memuat...</p>
@@ -153,18 +215,22 @@ const UserManager = () => {
             {users.map((u: any) => (
               <div key={u.id} className="flex items-center gap-3 bg-card border border-border rounded-lg p-3">
                 <div className="flex-1 min-w-0">
-                  <span className="text-sm font-medium text-foreground">{u.display_name}</span>
-                  <span className={`ml-2 px-1.5 py-0.5 rounded text-xs font-medium ${u.role === "admin" ? "bg-primary/10 text-primary" : "bg-blue-100 text-blue-700"}`}>
-                    {u.role}
+                  <div className="flex items-center gap-2">
+                    <span className="text-sm font-medium text-foreground">{u.name || u.display_name || u.email}</span>
+                    <span className="text-xs text-muted-foreground">({u.email})</span>
+                  </div>
+                  <span className={`mt-1 inline-block px-1.5 py-0.5 rounded text-xs font-medium ${u.role === "admin" ? "bg-red-100 text-red-700" : "bg-blue-100 text-blue-700"}`}>
+                    {u.role || 'user'}
                   </span>
                 </div>
-                {u.user_id !== user?.id && (
-                  <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleRemoveRole(u.id, u.display_name)}>
+                {u.id !== user?.id && (
+                  <Button variant="ghost" size="icon" className="h-8 w-8 hover:bg-destructive/10" onClick={() => handleRemoveUser(u.id, u.email)}>
                     <Trash2 size={14} className="text-destructive" />
                   </Button>
                 )}
               </div>
             ))}
+            {users.length === 0 && <p className="text-muted-foreground text-sm">Belum ada pengguna lain.</p>}
           </div>
         )}
       </div>

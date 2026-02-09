@@ -30,6 +30,8 @@ const App = () => (
           <Route path="/video" element={<VideoPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
+          <Route path="/editor/login" element={<AdminLogin />} />
+          <Route path="/editor" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />
         </Routes>
       </BrowserRouter>

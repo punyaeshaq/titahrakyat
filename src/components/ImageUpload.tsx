@@ -1,5 +1,5 @@
 import { useState, useRef } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Upload, X, Loader2 } from "lucide-react";
 
@@ -17,25 +17,15 @@ const ImageUpload = ({ value, onChange }: ImageUploadProps) => {
     if (!file) return;
 
     setUploading(true);
-    const ext = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
 
-    const { error } = await supabase.storage
-      .from("article-images")
-      .upload(fileName, file);
-
-    if (error) {
-      alert("Upload gagal: " + error.message);
+    try {
+      const result = await uploadApi.uploadImage(file);
+      onChange(result.url);
+    } catch (error: any) {
+      alert("Upload gagal: " + (error.response?.data?.message || error.message));
+    } finally {
       setUploading(false);
-      return;
     }
-
-    const { data: publicUrl } = supabase.storage
-      .from("article-images")
-      .getPublicUrl(fileName);
-
-    onChange(publicUrl.publicUrl);
-    setUploading(false);
   };
 
   return (

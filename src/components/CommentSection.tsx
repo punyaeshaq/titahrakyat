@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { commentsApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
@@ -29,13 +29,7 @@ const CommentSection = ({ articleId }: CommentSectionProps) => {
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ["comments", articleId],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("comments")
-        .select("*")
-        .eq("article_id", articleId)
-        .eq("is_approved", true)
-        .order("created_at", { ascending: false });
-      if (error) throw error;
+      const data = await commentsApi.getByArticle(articleId);
       return data || [];
     },
     enabled: !!articleId,
@@ -43,13 +37,7 @@ const CommentSection = ({ articleId }: CommentSectionProps) => {
 
   const submitMutation = useMutation({
     mutationFn: async (values: { name: string; email: string; content: string }) => {
-      const { error } = await supabase.from("comments").insert({
-        article_id: articleId,
-        name: values.name,
-        email: values.email,
-        content: values.content,
-      });
-      if (error) throw error;
+      await commentsApi.create(articleId, values);
     },
     onSuccess: () => {
       toast({ title: "Komentar terkirim", description: "Komentar Anda akan ditampilkan setelah disetujui moderator." });

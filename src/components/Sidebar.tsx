@@ -88,15 +88,18 @@ const Sidebar = () => {
       <div className="bg-card rounded-lg p-4 border border-border">
         <h2 className="font-bold font-serif text-foreground text-lg mb-3">Kategori</h2>
         <div className="space-y-1">
-          {categories.map((cat) => (
-            <Link
-              key={cat.id}
-              to={`/kategori/${cat.id}`}
-              className="flex items-center justify-between py-2 px-2 rounded hover:bg-accent transition-colors text-sm"
-            >
-              <span className="text-foreground font-medium">{cat.label}</span>
-            </Link>
-          ))}
+          {categories.map((cat) => {
+            const slug = cat.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+            return (
+              <Link
+                key={cat.id}
+                to={`/kategori/${slug}`}
+                className="flex items-center justify-between py-2 px-2 rounded hover:bg-accent transition-colors text-sm"
+              >
+                <span className="text-foreground font-medium">{cat.label}</span>
+              </Link>
+            );
+          })}
         </div>
       </div>
     </aside>

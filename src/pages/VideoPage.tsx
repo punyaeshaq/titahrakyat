@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { videosApi } from "@/lib/api";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import VideoEmbed from "@/components/VideoEmbed";
@@ -12,12 +12,8 @@ export default function VideoPage() {
   const { data: videos = [], isLoading } = useQuery({
     queryKey: ["videos"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("videos")
-        .select("*")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
-      return data || [];
+      const data = await videosApi.getAll();
+      return data?.data || data || [];
     },
   });
 

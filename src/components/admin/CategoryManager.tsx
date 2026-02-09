@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
+import { categoriesApi } from "@/lib/api";
 import { useCategories } from "@/hooks/useArticles";
 import { useQueryClient } from "@tanstack/react-query";
 import { Button } from "@/components/ui/button";
@@ -32,45 +32,36 @@ const CategoryManager = () => {
     if (!newLabel.trim()) return;
     const id = newId.trim() || generateId(newLabel);
 
-    const { error } = await supabase.from("categories").insert({
-      id,
-      label: newLabel.trim(),
-      color: newColor,
-    });
-
-    if (error) {
-      toast({ title: "Gagal menambah kategori", description: error.message, variant: "destructive" });
-    } else {
+    try {
+      await categoriesApi.create({ id, label: newLabel.trim(), color: newColor });
       toast({ title: "Kategori ditambahkan" });
       setNewLabel("");
       setNewId("");
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+    } catch (error: any) {
+      toast({ title: "Gagal menambah kategori", description: error.response?.data?.message || error.message, variant: "destructive" });
     }
   };
 
   const handleUpdate = async (id: string) => {
-    const { error } = await supabase
-      .from("categories")
-      .update({ label: editLabel, color: editColor })
-      .eq("id", id);
-
-    if (error) {
-      toast({ title: "Gagal mengupdate", description: error.message, variant: "destructive" });
-    } else {
+    try {
+      await categoriesApi.update(id, { label: editLabel, color: editColor });
       toast({ title: "Kategori diperbarui" });
       setEditingId(null);
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+    } catch (error: any) {
+      toast({ title: "Gagal mengupdate", description: error.response?.data?.message || error.message, variant: "destructive" });
     }
   };
 
   const handleDelete = async (id: string) => {
     if (!confirm(`Hapus kategori "${id}"? Artikel dalam kategori ini akan kehilangan kategorinya.`)) return;
-    const { error } = await supabase.from("categories").delete().eq("id", id);
-    if (error) {
-      toast({ title: "Gagal menghapus", description: error.message, variant: "destructive" });
-    } else {
+    try {
+      await categoriesApi.delete(id);
       toast({ title: "Kategori dihapus" });
       queryClient.invalidateQueries({ queryKey: ["categories"] });
+    } catch (error: any) {
+      toast({ title: "Gagal menghapus", description: error.response?.data?.message || error.message, variant: "destructive" });
     }
   };
 
@@ -128,7 +119,7 @@ const CategoryManager = () => {
                 <>
                   <span className={`w-3 h-3 rounded-full shrink-0`} style={{ backgroundColor: cat.color === "news-red" ? "hsl(0, 85%, 50%)" : cat.color === "news-blue" ? "hsl(210, 100%, 45%)" : "hsl(45, 100%, 51%)" }} />
                   <span className="flex-1 text-sm font-medium text-foreground">{cat.label}</span>
-                  <span className="text-xs text-muted-foreground">{cat.id}</span>
+                  <span className="text-xs text-muted-foreground">{generateId(cat.label)}</span>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => startEdit(cat)}><Pencil size={14} /></Button>
                   <Button variant="ghost" size="icon" className="h-8 w-8" onClick={() => handleDelete(cat.id)}><Trash2 size={14} className="text-destructive" /></Button>
                 </>
@@ -142,3 +133,4 @@ const CategoryManager = () => {
 };
 
 export default CategoryManager;
+

@@ -1,5 +1,5 @@
 import { useQuery } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { activityLogsApi } from "@/lib/api";
 import { formatDistanceToNow } from "date-fns";
 import { id as localeId } from "date-fns/locale";
 import { Activity, Newspaper, AlertTriangle, FolderOpen, Users, Building2, KeyRound } from "lucide-react";
@@ -17,12 +17,7 @@ export default function ActivityLog() {
   const { data: logs = [], isLoading } = useQuery({
     queryKey: ["activity_logs"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("activity_logs")
-        .select("*")
-        .order("created_at", { ascending: false })
-        .limit(50);
-      if (error) throw error;
+      const data = await activityLogsApi.getAll(50);
       return data || [];
     },
     refetchInterval: 30000,
@@ -67,3 +62,4 @@ export default function ActivityLog() {
     </div>
   );
 }
+

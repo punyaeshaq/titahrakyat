@@ -1,18 +1,15 @@
 import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { settingsApi, socialLinksApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { logActivity } from "@/lib/activityLog";
-import { Settings, Globe, Save, Plus, Trash2, GripVertical } from "lucide-react";
+import { Settings, Globe, Save, Plus, Trash2 } from "lucide-react";
 
 export default function SiteSettingsManager() {
-  const { toast } = useToast();
-  const queryClient = useQueryClient();
-
   return (
     <div className="space-y-8">
       <AboutEditor />
@@ -26,51 +23,36 @@ function AboutEditor() {
   const queryClient = useQueryClient();
   const [saving, setSaving] = useState(false);
 
-  const { data: settings = [], isLoading } = useQuery({
+  const { data: settings = {}, isLoading } = useQuery({
     queryKey: ["site_settings"],
     queryFn: async () => {
-      const { data, error } = await supabase.from("site_settings").select("*");
-      if (error) throw error;
-      return data || [];
+      const data = await settingsApi.getAll();
+      return data || {};
     },
   });
-
-  const getValue = (key: string) => settings.find((s: any) => s.key === key)?.value || "";
 
   const [about, setAbout] = useState("");
   const [visi, setVisi] = useState("");
   const [misi, setMisi] = useState("");
 
   useEffect(() => {
-    if (settings.length > 0) {
-      setAbout(getValue("about"));
-      setVisi(getValue("visi"));
-      setMisi(getValue("misi"));
+    if (Object.keys(settings).length > 0) {
+      setAbout(settings.about || "");
+      setVisi(settings.visi || "");
+      setMisi(settings.misi || "");
     }
   }, [settings]);
 
   const handleSave = async () => {
     setSaving(true);
-    const updates = [
-      { key: "about", value: about },
-      { key: "visi", value: visi },
-      { key: "misi", value: misi },
-    ];
-
-    for (const u of updates) {
-      const { error } = await supabase
-        .from("site_settings")
-        .upsert({ key: u.key, value: u.value, updated_at: new Date().toISOString() }, { onConflict: "key" });
-      if (error) {
-        toast({ title: `Gagal menyimpan ${u.key}`, description: error.message, variant: "destructive" });
-        setSaving(false);
-        return;
-      }
+    try {
+      await settingsApi.update({ about, visi, misi });
+      logActivity("mengedit pengaturan situs", "site_settings", "Tentang, Visi, Misi");
+      queryClient.invalidateQueries({ queryKey: ["site_settings"] });
+      toast({ title: "Pengaturan tersimpan" });
+    } catch (error: any) {
+      toast({ title: "Gagal menyimpan", description: error.response?.data?.message || error.message, variant: "destructive" });
     }
-
-    logActivity("mengedit pengaturan situs", "site_settings", "Tentang, Visi, Misi");
-    queryClient.invalidateQueries({ queryKey: ["site_settings"] });
-    toast({ title: "Pengaturan tersimpan" });
     setSaving(false);
   };
 
@@ -112,45 +94,50 @@ function SocialLinksEditor() {
   const { data: links = [], isLoading } = useQuery({
     queryKey: ["social_links"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("social_links")
-        .select("*")
-        .order("sort_order", { ascending: true });
-      if (error) throw error;
+      const data = await socialLinksApi.getAll();
       return data || [];
     },
   });
 
   const handleUpdate = async (id: string, url: string, isActive: boolean) => {
-    const { error } = await supabase.from("social_links").update({ url, is_active: isActive }).eq("id", id);
-    if (error) { toast({ title: "Gagal menyimpan", variant: "destructive" }); return; }
-    queryClient.invalidateQueries({ queryKey: ["social_links"] });
-    toast({ title: "Link diperbarui" });
+    try {
+      await socialLinksApi.update(id, { url, is_active: isActive });
+      queryClient.invalidateQueries({ queryKey: ["social_links"] });
+      toast({ title: "Link diperbarui" });
+    } catch (error: any) {
+      toast({ title: "Gagal menyimpan", variant: "destructive" });
+    }
   };
 
   const handleAdd = async () => {
     if (!newPlatform.trim()) return;
-    const maxOrder = links.length > 0 ? Math.max(...links.map((l: any) => l.sort_order)) + 1 : 1;
-    const { error } = await supabase.from("social_links").insert({
-      platform: newPlatform,
-      url: newUrl,
-      icon: newPlatform.toLowerCase().replace(/[^a-z]/g, ""),
-      sort_order: maxOrder,
-    });
-    if (error) { toast({ title: "Gagal menambah", variant: "destructive" }); return; }
-    logActivity("menambah sosial media", "social_links", newPlatform);
-    queryClient.invalidateQueries({ queryKey: ["social_links"] });
-    setNewPlatform("");
-    setNewUrl("");
-    toast({ title: "Platform ditambahkan" });
+    try {
+      await socialLinksApi.create({
+        platform: newPlatform,
+        url: newUrl,
+        icon: newPlatform.toLowerCase().replace(/[^a-z]/g, ""),
+        sort_order: links.length + 1,
+      });
+      logActivity("menambah sosial media", "social_links", newPlatform);
+      queryClient.invalidateQueries({ queryKey: ["social_links"] });
+      setNewPlatform("");
+      setNewUrl("");
+      toast({ title: "Platform ditambahkan" });
+    } catch (error: any) {
+      toast({ title: "Gagal menambah", variant: "destructive" });
+    }
   };
 
   const handleDelete = async (id: string, platform: string) => {
     if (!confirm(`Hapus ${platform}?`)) return;
-    await supabase.from("social_links").delete().eq("id", id);
-    logActivity("menghapus sosial media", "social_links", platform);
-    queryClient.invalidateQueries({ queryKey: ["social_links"] });
-    toast({ title: "Platform dihapus" });
+    try {
+      await socialLinksApi.delete(id);
+      logActivity("menghapus sosial media", "social_links", platform);
+      queryClient.invalidateQueries({ queryKey: ["social_links"] });
+      toast({ title: "Platform dihapus" });
+    } catch (error: any) {
+      toast({ title: "Gagal menghapus", variant: "destructive" });
+    }
   };
 
   if (isLoading) return <p className="text-muted-foreground">Memuat...</p>;

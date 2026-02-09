@@ -5,12 +5,16 @@ export interface Article {
   excerpt: string;
   content: string;
   category: string;
+  categoryId?: string;
+  categoryLabel?: string;
+  categoryColor?: string;
   author: string;
   publishedAt: string;
   imageUrl: string;
   views: number;
   isFeatured?: boolean;
   isBreaking?: boolean;
+  commentCount?: number;
 }
 
 export const categories = [
@@ -205,18 +209,22 @@ export function searchArticles(query: string): Article[] {
 }
 
 export function formatDate(dateStr: string): string {
+  if (!dateStr) return "-";
   const date = new Date(dateStr);
   const now = new Date();
   const diffMs = now.getTime() - date.getTime();
+  const diffMinutes = Math.floor(diffMs / (1000 * 60));
   const diffHours = Math.floor(diffMs / (1000 * 60 * 60));
+  const diffDays = Math.floor(diffMs / (1000 * 60 * 60 * 24));
 
-  if (diffHours < 1) return "Baru saja";
+  if (diffMinutes < 1) return "Baru saja";
+  if (diffMinutes < 60) return `${diffMinutes} menit lalu`;
   if (diffHours < 24) return `${diffHours} jam lalu`;
-  
-  const diffDays = Math.floor(diffHours / 24);
   if (diffDays === 1) return "Kemarin";
   if (diffDays < 7) return `${diffDays} hari lalu`;
-  
+  if (diffDays < 30) return `${Math.floor(diffDays / 7)} minggu lalu`;
+  if (diffDays < 365) return `${Math.floor(diffDays / 30)} bulan lalu`;
+
   return date.toLocaleDateString("id-ID", {
     day: "numeric",
     month: "long",

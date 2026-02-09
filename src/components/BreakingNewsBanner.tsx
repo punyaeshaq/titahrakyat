@@ -1,9 +1,13 @@
 import { useBreakingNews } from "@/hooks/useArticles";
+import { useSettings } from "@/hooks/useSettings";
 
 const BreakingNewsBanner = () => {
   const { data: items = [] } = useBreakingNews();
+  const { data: settings = {} } = useSettings();
 
   if (items.length === 0) return null;
+
+  const speed = settings.breaking_news_speed ? parseInt(settings.breaking_news_speed) : 30;
 
   return (
     <div className="bg-primary overflow-hidden">
@@ -12,7 +16,11 @@ const BreakingNewsBanner = () => {
           BREAKING
         </span>
         <div className="overflow-hidden whitespace-nowrap flex-1">
-          <div className="animate-breaking-scroll inline-block">
+          <div
+            key={speed}
+            className="animate-breaking-scroll inline-block"
+            style={{ animationDuration: `${speed}s` }}
+          >
             {items.map((news) => (
               <span key={news.id} className="text-primary-foreground text-xs mr-12">
                 {news.text}

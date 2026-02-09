@@ -3,7 +3,7 @@ import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
-import { supabase } from "@/integrations/supabase/client";
+import { uploadApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import {
   Bold, Italic, List, ListOrdered, Quote, Heading2, Heading3,
@@ -42,17 +42,12 @@ const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
     const file = e.target.files?.[0];
     if (!file) return;
     setUploading(true);
-    const ext = file.name.split(".").pop();
-    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
-    const { error } = await supabase.storage.from("article-images").upload(fileName, file);
-    if (error) {
-      alert("Upload gagal: " + error.message);
-      setUploading(false);
-      if (fileInputRef.current) fileInputRef.current.value = "";
-      return;
+    try {
+      const response = await uploadApi.uploadImage(file);
+      editor.chain().focus().setImage({ src: response.url }).run();
+    } catch (error: any) {
+      alert("Upload gagal: " + (error.response?.data?.message || error.message));
     }
-    const { data: publicUrl } = supabase.storage.from("article-images").getPublicUrl(fileName);
-    editor.chain().focus().setImage({ src: publicUrl.publicUrl }).run();
     setUploading(false);
     if (fileInputRef.current) fileInputRef.current.value = "";
   };

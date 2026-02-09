@@ -1,6 +1,6 @@
-import { useState, useEffect } from "react";
+import { useState } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
-import { supabase } from "@/integrations/supabase/client";
+import { commentsApi } from "@/lib/api";
 import { Button } from "@/components/ui/button";
 import { useToast } from "@/hooks/use-toast";
 import { logActivity } from "@/lib/activityLog";
@@ -13,39 +13,13 @@ export default function CommentManager() {
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
 
-  // Real-time listener for new comments
-  useEffect(() => {
-    const channel = supabase
-      .channel("admin-comments-realtime")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "comments" },
-        (payload) => {
-          const newComment = payload.new as any;
-          toast({
-            title: "💬 Komentar baru masuk!",
-            description: `Dari ${newComment.name || "Anonim"}: "${(newComment.content || "").slice(0, 80)}${(newComment.content || "").length > 80 ? "..." : ""}"`,
-          });
-          queryClient.invalidateQueries({ queryKey: ["admin_comments"] });
-        }
-      )
-      .subscribe();
-
-    return () => {
-      supabase.removeChannel(channel);
-    };
-  }, [queryClient, toast]);
-
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ["admin_comments"],
     queryFn: async () => {
-      const { data, error } = await supabase
-        .from("comments")
-        .select("*, articles!comments_article_id_fkey(title, slug)")
-        .order("created_at", { ascending: false });
-      if (error) throw error;
+      const data = await commentsApi.getAll();
       return data || [];
     },
+    refetchInterval: 30000, // Poll every 30 seconds
   });
 
   const filtered = comments.filter((c: any) => {
@@ -59,21 +33,27 @@ export default function CommentManager() {
   const paginated = filtered.slice((safePage - 1) * ITEMS_PER_PAGE, safePage * ITEMS_PER_PAGE);
 
   const handleApprove = async (id: string, name: string) => {
-    const { error } = await supabase.from("comments").update({ is_approved: true }).eq("id", id);
-    if (error) { toast({ title: "Gagal menyetujui", variant: "destructive" }); return; }
-    logActivity("menyetujui komentar", "comment", `Komentar dari ${name}`);
-    queryClient.invalidateQueries({ queryKey: ["admin_comments"] });
-    queryClient.invalidateQueries({ queryKey: ["articles", "most_commented"] });
-    toast({ title: "Komentar disetujui" });
+    try {
+      await commentsApi.approve(id);
+      logActivity("menyetujui komentar", "comment", `Komentar dari ${name}`);
+      queryClient.invalidateQueries({ queryKey: ["admin_comments"] });
+      queryClient.invalidateQueries({ queryKey: ["articles", "most_commented"] });
+      toast({ title: "Komentar disetujui" });
+    } catch (error: any) {
+      toast({ title: "Gagal menyetujui", variant: "destructive" });
+    }
   };
 
   const handleReject = async (id: string, name: string) => {
     if (!confirm("Tolak dan hapus komentar ini?")) return;
-    const { error } = await supabase.from("comments").delete().eq("id", id);
-    if (error) { toast({ title: "Gagal menghapus", variant: "destructive" }); return; }
-    logActivity("menolak komentar", "comment", `Komentar dari ${name}`);
-    queryClient.invalidateQueries({ queryKey: ["admin_comments"] });
-    toast({ title: "Komentar dihapus" });
+    try {
+      await commentsApi.delete(id);
+      logActivity("menolak komentar", "comment", `Komentar dari ${name}`);
+      queryClient.invalidateQueries({ queryKey: ["admin_comments"] });
+      toast({ title: "Komentar dihapus" });
+    } catch (error: any) {
+      toast({ title: "Gagal menghapus", variant: "destructive" });
+    }
   };
 
   const pendingCount = comments.filter((c: any) => !c.is_approved).length;
@@ -127,7 +107,7 @@ export default function CommentManager() {
                     <p className="text-sm text-foreground mb-2">{c.content}</p>
                     <div className="text-xs text-muted-foreground">
                       <span>Pada: </span>
-                      <span className="font-medium">{(c as any).articles?.title || "Artikel dihapus"}</span>
+                      <span className="font-medium">{c.article?.title || "Artikel dihapus"}</span>
                       <span className="ml-2">• {new Date(c.created_at).toLocaleString("id-ID")}</span>
                     </div>
                   </div>
@@ -162,3 +142,4 @@ export default function CommentManager() {
     </div>
   );
 }
+

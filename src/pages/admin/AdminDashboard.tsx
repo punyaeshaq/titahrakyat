@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye, Clock } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye, Clock, Activity } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
@@ -16,8 +16,10 @@ import CategoryManager from "@/components/admin/CategoryManager";
 import UserManager from "@/components/admin/UserManager";
 import StatsOverview from "@/components/admin/StatsOverview";
 import EditorialManager from "@/components/admin/EditorialManager";
+import ActivityLog from "@/components/admin/ActivityLog";
+import { logActivity } from "@/lib/activityLog";
 
-type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "users";
+type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "users" | "logs";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
@@ -40,6 +42,7 @@ const AdminDashboard = () => {
     { id: "categories", label: "Kategori", icon: <FolderOpen size={16} /> },
     { id: "editorial", label: "Redaksi", icon: <Building2 size={16} /> },
     { id: "users", label: "Pengguna", icon: <Users size={16} /> },
+    { id: "logs", label: "Log", icon: <Activity size={16} /> },
   ];
 
   return (
@@ -71,6 +74,7 @@ const AdminDashboard = () => {
         {tab === "categories" && <CategoryManager />}
         {tab === "editorial" && <EditorialManager />}
         {tab === "users" && <UserManager />}
+        {tab === "logs" && <ActivityLog />}
       </div>
     </div>
   );
@@ -132,7 +136,9 @@ function ArticlesManager() {
 
   const handleDelete = async (id: string) => {
     if (!confirm("Hapus berita ini?")) return;
+    const article = articles.find((a: any) => a.id === id);
     await supabase.from("articles").delete().eq("id", id);
+    logActivity("menghapus berita", "article", article?.title || "");
     queryClient.invalidateQueries({ queryKey: ["admin_articles"] });
     queryClient.invalidateQueries({ queryKey: ["articles"] });
     toast({ title: "Berita dihapus" });
@@ -314,11 +320,11 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
     if (isEdit) {
       const { error } = await supabase.from("articles").update(payload).eq("id", article.id);
       if (error) toast({ title: "Gagal menyimpan", description: error.message, variant: "destructive" });
-      else { toast({ title: "Berita diperbarui" }); onSaved(); }
+      else { logActivity("mengedit berita", "article", form.title); toast({ title: "Berita diperbarui" }); onSaved(); }
     } else {
       const { error } = await supabase.from("articles").insert(payload);
       if (error) toast({ title: "Gagal menyimpan", description: error.message, variant: "destructive" });
-      else { toast({ title: "Berita ditambahkan" }); onSaved(); }
+      else { logActivity("menambah berita", "article", form.title); toast({ title: "Berita ditambahkan" }); onSaved(); }
     }
     setSaving(false);
   };
@@ -480,6 +486,7 @@ function BreakingNewsManager() {
     if (!text.trim()) return;
     setSaving(true);
     await supabase.from("breaking_news").insert({ text: text.trim() });
+    logActivity("menambah breaking news", "breaking_news", text.trim());
     setText("");
     queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
     queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
@@ -494,7 +501,9 @@ function BreakingNewsManager() {
   };
 
   const handleDelete = async (id: string) => {
+    const item = items.find((i: any) => i.id === id);
     await supabase.from("breaking_news").delete().eq("id", id);
+    logActivity("menghapus breaking news", "breaking_news", item?.text || "");
     queryClient.invalidateQueries({ queryKey: ["admin_breaking_news"] });
     queryClient.invalidateQueries({ queryKey: ["breaking_news"] });
     toast({ title: "Breaking news dihapus" });

@@ -5,6 +5,7 @@ import { useArticleBySlug, useArticlesByCategory } from "@/hooks/useArticles";
 import { formatFullDate } from "@/data/articles";
 import { getArticleImage } from "@/data/images";
 import ArticleCard from "@/components/ArticleCard";
+import CommentSection from "@/components/CommentSection";
 import { ArrowLeft, Share2, Facebook, Twitter } from "lucide-react";
 
 const ArticleDetail = () => {
@@ -68,6 +69,8 @@ const ArticleDetail = () => {
             <a href={`https://www.facebook.com/sharer/sharer.php?u=${encodeURIComponent(shareUrl)}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-secondary text-muted-foreground hover:text-primary transition-colors"><Facebook size={18} /></a>
             <a href={`https://twitter.com/intent/tweet?url=${encodeURIComponent(shareUrl)}&text=${encodeURIComponent(article.title)}`} target="_blank" rel="noopener noreferrer" className="p-2 rounded-full bg-secondary text-muted-foreground hover:text-primary transition-colors"><Twitter size={18} /></a>
           </div>
+
+          <CommentSection articleId={article.id} />
         </article>
 
         {related.length > 0 && (

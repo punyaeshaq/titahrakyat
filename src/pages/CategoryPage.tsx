@@ -3,14 +3,16 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ArticleCard from "@/components/ArticleCard";
 import Sidebar from "@/components/Sidebar";
-import { getArticlesByCategory, categories } from "@/data/articles";
+import { useArticlesByCategory, useCategories } from "@/hooks/useArticles";
 
 const CategoryPage = () => {
   const { id } = useParams<{ id: string }>();
-  const category = categories.find((c) => c.id === id);
-  const categoryArticles = getArticlesByCategory(id || "");
+  const { data: categories = [] } = useCategories();
+  const { data: categoryArticles = [], isLoading } = useArticlesByCategory(id || "");
 
-  if (!category) {
+  const category = categories.find((c) => c.id === id);
+
+  if (!isLoading && !category) {
     return (
       <div className="min-h-screen bg-background">
         <SiteHeader />
@@ -28,15 +30,15 @@ const CategoryPage = () => {
       <SiteHeader />
       <main className="container py-6">
         <h1 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-1">
-          {category.label}
+          {category?.label || id}
         </h1>
-        <p className="text-muted-foreground text-sm mb-6">
-          {categoryArticles.length} berita ditemukan
-        </p>
+        <p className="text-muted-foreground text-sm mb-6">{categoryArticles.length} berita ditemukan</p>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
           <div className="lg:col-span-2">
-            {categoryArticles.length === 0 ? (
+            {isLoading ? (
+              <p className="text-muted-foreground py-12 text-center">Memuat...</p>
+            ) : categoryArticles.length === 0 ? (
               <p className="text-muted-foreground py-12 text-center">Belum ada berita di kategori ini.</p>
             ) : (
               categoryArticles.map((article) => (

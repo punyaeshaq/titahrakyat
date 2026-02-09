@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
@@ -258,6 +258,7 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
   onSaved: () => void;
 }) {
   const isEdit = !!article;
+  const [showPreview, setShowPreview] = useState(false);
   const [form, setForm] = useState({
     title: article?.title || "",
     slug: article?.slug || "",
@@ -389,11 +390,58 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
             </div>
           </div>
 
-          <Button className="w-full" onClick={handleSave} disabled={saving}>
-            {saving ? "Menyimpan..." : isEdit ? "Simpan Perubahan" : "Tambah Berita"}
-          </Button>
+          <div className="flex gap-2">
+            <Button variant="outline" className="flex-1" onClick={() => setShowPreview(true)}>
+              <Eye size={16} /> Preview
+            </Button>
+            <Button className="flex-1" onClick={handleSave} disabled={saving}>
+              {saving ? "Menyimpan..." : isEdit ? "Simpan" : "Tambah"}
+            </Button>
+          </div>
         </div>
       </div>
+
+      {/* Preview Modal */}
+      {showPreview && (
+        <div className="fixed inset-0 z-50 bg-black/50 flex items-start justify-center overflow-y-auto p-4">
+          <div className="bg-background w-full max-w-3xl rounded-lg border border-border shadow-lg my-8">
+            <div className="flex items-center justify-between px-6 py-4 border-b border-border">
+              <h3 className="font-bold font-serif text-foreground">Preview Berita</h3>
+              <Button variant="ghost" size="icon" onClick={() => setShowPreview(false)}>
+                <X size={20} />
+              </Button>
+            </div>
+            <div className="p-6">
+              {form.image_url && (
+                <img src={form.image_url} alt="" className="w-full h-64 object-cover rounded-lg mb-6" />
+              )}
+              <div className="mb-2">
+                <span className="text-xs font-semibold text-primary uppercase">
+                  {categories.find((c: any) => c.id === form.category_id)?.label || form.category_id}
+                </span>
+                <span className="text-xs text-muted-foreground ml-3">
+                  {form.status === "published" ? "Terbit" : "Draft"}
+                </span>
+              </div>
+              <h1 className="text-2xl md:text-3xl font-bold font-serif text-foreground mb-3">
+                {form.title || "Judul Berita"}
+              </h1>
+              <div className="flex items-center gap-3 text-sm text-muted-foreground mb-6">
+                <span>{form.author || "Penulis"}</span>
+                <span>•</span>
+                <span>{new Date().toLocaleDateString("id-ID", { day: "numeric", month: "long", year: "numeric" })}</span>
+              </div>
+              {form.excerpt && (
+                <p className="text-muted-foreground italic border-l-4 border-primary pl-4 mb-6">{form.excerpt}</p>
+              )}
+              <div
+                className="prose prose-sm max-w-none text-foreground"
+                dangerouslySetInnerHTML={{ __html: form.content || "<p>Belum ada konten.</p>" }}
+              />
+            </div>
+          </div>
+        </div>
+      )}
     </div>
   );
 }

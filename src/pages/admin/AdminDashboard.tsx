@@ -18,6 +18,7 @@ import StatsOverview from "@/components/admin/StatsOverview";
 import EditorialManager from "@/components/admin/EditorialManager";
 import ActivityLog from "@/components/admin/ActivityLog";
 import { logActivity } from "@/lib/activityLog";
+import ThemeToggle from "@/components/ThemeToggle";
 
 type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "users" | "logs";
 
@@ -50,8 +51,9 @@ const AdminDashboard = () => {
       <header className="bg-card border-b border-border shadow-sm">
         <div className="container flex items-center justify-between h-14">
           <h1 className="font-bold font-serif text-foreground text-lg">Dashboard Admin</h1>
-          <div className="flex items-center gap-3">
+          <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
+            <ThemeToggle />
             <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/admin/login"); }}>
               <LogOut size={16} /> Keluar
             </Button>

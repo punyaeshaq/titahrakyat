@@ -3,6 +3,7 @@ import { Search, Menu, X } from "lucide-react";
 import { useCategories } from "@/hooks/useArticles";
 import { useState } from "react";
 import logoMenara from "@/assets/logo-menara.jpg";
+import ThemeToggle from "@/components/ThemeToggle";
 
 const SiteHeader = () => {
   const { data: categories = [] } = useCategories();
@@ -46,7 +47,8 @@ const SiteHeader = () => {
           </Link>
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-1">
+          <ThemeToggle />
           {searchOpen ? (
             <form onSubmit={handleSearch} className="flex items-center">
               <input type="text" value={query} onChange={(e) => setQuery(e.target.value)} placeholder="Cari berita..." autoFocus className="w-40 sm:w-56 h-9 px-3 text-sm bg-secondary border border-border rounded-md focus:outline-none focus:ring-2 focus:ring-primary/30" />

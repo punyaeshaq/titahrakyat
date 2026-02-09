@@ -1,12 +1,56 @@
-// Update this page (the content is just a fallback if you fail to update the page)
+import SiteHeader from "@/components/SiteHeader";
+import SiteFooter from "@/components/SiteFooter";
+import BreakingNewsBanner from "@/components/BreakingNewsBanner";
+import HeroArticle from "@/components/HeroArticle";
+import ArticleCard from "@/components/ArticleCard";
+import Sidebar from "@/components/Sidebar";
+import { articles } from "@/data/articles";
 
 const Index = () => {
+  const featured = articles.find((a) => a.isFeatured)!;
+  const latest = articles.filter((a) => a.id !== featured.id);
+  const topGrid = latest.slice(0, 3);
+  const rest = latest.slice(3);
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background">
-      <div className="text-center">
-        <h1 className="mb-4 text-4xl font-bold">Welcome to Your Blank App</h1>
-        <p className="text-xl text-muted-foreground">Start building your amazing project here!</p>
-      </div>
+    <div className="min-h-screen bg-background">
+      <SiteHeader />
+      <BreakingNewsBanner />
+
+      <main className="container py-6">
+        {/* Hero */}
+        <HeroArticle article={featured} />
+
+        {/* Top 3 grid */}
+        <section className="grid grid-cols-1 md:grid-cols-3 gap-6 mt-8">
+          {topGrid.map((article) => (
+            <ArticleCard key={article.id} article={article} />
+          ))}
+        </section>
+
+        {/* Main content + Sidebar */}
+        <div className="grid grid-cols-1 lg:grid-cols-3 gap-8 mt-10">
+          <div className="lg:col-span-2">
+            <h2 className="font-bold font-serif text-xl text-foreground mb-4 border-b-2 border-primary pb-2">
+              Berita Terbaru
+            </h2>
+            <div>
+              {rest.map((article) => (
+                <ArticleCard
+                  key={article.id}
+                  article={article}
+                  variant="horizontal"
+                />
+              ))}
+            </div>
+          </div>
+          <div>
+            <Sidebar />
+          </div>
+        </div>
+      </main>
+
+      <SiteFooter />
     </div>
   );
 };

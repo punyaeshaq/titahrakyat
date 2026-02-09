@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2 } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
@@ -82,8 +82,13 @@ function ArticlesManager() {
   const { data: categories = [] } = useCategories();
   const [editing, setEditing] = useState<any>(null);
   const [creating, setCreating] = useState(false);
+  const [page, setPage] = useState(1);
   const queryClient = useQueryClient();
   const { toast } = useToast();
+
+  const ITEMS_PER_PAGE = 10;
+  const totalPages = Math.max(1, Math.ceil(articles.length / ITEMS_PER_PAGE));
+  const paginated = articles.slice((page - 1) * ITEMS_PER_PAGE, page * ITEMS_PER_PAGE);
 
   const handleDelete = async (id: string) => {
     if (!confirm("Hapus berita ini?")) return;
@@ -121,31 +126,48 @@ function ArticlesManager() {
       {isLoading ? (
         <p className="text-muted-foreground">Memuat...</p>
       ) : (
-        <div className="space-y-2">
-          {articles.map((a: any) => (
-            <div key={a.id} className="flex items-center gap-3 bg-card border border-border rounded-lg p-3">
-              {a.image_url && (
-                <img src={a.image_url} alt="" className="w-16 h-12 object-cover rounded shrink-0" />
-              )}
-              <div className="flex-1 min-w-0">
-                <h3 className="font-semibold text-foreground text-sm truncate">{a.title}</h3>
-                <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                  <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${a.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
-                    {a.status === "published" ? "Terbit" : "Draft"}
-                  </span>
-                  <span>{a.category_id}</span>
-                  <span>{a.author}</span>
+        <>
+          <div className="space-y-2">
+            {paginated.map((a: any) => (
+              <div key={a.id} className="flex items-center gap-3 bg-card border border-border rounded-lg p-3">
+                {a.image_url && (
+                  <img src={a.image_url} alt="" className="w-16 h-12 object-cover rounded shrink-0" />
+                )}
+                <div className="flex-1 min-w-0">
+                  <h3 className="font-semibold text-foreground text-sm truncate">{a.title}</h3>
+                  <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${a.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
+                      {a.status === "published" ? "Terbit" : "Draft"}
+                    </span>
+                    <span>{a.category_id}</span>
+                    <span>{a.author}</span>
+                  </div>
                 </div>
+                <Button variant="ghost" size="icon" onClick={() => setEditing(a)}>
+                  <Pencil size={16} />
+                </Button>
+                <Button variant="ghost" size="icon" onClick={() => handleDelete(a.id)}>
+                  <Trash2 size={16} className="text-destructive" />
+                </Button>
               </div>
-              <Button variant="ghost" size="icon" onClick={() => setEditing(a)}>
-                <Pencil size={16} />
+            ))}
+          </div>
+          {totalPages > 1 && (
+            <div className="flex items-center justify-center gap-2 mt-4">
+              <Button variant="outline" size="icon" disabled={page <= 1} onClick={() => setPage((p) => p - 1)}>
+                <ChevronLeft size={16} />
               </Button>
-              <Button variant="ghost" size="icon" onClick={() => handleDelete(a.id)}>
-                <Trash2 size={16} className="text-destructive" />
+              {Array.from({ length: totalPages }, (_, i) => (
+                <Button key={i + 1} variant={page === i + 1 ? "default" : "outline"} size="sm" onClick={() => setPage(i + 1)}>
+                  {i + 1}
+                </Button>
+              ))}
+              <Button variant="outline" size="icon" disabled={page >= totalPages} onClick={() => setPage((p) => p + 1)}>
+                <ChevronRight size={16} />
               </Button>
             </div>
-          ))}
-        </div>
+          )}
+        </>
       )}
     </div>
   );

@@ -1,19 +1,17 @@
-import heroEkonomi from "@/assets/hero-ekonomi.jpg";
-import heroOlahraga from "@/assets/hero-olahraga.jpg";
-import heroTeknologi from "@/assets/hero-teknologi.jpg";
-import heroPolitik from "@/assets/hero-politik.jpg";
-import heroHiburan from "@/assets/hero-hiburan.jpg";
+import heroPublik from "@/assets/hero-publik.jpg";
+import heroHukum from "@/assets/hero-hukum.jpg";
+import heroLingkungan from "@/assets/hero-lingkungan.jpg";
+import heroDaerah from "@/assets/hero-daerah.jpg";
 import heroNasional from "@/assets/hero-nasional.jpg";
-import heroInternasional from "@/assets/hero-internasional.jpg";
+import heroOpini from "@/assets/hero-opini.jpg";
 
 const categoryImages: Record<string, string> = {
-  ekonomi: heroEkonomi,
-  olahraga: heroOlahraga,
-  teknologi: heroTeknologi,
-  politik: heroPolitik,
-  hiburan: heroHiburan,
+  publik: heroPublik,
+  hukum: heroHukum,
+  lingkungan: heroLingkungan,
+  daerah: heroDaerah,
   nasional: heroNasional,
-  internasional: heroInternasional,
+  opini: heroOpini,
 };
 
 export function getArticleImage(category: string, imageUrl?: string): string {

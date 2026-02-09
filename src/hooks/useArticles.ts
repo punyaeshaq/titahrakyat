@@ -154,3 +154,82 @@ export function useEditorialStaff() {
     },
   });
 }
+
+// Popular articles sorted by views
+export function usePopularArticles(limit = 5) {
+  return useQuery({
+    queryKey: ["articles", "popular", limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .eq("status", "published")
+        .order("views", { ascending: false })
+        .limit(limit);
+      if (error) throw error;
+      return (data || []).map(mapRow);
+    },
+  });
+}
+
+// Articles with most comments
+export function useMostCommentedArticles(limit = 5) {
+  return useQuery({
+    queryKey: ["articles", "most_commented", limit],
+    queryFn: async () => {
+      // Get comment counts per article
+      const { data: comments, error: commentsError } = await supabase
+        .from("comments")
+        .select("article_id")
+        .eq("is_approved", true);
+      if (commentsError) throw commentsError;
+
+      // Count comments per article
+      const countMap: Record<string, number> = {};
+      (comments || []).forEach((c: any) => {
+        countMap[c.article_id] = (countMap[c.article_id] || 0) + 1;
+      });
+
+      // Get top article IDs
+      const topIds = Object.entries(countMap)
+        .sort((a, b) => b[1] - a[1])
+        .slice(0, limit)
+        .map(([id]) => id);
+
+      if (topIds.length === 0) return [];
+
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .in("id", topIds)
+        .eq("status", "published");
+      if (error) throw error;
+
+      // Sort by comment count
+      const mapped = (data || []).map(mapRow);
+      return mapped.sort((a, b) => (countMap[b.id] || 0) - (countMap[a.id] || 0))
+        .map(article => ({ ...article, commentCount: countMap[article.id] || 0 }));
+    },
+  });
+}
+
+// Recommended articles (random selection excluding certain IDs)
+export function useRecommendedArticles(excludeIds: string[] = [], limit = 5) {
+  return useQuery({
+    queryKey: ["articles", "recommended", excludeIds.join(","), limit],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("articles")
+        .select("*")
+        .eq("status", "published")
+        .order("published_at", { ascending: false })
+        .limit(20);
+      if (error) throw error;
+
+      const filtered = (data || []).filter((a: any) => !excludeIds.includes(a.id));
+      // Shuffle and pick
+      const shuffled = filtered.sort(() => Math.random() - 0.5);
+      return shuffled.slice(0, limit).map(mapRow);
+    },
+  });
+}

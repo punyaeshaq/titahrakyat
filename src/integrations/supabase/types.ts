@@ -154,6 +154,44 @@ export type Database = {
         }
         Relationships: []
       }
+      comments: {
+        Row: {
+          article_id: string
+          content: string
+          created_at: string
+          email: string
+          id: string
+          is_approved: boolean
+          name: string
+        }
+        Insert: {
+          article_id: string
+          content?: string
+          created_at?: string
+          email?: string
+          id?: string
+          is_approved?: boolean
+          name?: string
+        }
+        Update: {
+          article_id?: string
+          content?: string
+          created_at?: string
+          email?: string
+          id?: string
+          is_approved?: boolean
+          name?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "comments_article_id_fkey"
+            columns: ["article_id"]
+            isOneToOne: false
+            referencedRelation: "articles"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       editorial_staff: {
         Row: {
           created_at: string

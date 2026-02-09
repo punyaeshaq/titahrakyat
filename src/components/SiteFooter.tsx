@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { categories } from "@/data/articles";
+import logoMenara from "@/assets/logo-menara.jpg";
 
 const SiteFooter = () => {
   return (
@@ -7,10 +8,11 @@ const SiteFooter = () => {
       <div className="container py-8">
         <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
           <div>
-            <Link to="/" className="flex items-center gap-1 mb-2">
-              <span className="text-lg font-black font-serif text-primary">Menara</span>
-              <span className="text-lg font-light font-serif text-foreground">Publik</span>
-              <span className="text-xs font-medium text-muted-foreground">.News</span>
+            <Link to="/" className="flex items-center gap-2 mb-2">
+              <img src={logoMenara} alt="MenaraPublik.News" className="h-10 w-10 rounded-full object-cover" />
+              <span className="text-lg font-black font-serif text-primary">
+                MenaraPublik<span className="text-muted-foreground font-medium text-sm">.News</span>
+              </span>
             </Link>
             <p className="text-xs italic text-muted-foreground mb-1">
               "Mengawal Kepentingan Publik"

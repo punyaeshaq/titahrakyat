@@ -1,26 +1,28 @@
 import { Link } from "react-router-dom";
-import { useArticles, useCategories, useArticlesByCategory } from "@/hooks/useArticles";
-import { TrendingUp } from "lucide-react";
-import ArticleCard from "./ArticleCard";
+import { useCategories, usePopularArticles, useMostCommentedArticles, useRecommendedArticles } from "@/hooks/useArticles";
+import { TrendingUp, Star, MessageCircle } from "lucide-react";
 
 const Sidebar = () => {
-  const { data: articles = [] } = useArticles();
   const { data: categories = [] } = useCategories();
-
-  const trending = [...articles].sort((a, b) => b.views - a.views).slice(0, 5);
+  const { data: popular = [] } = usePopularArticles(5);
+  const { data: mostCommented = [] } = useMostCommentedArticles(5);
+  const { data: recommended = [] } = useRecommendedArticles([], 5);
 
   return (
     <aside className="space-y-8">
+      {/* Rekomendasi Untuk Anda */}
       <div className="bg-card rounded-lg p-4 border border-border">
         <h2 className="flex items-center gap-2 font-bold font-serif text-foreground text-lg mb-4">
-          <TrendingUp size={18} className="text-primary" />
-          Populer
+          <Star size={18} className="text-news-yellow" />
+          Rekomendasi Untuk Anda
         </h2>
         <div>
-          {trending.map((article, i) => (
-            <div key={article.id} className="flex gap-3 py-3 border-b border-border last:border-0">
-              <span className="text-2xl font-black text-primary/20 shrink-0 w-8 text-center">{i + 1}</span>
-              <Link to={`/berita/${article.slug}`} className="group min-w-0">
+          {recommended.length === 0 && (
+            <p className="text-sm text-muted-foreground">Belum ada rekomendasi.</p>
+          )}
+          {recommended.map((article) => (
+            <div key={article.id} className="py-3 border-b border-border last:border-0">
+              <Link to={`/berita/${article.slug}`} className="group">
                 <h3 className="text-sm font-semibold font-serif text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
                   {article.title}
                 </h3>
@@ -31,6 +33,58 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {/* Berita Terpopuler */}
+      <div className="bg-card rounded-lg p-4 border border-border">
+        <h2 className="flex items-center gap-2 font-bold font-serif text-foreground text-lg mb-4">
+          <TrendingUp size={18} className="text-primary" />
+          Berita Terpopuler
+        </h2>
+        <div>
+          {popular.map((article, i) => (
+            <div key={article.id} className="flex gap-3 py-3 border-b border-border last:border-0">
+              <span className="text-2xl font-black text-primary/20 shrink-0 w-8 text-center">{i + 1}</span>
+              <Link to={`/berita/${article.slug}`} className="group min-w-0">
+                <h3 className="text-sm font-semibold font-serif text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                  {article.title}
+                </h3>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-news-timestamp uppercase">{article.category}</span>
+                  <span className="text-xs text-muted-foreground">{article.views.toLocaleString("id-ID")} views</span>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Komentar Terbanyak */}
+      <div className="bg-card rounded-lg p-4 border border-border">
+        <h2 className="flex items-center gap-2 font-bold font-serif text-foreground text-lg mb-4">
+          <MessageCircle size={18} className="text-news-blue" />
+          Komentar Terbanyak
+        </h2>
+        <div>
+          {mostCommented.length === 0 && (
+            <p className="text-sm text-muted-foreground">Belum ada komentar.</p>
+          )}
+          {mostCommented.map((article: any, i: number) => (
+            <div key={article.id} className="flex gap-3 py-3 border-b border-border last:border-0">
+              <span className="text-2xl font-black text-news-blue/20 shrink-0 w-8 text-center">{i + 1}</span>
+              <Link to={`/berita/${article.slug}`} className="group min-w-0">
+                <h3 className="text-sm font-semibold font-serif text-foreground leading-snug line-clamp-2 group-hover:text-primary transition-colors">
+                  {article.title}
+                </h3>
+                <div className="flex items-center gap-2 mt-1">
+                  <span className="text-xs text-news-timestamp uppercase">{article.category}</span>
+                  <span className="text-xs text-muted-foreground">{article.commentCount} komentar</span>
+                </div>
+              </Link>
+            </div>
+          ))}
+        </div>
+      </div>
+
+      {/* Kategori */}
       <div className="bg-card rounded-lg p-4 border border-border">
         <h2 className="font-bold font-serif text-foreground text-lg mb-3">Kategori</h2>
         <div className="space-y-1">

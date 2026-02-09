@@ -140,3 +140,17 @@ export function useAllBreakingNews() {
     },
   });
 }
+
+export function useEditorialStaff() {
+  return useQuery({
+    queryKey: ["editorial_staff"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("editorial_staff")
+        .select("*")
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return data || [];
+    },
+  });
+}

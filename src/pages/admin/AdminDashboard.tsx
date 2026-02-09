@@ -8,15 +8,16 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2 } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
 import CategoryManager from "@/components/admin/CategoryManager";
 import UserManager from "@/components/admin/UserManager";
 import StatsOverview from "@/components/admin/StatsOverview";
+import EditorialManager from "@/components/admin/EditorialManager";
 
-type Tab = "stats" | "articles" | "breaking" | "categories" | "users";
+type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "users";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
@@ -37,6 +38,7 @@ const AdminDashboard = () => {
     { id: "articles", label: "Berita", icon: <Newspaper size={16} /> },
     { id: "breaking", label: "Breaking", icon: <AlertTriangle size={16} /> },
     { id: "categories", label: "Kategori", icon: <FolderOpen size={16} /> },
+    { id: "editorial", label: "Redaksi", icon: <Building2 size={16} /> },
     { id: "users", label: "Pengguna", icon: <Users size={16} /> },
   ];
 
@@ -67,6 +69,7 @@ const AdminDashboard = () => {
         {tab === "articles" && <ArticlesManager />}
         {tab === "breaking" && <BreakingNewsManager />}
         {tab === "categories" && <CategoryManager />}
+        {tab === "editorial" && <EditorialManager />}
         {tab === "users" && <UserManager />}
       </div>
     </div>

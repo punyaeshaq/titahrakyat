@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye, Clock } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
@@ -194,6 +194,7 @@ function ArticlesManager() {
         >
           <option value="all">Semua Status</option>
           <option value="published">Terbit</option>
+          <option value="scheduled">Terjadwal</option>
           <option value="draft">Draft</option>
         </select>
       </div>
@@ -213,8 +214,8 @@ function ArticlesManager() {
                 <div className="flex-1 min-w-0">
                   <h3 className="font-semibold text-foreground text-sm truncate">{a.title}</h3>
                   <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
-                    <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${a.status === "published" ? "bg-green-100 text-green-700" : "bg-yellow-100 text-yellow-700"}`}>
-                      {a.status === "published" ? "Terbit" : "Draft"}
+                    <span className={`px-1.5 py-0.5 rounded text-xs font-medium ${a.status === "published" ? "bg-green-100 text-green-700" : a.status === "scheduled" ? "bg-blue-100 text-blue-700" : "bg-yellow-100 text-yellow-700"}`}>
+                      {a.status === "published" ? "Terbit" : a.status === "scheduled" ? "Terjadwal" : "Draft"}
                     </span>
                     <span>{a.category_id}</span>
                     <span>{a.author}</span>
@@ -272,6 +273,7 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
     is_breaking: article?.is_breaking || false,
     meta_title: article?.meta_title || "",
     meta_description: article?.meta_description || "",
+    scheduled_at: article?.scheduled_at || "",
   });
   const [saving, setSaving] = useState(false);
   const { toast } = useToast();
@@ -290,6 +292,8 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
     }
     setSaving(true);
 
+    const isScheduled = form.status === "scheduled" && form.scheduled_at;
+
     const payload = {
       title: form.title,
       slug: form.slug,
@@ -304,6 +308,7 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
       meta_title: form.meta_title || null,
       meta_description: form.meta_description || null,
       published_at: form.status === "published" ? (article?.published_at || new Date().toISOString()) : null,
+      scheduled_at: isScheduled ? new Date(form.scheduled_at).toISOString() : null,
     };
 
     if (isEdit) {
@@ -351,8 +356,25 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
             <select value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))} className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm">
               <option value="draft">Draft</option>
               <option value="published">Terbit</option>
+              <option value="scheduled">Terjadwal</option>
             </select>
           </div>
+          {form.status === "scheduled" && (
+            <div>
+              <Label className="flex items-center gap-1"><Clock size={14} /> Jadwal Terbit</Label>
+              <Input
+                type="datetime-local"
+                value={form.scheduled_at ? form.scheduled_at.slice(0, 16) : ""}
+                onChange={(e) => setForm((f) => ({ ...f, scheduled_at: e.target.value }))}
+                min={new Date().toISOString().slice(0, 16)}
+              />
+              {form.scheduled_at && (
+                <p className="text-xs text-muted-foreground mt-1">
+                  Akan terbit otomatis pada {new Date(form.scheduled_at).toLocaleString("id-ID")}
+                </p>
+              )}
+            </div>
+          )}
           <div>
             <Label>Kategori</Label>
             <select value={form.category_id} onChange={(e) => setForm((f) => ({ ...f, category_id: e.target.value }))} className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm">

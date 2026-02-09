@@ -8,6 +8,7 @@ import ArticleDetail from "./pages/ArticleDetail";
 import CategoryPage from "./pages/CategoryPage";
 import SearchPage from "./pages/SearchPage";
 import AboutPage from "./pages/AboutPage";
+import VideoPage from "./pages/VideoPage";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
@@ -26,6 +27,7 @@ const App = () => (
           <Route path="/kategori/:id" element={<CategoryPage />} />
           <Route path="/cari" element={<SearchPage />} />
           <Route path="/tentang" element={<AboutPage />} />
+          <Route path="/video" element={<VideoPage />} />
           <Route path="/admin/login" element={<AdminLogin />} />
           <Route path="/admin" element={<AdminDashboard />} />
           <Route path="*" element={<NotFound />} />

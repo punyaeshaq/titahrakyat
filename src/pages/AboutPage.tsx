@@ -1,11 +1,38 @@
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
-import { Shield, Scale, Eye, BookOpen, Users } from "lucide-react";
+import { Shield, Scale, Eye, BookOpen, Users, Globe } from "lucide-react";
 import logoMenara from "@/assets/logo-menara.jpg";
 import { useEditorialStaff } from "@/hooks/useArticles";
+import { useQuery } from "@tanstack/react-query";
+import { supabase } from "@/integrations/supabase/client";
 
 const AboutPage = () => {
   const { data: editorialStaff = [] } = useEditorialStaff();
+
+  const { data: settings = [] } = useQuery({
+    queryKey: ["site_settings"],
+    queryFn: async () => {
+      const { data, error } = await supabase.from("site_settings").select("*");
+      if (error) throw error;
+      return data || [];
+    },
+  });
+
+  const { data: socialLinks = [] } = useQuery({
+    queryKey: ["social_links_active"],
+    queryFn: async () => {
+      const { data, error } = await supabase
+        .from("social_links")
+        .select("*")
+        .eq("is_active", true)
+        .order("sort_order", { ascending: true });
+      if (error) throw error;
+      return (data || []).filter((l: any) => l.url);
+    },
+  });
+
+  const getSetting = (key: string) => settings.find((s: any) => s.key === key)?.value || "";
+  const misiItems = getSetting("misi").split("\n").filter((m: string) => m.trim());
 
   return (
     <div className="min-h-screen bg-background">
@@ -28,16 +55,8 @@ const AboutPage = () => {
           <h2 className="text-xl font-bold font-serif text-foreground mb-4 border-b-2 border-primary pb-2">
             Tentang Kami
           </h2>
-          <div className="space-y-4 text-muted-foreground leading-relaxed">
-            <p>
-              <strong className="text-foreground">MenaraPublik.News</strong> adalah media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab. Media ini hadir sebagai ruang pengamatan dan pengawasan kepentingan umum, dengan fokus pada kebijakan publik, hukum, lingkungan, dan kehidupan masyarakat.
-            </p>
-            <p>
-              Sebagai media publik, MenaraPublik.News berkomitmen pada jurnalisme yang akurat, independen, dan beretika. Setiap pemberitaan disusun melalui proses verifikasi dan konfirmasi, dengan tujuan membantu publik memahami peristiwa, kebijakan, serta dampaknya secara utuh.
-            </p>
-            <p>
-              MenaraPublik.News meyakini bahwa informasi yang jernih adalah fondasi keadilan. Karena itu, media ini tidak sekadar memberitakan peristiwa, tetapi juga mengawal keputusan publik agar transparan dan akuntabel—hari ini dan untuk generasi mendatang.
-            </p>
+          <div className="space-y-4 text-muted-foreground leading-relaxed whitespace-pre-line">
+            {getSetting("about") || "Memuat..."}
           </div>
         </section>
 
@@ -49,7 +68,7 @@ const AboutPage = () => {
               <h2 className="text-xl font-bold font-serif text-foreground">Visi</h2>
             </div>
             <p className="text-muted-foreground leading-relaxed">
-              Menjadi media publik yang terpercaya dalam menyajikan informasi jernih dan berimbang demi kepentingan masyarakat.
+              {getSetting("visi") || "Memuat..."}
             </p>
           </section>
 
@@ -59,22 +78,14 @@ const AboutPage = () => {
               <h2 className="text-xl font-bold font-serif text-foreground">Misi</h2>
             </div>
             <ul className="space-y-2 text-muted-foreground">
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-1.5 shrink-0">•</span>
-                Menyajikan berita yang faktual, akurat, dan dapat dipertanggungjawabkan
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-1.5 shrink-0">•</span>
-                Mengawal kebijakan publik dan penegakan hukum
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-1.5 shrink-0">•</span>
-                Memberikan ruang dialog publik yang sehat dan bermartabat
-              </li>
-              <li className="flex items-start gap-2">
-                <span className="text-primary mt-1.5 shrink-0">•</span>
-                Mendorong transparansi dan literasi informasi
-              </li>
+              {misiItems.length > 0 ? misiItems.map((item: string, i: number) => (
+                <li key={i} className="flex items-start gap-2">
+                  <span className="text-primary mt-1.5 shrink-0">•</span>
+                  {item}
+                </li>
+              )) : (
+                <li className="text-muted-foreground">Memuat...</li>
+              )}
             </ul>
           </section>
         </div>
@@ -96,6 +107,29 @@ const AboutPage = () => {
             ))}
           </div>
         </section>
+
+        {/* Sosial Media */}
+        {socialLinks.length > 0 && (
+          <section className="bg-card rounded-lg border border-border p-6 md:p-8 mb-8">
+            <div className="flex items-center gap-2 mb-4">
+              <Globe size={20} className="text-primary" />
+              <h2 className="text-xl font-bold font-serif text-foreground">Ikuti Kami</h2>
+            </div>
+            <div className="flex flex-wrap gap-3">
+              {socialLinks.map((link: any) => (
+                <a
+                  key={link.id}
+                  href={link.url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="px-4 py-2 bg-primary/10 text-primary text-sm font-medium rounded-full border border-primary/20 hover:bg-primary/20 transition-colors"
+                >
+                  {link.platform}
+                </a>
+              ))}
+            </div>
+          </section>
+        )}
 
         {/* Rubrikasi */}
         <section className="bg-card rounded-lg border border-border p-6 md:p-8 mb-8">

@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye, Clock, Activity, MessageCircle, Video } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye, Clock, Activity, MessageCircle, Video, Settings } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
@@ -19,10 +19,11 @@ import EditorialManager from "@/components/admin/EditorialManager";
 import ActivityLog from "@/components/admin/ActivityLog";
 import CommentManager from "@/components/admin/CommentManager";
 import VideoManager from "@/components/admin/VideoManager";
+import SiteSettingsManager from "@/components/admin/SiteSettingsManager";
 import { logActivity } from "@/lib/activityLog";
 import ThemeToggle from "@/components/ThemeToggle";
 
-type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "comments" | "videos" | "users" | "logs";
+type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "comments" | "videos" | "users" | "logs" | "settings";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
@@ -47,6 +48,7 @@ const AdminDashboard = () => {
     { id: "comments", label: "Komentar", icon: <MessageCircle size={16} /> },
     { id: "videos", label: "Video", icon: <Video size={16} /> },
     { id: "users", label: "Pengguna", icon: <Users size={16} /> },
+    { id: "settings", label: "Pengaturan", icon: <Settings size={16} /> },
     { id: "logs", label: "Log", icon: <Activity size={16} /> },
   ];
 
@@ -82,6 +84,7 @@ const AdminDashboard = () => {
         {tab === "comments" && <CommentManager />}
         {tab === "videos" && <VideoManager />}
         {tab === "users" && <UserManager />}
+        {tab === "settings" && <SiteSettingsManager />}
         {tab === "logs" && <ActivityLog />}
       </div>
     </div>

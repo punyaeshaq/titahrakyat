@@ -8,7 +8,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
@@ -76,6 +76,29 @@ const AdminDashboard = () => {
   );
 };
 
+function exportCsv(articles: any[], categories: any[]) {
+  const catMap = Object.fromEntries(categories.map((c: any) => [c.id, c.label]));
+  const headers = ["Judul", "Slug", "Kategori", "Penulis", "Status", "Views", "Tanggal Terbit"];
+  const escape = (v: string) => `"${String(v ?? "").replace(/"/g, '""')}"`;
+  const rows = articles.map((a: any) => [
+    escape(a.title),
+    escape(a.slug),
+    escape(catMap[a.category_id] || a.category_id || ""),
+    escape(a.author),
+    a.status === "published" ? "Terbit" : "Draft",
+    a.views ?? 0,
+    a.published_at ? new Date(a.published_at).toLocaleDateString("id-ID") : "-",
+  ].join(","));
+  const csv = "\uFEFF" + [headers.join(","), ...rows].join("\n");
+  const blob = new Blob([csv], { type: "text/csv;charset=utf-8;" });
+  const url = URL.createObjectURL(blob);
+  const link = document.createElement("a");
+  link.href = url;
+  link.download = `berita-${new Date().toISOString().slice(0, 10)}.csv`;
+  link.click();
+  URL.revokeObjectURL(url);
+}
+
 /* =================== ARTICLES MANAGER =================== */
 function ArticlesManager() {
   const { data: articles = [], isLoading } = useAllArticles();
@@ -135,9 +158,14 @@ function ArticlesManager() {
     <div>
       <div className="flex justify-between items-center mb-4">
         <h2 className="text-lg font-bold font-serif text-foreground">Daftar Berita ({filtered.length})</h2>
-        <Button size="sm" onClick={() => setCreating(true)}>
-          <Plus size={16} /> Tambah Berita
-        </Button>
+        <div className="flex gap-2">
+          <Button size="sm" variant="outline" onClick={() => exportCsv(filtered, categories)}>
+            <Download size={16} /> Export CSV
+          </Button>
+          <Button size="sm" onClick={() => setCreating(true)}>
+            <Plus size={16} /> Tambah Berita
+          </Button>
+        </div>
       </div>
 
       {/* Filters */}

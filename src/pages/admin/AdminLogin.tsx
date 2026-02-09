@@ -4,7 +4,7 @@ import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import logoMenara from "@/assets/logo-menara.jpg";
+import logoMenara from "@/assets/logo-menara.png";
 
 const AdminLogin = () => {
   const [email, setEmail] = useState("");

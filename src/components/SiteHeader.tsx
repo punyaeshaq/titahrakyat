@@ -2,7 +2,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { Search, Menu, X } from "lucide-react";
 import { useCategories } from "@/hooks/useArticles";
 import { useState } from "react";
-import logoMenara from "@/assets/logo-menara.jpg";
+import logoMenara from "@/assets/logo-menara.png";
 import ThemeToggle from "@/components/ThemeToggle";
 
 const SiteHeader = () => {

@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useCategories } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
-import logoMenara from "@/assets/logo-menara.jpg";
+import logoMenara from "@/assets/logo-menara.png";
 
 const SiteFooter = () => {
   const { data: categories = [] } = useCategories();

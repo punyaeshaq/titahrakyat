@@ -10,6 +10,8 @@ import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
 import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
+import RichTextEditor from "@/components/RichTextEditor";
+import ImageUpload from "@/components/ImageUpload";
 
 type Tab = "articles" | "breaking";
 
@@ -103,6 +105,9 @@ function ArticlesManager() {
         <div className="space-y-2">
           {articles.map((a: any) => (
             <div key={a.id} className="flex items-center gap-3 bg-card border border-border rounded-lg p-3">
+              {a.image_url && (
+                <img src={a.image_url} alt="" className="w-16 h-12 object-cover rounded shrink-0" />
+              )}
               <div className="flex-1 min-w-0">
                 <h3 className="font-semibold text-foreground text-sm truncate">{a.title}</h3>
                 <div className="flex items-center gap-2 text-xs text-muted-foreground mt-1">
@@ -216,8 +221,11 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
             <Textarea value={form.excerpt} onChange={(e) => setForm((f) => ({ ...f, excerpt: e.target.value }))} rows={3} />
           </div>
           <div>
-            <Label>Konten (HTML)</Label>
-            <Textarea value={form.content} onChange={(e) => setForm((f) => ({ ...f, content: e.target.value }))} rows={12} className="font-mono text-xs" />
+            <Label>Konten</Label>
+            <RichTextEditor
+              content={form.content}
+              onChange={(html) => setForm((f) => ({ ...f, content: html }))}
+            />
           </div>
         </div>
 
@@ -250,8 +258,11 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
             <Input value={form.author} onChange={(e) => setForm((f) => ({ ...f, author: e.target.value }))} />
           </div>
           <div>
-            <Label>URL Gambar</Label>
-            <Input value={form.image_url} onChange={(e) => setForm((f) => ({ ...f, image_url: e.target.value }))} placeholder="https://..." />
+            <Label>Gambar Utama</Label>
+            <ImageUpload
+              value={form.image_url}
+              onChange={(url) => setForm((f) => ({ ...f, image_url: url }))}
+            />
           </div>
           <div className="flex gap-4">
             <label className="flex items-center gap-2 text-sm">

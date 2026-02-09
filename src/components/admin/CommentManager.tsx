@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useQuery, useQueryClient } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
@@ -12,6 +12,29 @@ export default function CommentManager() {
   const [filter, setFilter] = useState<"all" | "pending" | "approved">("pending");
   const [page, setPage] = useState(1);
   const ITEMS_PER_PAGE = 10;
+
+  // Real-time listener for new comments
+  useEffect(() => {
+    const channel = supabase
+      .channel("admin-comments-realtime")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "comments" },
+        (payload) => {
+          const newComment = payload.new as any;
+          toast({
+            title: "💬 Komentar baru masuk!",
+            description: `Dari ${newComment.name || "Anonim"}: "${(newComment.content || "").slice(0, 80)}${(newComment.content || "").length > 80 ? "..." : ""}"`,
+          });
+          queryClient.invalidateQueries({ queryKey: ["admin_comments"] });
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
+  }, [queryClient, toast]);
 
   const { data: comments = [], isLoading } = useQuery({
     queryKey: ["admin_comments"],

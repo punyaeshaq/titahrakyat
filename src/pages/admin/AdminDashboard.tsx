@@ -8,23 +8,34 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
+import CategoryManager from "@/components/admin/CategoryManager";
+import UserManager from "@/components/admin/UserManager";
+import StatsOverview from "@/components/admin/StatsOverview";
 
-type Tab = "articles" | "breaking";
+type Tab = "stats" | "articles" | "breaking" | "categories" | "users";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("articles");
+  const [tab, setTab] = useState<Tab>("stats");
 
   if (authLoading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Memuat...</div>;
   if (!user || !isAdmin) {
     navigate("/admin/login");
     return null;
   }
+
+  const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
+    { id: "stats", label: "Statistik", icon: <BarChart3 size={16} /> },
+    { id: "articles", label: "Berita", icon: <Newspaper size={16} /> },
+    { id: "breaking", label: "Breaking", icon: <AlertTriangle size={16} /> },
+    { id: "categories", label: "Kategori", icon: <FolderOpen size={16} /> },
+    { id: "users", label: "Pengguna", icon: <Users size={16} /> },
+  ];
 
   return (
     <div className="min-h-screen bg-background">
@@ -41,17 +52,19 @@ const AdminDashboard = () => {
       </header>
 
       <div className="container py-6">
-        <div className="flex gap-2 mb-6">
-          <Button variant={tab === "articles" ? "default" : "outline"} size="sm" onClick={() => setTab("articles")}>
-            <Newspaper size={16} /> Berita
-          </Button>
-          <Button variant={tab === "breaking" ? "default" : "outline"} size="sm" onClick={() => setTab("breaking")}>
-            <AlertTriangle size={16} /> Breaking News
-          </Button>
+        <div className="flex flex-wrap gap-2 mb-6">
+          {tabs.map((t) => (
+            <Button key={t.id} variant={tab === t.id ? "default" : "outline"} size="sm" onClick={() => setTab(t.id)}>
+              {t.icon} {t.label}
+            </Button>
+          ))}
         </div>
 
+        {tab === "stats" && <StatsOverview />}
         {tab === "articles" && <ArticlesManager />}
         {tab === "breaking" && <BreakingNewsManager />}
+        {tab === "categories" && <CategoryManager />}
+        {tab === "users" && <UserManager />}
       </div>
     </div>
   );
@@ -222,35 +235,22 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
           </div>
           <div>
             <Label>Konten</Label>
-            <RichTextEditor
-              content={form.content}
-              onChange={(html) => setForm((f) => ({ ...f, content: html }))}
-            />
+            <RichTextEditor content={form.content} onChange={(html) => setForm((f) => ({ ...f, content: html }))} />
           </div>
         </div>
 
         <div className="space-y-4">
           <div>
             <Label>Status</Label>
-            <select
-              value={form.status}
-              onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))}
-              className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-            >
+            <select value={form.status} onChange={(e) => setForm((f) => ({ ...f, status: e.target.value }))} className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm">
               <option value="draft">Draft</option>
               <option value="published">Terbit</option>
             </select>
           </div>
           <div>
             <Label>Kategori</Label>
-            <select
-              value={form.category_id}
-              onChange={(e) => setForm((f) => ({ ...f, category_id: e.target.value }))}
-              className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm"
-            >
-              {categories.map((c: any) => (
-                <option key={c.id} value={c.id}>{c.label}</option>
-              ))}
+            <select value={form.category_id} onChange={(e) => setForm((f) => ({ ...f, category_id: e.target.value }))} className="w-full h-10 px-3 rounded-md border border-input bg-background text-sm">
+              {categories.map((c: any) => <option key={c.id} value={c.id}>{c.label}</option>)}
             </select>
           </div>
           <div>
@@ -259,19 +259,14 @@ function ArticleForm({ article, categories, onClose, onSaved }: {
           </div>
           <div>
             <Label>Gambar Utama</Label>
-            <ImageUpload
-              value={form.image_url}
-              onChange={(url) => setForm((f) => ({ ...f, image_url: url }))}
-            />
+            <ImageUpload value={form.image_url} onChange={(url) => setForm((f) => ({ ...f, image_url: url }))} />
           </div>
           <div className="flex gap-4">
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm((f) => ({ ...f, is_featured: e.target.checked }))} />
-              Featured
+              <input type="checkbox" checked={form.is_featured} onChange={(e) => setForm((f) => ({ ...f, is_featured: e.target.checked }))} /> Featured
             </label>
             <label className="flex items-center gap-2 text-sm">
-              <input type="checkbox" checked={form.is_breaking} onChange={(e) => setForm((f) => ({ ...f, is_breaking: e.target.checked }))} />
-              Breaking
+              <input type="checkbox" checked={form.is_breaking} onChange={(e) => setForm((f) => ({ ...f, is_breaking: e.target.checked }))} /> Breaking
             </label>
           </div>
 

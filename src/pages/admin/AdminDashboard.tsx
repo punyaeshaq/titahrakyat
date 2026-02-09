@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { useAllArticles, useAllBreakingNews, useCategories } from "@/hooks/useArticles";
@@ -23,11 +23,14 @@ const AdminDashboard = () => {
   const navigate = useNavigate();
   const [tab, setTab] = useState<Tab>("stats");
 
+  useEffect(() => {
+    if (!authLoading && (!user || !isAdmin)) {
+      navigate("/admin/login");
+    }
+  }, [authLoading, user, isAdmin, navigate]);
+
   if (authLoading) return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Memuat...</div>;
-  if (!user || !isAdmin) {
-    navigate("/admin/login");
-    return null;
-  }
+  if (!user || !isAdmin) return null;
 
   const tabs: { id: Tab; label: string; icon: React.ReactNode }[] = [
     { id: "stats", label: "Statistik", icon: <BarChart3 size={16} /> },

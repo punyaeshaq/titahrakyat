@@ -1,4 +1,4 @@
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { Button } from "@/components/ui/button";
@@ -10,22 +10,32 @@ const AdminLogin = () => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [error, setError] = useState("");
-  const [loading, setLoading] = useState(false);
-  const { signIn } = useAuth();
+  const [submitting, setSubmitting] = useState(false);
+  const { user, isAdmin, loading: authLoading, signIn } = useAuth();
   const navigate = useNavigate();
+
+  // Redirect to admin if already logged in as admin
+  useEffect(() => {
+    if (!authLoading && user && isAdmin) {
+      navigate("/admin");
+    }
+  }, [authLoading, user, isAdmin, navigate]);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setLoading(true);
+    setSubmitting(true);
     const { error: err } = await signIn(email, password);
     if (err) {
       setError(err.message);
-      setLoading(false);
-    } else {
-      navigate("/admin");
+      setSubmitting(false);
     }
+    // Don't navigate here — the useEffect will handle redirect once auth state updates
   };
+
+  if (authLoading) {
+    return <div className="min-h-screen flex items-center justify-center text-muted-foreground">Memuat...</div>;
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-background px-4">
@@ -46,8 +56,8 @@ const AdminLogin = () => {
             <Input id="password" type="password" value={password} onChange={(e) => setPassword(e.target.value)} required />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
-          <Button type="submit" className="w-full" disabled={loading}>
-            {loading ? "Masuk..." : "Masuk"}
+          <Button type="submit" className="w-full" disabled={submitting}>
+            {submitting ? "Masuk..." : "Masuk"}
           </Button>
         </form>
       </div>

@@ -42,6 +42,9 @@ const SiteHeader = () => {
               {cat.label}
             </Link>
           ))}
+          <Link to="/video" className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
+            Video
+          </Link>
           <Link to="/tentang" className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
             Tentang
           </Link>
@@ -70,6 +73,9 @@ const SiteHeader = () => {
                 {cat.label}
               </Link>
             ))}
+            <Link to="/video" onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
+              Video
+            </Link>
             <Link to="/tentang" onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
               Tentang
             </Link>

@@ -2,8 +2,11 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Shield, Scale, Eye, BookOpen, Users } from "lucide-react";
 import logoMenara from "@/assets/logo-menara.jpg";
+import { useEditorialStaff } from "@/hooks/useArticles";
 
 const AboutPage = () => {
+  const { data: editorialStaff = [] } = useEditorialStaff();
+
   return (
     <div className="min-h-screen bg-background">
       <SiteHeader />
@@ -83,19 +86,11 @@ const AboutPage = () => {
             <h2 className="text-xl font-bold font-serif text-foreground">Struktur Redaksi</h2>
           </div>
           <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {[
-              { role: "Pemimpin Umum", name: "—" },
-              { role: "Pemimpin Redaksi", name: "—" },
-              { role: "Redaktur Pelaksana", name: "—" },
-              { role: "Redaktur", name: "—" },
-              { role: "Reporter / Kontributor", name: "—" },
-              { role: "Editor", name: "—" },
-              { role: "Admin & Media Sosial", name: "—" },
-            ].map((item) => (
-              <div key={item.role} className="flex items-center gap-3 py-2 border-b border-border last:border-0">
+            {editorialStaff.map((item: any) => (
+              <div key={item.id} className="flex items-center gap-3 py-2 border-b border-border last:border-0">
                 <div>
-                  <p className="text-sm font-semibold text-foreground">{item.role}</p>
-                  <p className="text-xs text-muted-foreground">{item.name}</p>
+                  <p className="text-sm font-semibold text-foreground">{item.position}</p>
+                  <p className="text-xs text-muted-foreground">{item.name || "—"}</p>
                 </div>
               </div>
             ))}

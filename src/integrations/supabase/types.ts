@@ -124,6 +124,30 @@ export type Database = {
         }
         Relationships: []
       }
+      editorial_staff: {
+        Row: {
+          created_at: string
+          id: string
+          name: string
+          position: string
+          sort_order: number
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          name?: string
+          position: string
+          sort_order?: number
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          name?: string
+          position?: string
+          sort_order?: number
+        }
+        Relationships: []
+      }
       profiles: {
         Row: {
           created_at: string

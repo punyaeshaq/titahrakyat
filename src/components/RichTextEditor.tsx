@@ -1,11 +1,13 @@
+import { useRef, useState } from "react";
 import { useEditor, EditorContent } from "@tiptap/react";
 import StarterKit from "@tiptap/starter-kit";
 import Image from "@tiptap/extension-image";
 import Link from "@tiptap/extension-link";
+import { supabase } from "@/integrations/supabase/client";
 import { Button } from "@/components/ui/button";
 import {
   Bold, Italic, List, ListOrdered, Quote, Heading2, Heading3,
-  Link as LinkIcon, Image as ImageIcon, Undo, Redo, Minus,
+  Link as LinkIcon, Image as ImageIcon, Undo, Redo, Minus, Upload, Loader2,
 } from "lucide-react";
 
 interface RichTextEditorProps {
@@ -14,6 +16,9 @@ interface RichTextEditorProps {
 }
 
 const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
+  const [uploading, setUploading] = useState(false);
+  const fileInputRef = useRef<HTMLInputElement>(null);
+
   const editor = useEditor({
     extensions: [
       StarterKit,
@@ -28,9 +33,28 @@ const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
 
   if (!editor) return null;
 
-  const addImage = () => {
+  const addImageByUrl = () => {
     const url = prompt("URL gambar:");
     if (url) editor.chain().focus().setImage({ src: url }).run();
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const fileName = `${Date.now()}-${Math.random().toString(36).slice(2)}.${ext}`;
+    const { error } = await supabase.storage.from("article-images").upload(fileName, file);
+    if (error) {
+      alert("Upload gagal: " + error.message);
+      setUploading(false);
+      if (fileInputRef.current) fileInputRef.current.value = "";
+      return;
+    }
+    const { data: publicUrl } = supabase.storage.from("article-images").getPublicUrl(fileName);
+    editor.chain().focus().setImage({ src: publicUrl.publicUrl }).run();
+    setUploading(false);
+    if (fileInputRef.current) fileInputRef.current.value = "";
   };
 
   const addLink = () => {
@@ -70,9 +94,13 @@ const RichTextEditor = ({ content, onChange }: RichTextEditorProps) => {
         <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={addLink}>
           <LinkIcon size={14} />
         </Button>
-        <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={addImage}>
+        <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={addImageByUrl} title="Sisipkan gambar via URL">
           <ImageIcon size={14} />
         </Button>
+        <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => fileInputRef.current?.click()} disabled={uploading} title="Upload gambar dari perangkat">
+          {uploading ? <Loader2 size={14} className="animate-spin" /> : <Upload size={14} />}
+        </Button>
+        <input ref={fileInputRef} type="file" accept="image/*" onChange={handleImageUpload} className="hidden" />
         <Button type="button" variant="ghost" size="icon" className="h-7 w-7" onClick={() => editor.chain().focus().undo().run()}>
           <Undo size={14} />
         </Button>

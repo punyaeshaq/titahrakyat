@@ -1,7 +1,7 @@
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Shield, Scale, Eye, BookOpen, Users, Globe } from "lucide-react";
-import logoMenara from "@/assets/logo-menara.jpg";
+import logoMenara from "@/assets/logo-menara.png";
 import { useEditorialStaff } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
 import { supabase } from "@/integrations/supabase/client";

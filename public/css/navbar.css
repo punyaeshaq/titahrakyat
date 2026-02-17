@@ -1,0 +1,373 @@
+/* ============ Top Utility Bar ============ */
+.top-utility-bar {
+    background: #1a1a2e;
+    color: #ccc;
+    font-size: 12px;
+    padding: 6px 0;
+    border-bottom: 1px solid #2d2d44;
+}
+
+.top-utility-bar .top-date {
+    color: #aaa;
+}
+
+.top-utility-bar .top-divider {
+    color: #444;
+}
+
+.top-utility-bar .top-link {
+    color: #ccc;
+    text-decoration: none;
+    font-weight: 500;
+    font-size: 12px;
+    transition: color 0.2s;
+}
+
+.top-utility-bar .top-link:hover {
+    color: #fff;
+}
+
+.top-utility-bar .social-icon {
+    color: #aaa;
+    text-decoration: none;
+    font-size: 13px;
+    width: 26px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.top-utility-bar .social-icon:hover {
+    background: rgba(255,255,255,0.1);
+    color: #fff;
+}
+
+/* ============ Main Header ============ */
+.main-header {
+    background: #fff;
+    border-bottom: 1px solid #e0e0e0;
+    padding: 8px 0;
+}
+
+.header-brand {
+    text-decoration: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.header-logo {
+    height: 50px;
+    width: auto;
+}
+
+.header-brand-text {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.brand-icon {
+    font-size: 2rem;
+}
+
+.brand-name {
+    font-size: 1.6rem;
+    font-weight: 800;
+    color: #1a1a2e;
+    margin: 0;
+    line-height: 1.1;
+    letter-spacing: 1px;
+}
+
+.brand-tagline {
+    font-size: 0.7rem;
+    color: #888;
+    margin: 0;
+    font-style: italic;
+}
+
+.search-form {
+    display: flex;
+    border: 2px solid #e0e0e0;
+    border-radius: 25px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+}
+
+.search-form:focus-within {
+    border-color: #1a73e8;
+}
+
+.search-input {
+    border: none;
+    outline: none;
+    padding: 8px 16px;
+    font-size: 13px;
+    width: 240px;
+    background: #f8f9fa;
+}
+
+.search-btn {
+    border: none;
+    background: #1a73e8;
+    color: #fff;
+    padding: 8px 16px;
+    cursor: pointer;
+    transition: background 0.2s;
+}
+
+.search-btn:hover {
+    background: #1557b0;
+}
+
+/* ============ Category Navigation Bar ============ */
+.category-navbar {
+    background: linear-gradient(135deg, #1a1a2e 0%, #16213e 100%);
+    border-bottom: 3px solid #e74c3c;
+    position: sticky;
+    top: 0;
+    z-index: 1050;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+}
+
+.category-nav-wrapper {
+    position: relative;
+}
+
+.category-toggle {
+    background: transparent;
+    border: 1px solid rgba(255,255,255,0.3);
+    color: #fff;
+    padding: 8px 16px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+    width: 100%;
+    text-align: left;
+    margin: 8px 0;
+}
+
+.category-nav-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.category-nav-item {
+    position: relative;
+}
+
+.category-nav-link {
+    display: block;
+    color: #e0e0e0;
+    text-decoration: none;
+    padding: 12px 18px;
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0.5px;
+    transition: all 0.25s ease;
+    border-bottom: 3px solid transparent;
+    white-space: nowrap;
+}
+
+.category-nav-link:hover,
+.category-nav-link.active {
+    color: #fff;
+    background: rgba(255,255,255,0.08);
+}
+
+/* Category specific colors */
+.category-nav-link.cat-politik:hover, .category-nav-link.cat-politik.active { border-bottom-color: #e74c3c; color: #e74c3c; }
+.category-nav-link.cat-ekonomi:hover, .category-nav-link.cat-ekonomi.active { border-bottom-color: #f39c12; color: #f39c12; }
+.category-nav-link.cat-hukum:hover, .category-nav-link.cat-hukum.active { border-bottom-color: #8e44ad; color: #8e44ad; }
+.category-nav-link.cat-olahraga:hover, .category-nav-link.cat-olahraga.active { border-bottom-color: #27ae60; color: #27ae60; }
+.category-nav-link.cat-hiburan:hover, .category-nav-link.cat-hiburan.active { border-bottom-color: #e91e63; color: #e91e63; }
+.category-nav-link.cat-kesehatan:hover, .category-nav-link.cat-kesehatan.active { border-bottom-color: #00bcd4; color: #00bcd4; }
+.category-nav-link.cat-pendidikan:hover, .category-nav-link.cat-pendidikan.active { border-bottom-color: #3f51b5; color: #3f51b5; }
+.category-nav-link.cat-gayahidup:hover, .category-nav-link.cat-gayahidup.active { border-bottom-color: #ff9800; color: #ff9800; }
+.category-nav-link.cat-tentang:hover, .category-nav-link.cat-tentang.active { border-bottom-color: #607d8b; color: #90a4ae; }
+
+.home-item .category-nav-link {
+    color: #fff;
+}
+.home-item .category-nav-link:hover,
+.home-item .category-nav-link.active {
+    background: #e74c3c;
+    border-bottom-color: #c0392b;
+    color: #fff;
+}
+
+/* ============ About Page Styles ============ */
+.about-hero {
+    padding: 20px 0;
+}
+
+.about-title {
+    font-size: 2.2rem;
+    font-weight: 800;
+    color: #1a1a2e;
+}
+
+.text-primary-custom {
+    color: #1a73e8;
+}
+
+.title-underline {
+    width: 80px;
+    height: 4px;
+    background: linear-gradient(90deg, #e74c3c, #1a73e8);
+    border-radius: 2px;
+}
+
+.about-subtitle {
+    color: #666;
+    font-size: 1.1rem;
+    font-style: italic;
+}
+
+.about-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 30px;
+    box-shadow: 0 2px 15px rgba(0,0,0,0.08);
+    border: 1px solid #f0f0f0;
+    transition: transform 0.2s;
+}
+
+.about-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 5px 25px rgba(0,0,0,0.12);
+}
+
+.about-card-icon {
+    font-size: 2.5rem;
+    color: #1a73e8;
+    margin-bottom: 15px;
+}
+
+.about-card h3 {
+    font-size: 1.3rem;
+    font-weight: 700;
+    color: #1a1a2e;
+    margin-bottom: 12px;
+}
+
+.mission-list {
+    list-style: none;
+    padding: 0;
+}
+
+.mission-list li {
+    padding: 8px 0;
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    font-size: 0.95rem;
+    color: #555;
+}
+
+.category-card {
+    background: #fff;
+    border-radius: 10px;
+    padding: 20px 15px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+    transition: transform 0.2s;
+}
+
+.category-card:hover {
+    transform: translateY(-3px);
+}
+
+.redaksi-card {
+    background: #fff;
+    border-radius: 12px;
+    padding: 25px;
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+}
+
+.redaksi-avatar {
+    font-size: 3rem;
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+
+.contact-card {
+    background: #f8f9fa;
+    border-radius: 10px;
+    padding: 25px;
+    transition: background 0.2s;
+}
+
+.contact-card:hover {
+    background: #e8f0fe;
+}
+
+.contact-card i {
+    font-size: 2rem;
+    color: #1a73e8;
+    margin-bottom: 10px;
+}
+
+.contact-card h6 {
+    font-weight: 700;
+    color: #1a1a2e;
+}
+
+.contact-card p {
+    color: #666;
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.section-title {
+    font-weight: 700;
+    color: #1a1a2e;
+    position: relative;
+}
+
+/* ============ Responsive ============ */
+@media (max-width: 991px) {
+    .category-nav-list {
+        flex-direction: column;
+        padding: 5px 0;
+    }
+    .category-nav-link {
+        padding: 10px 15px;
+        border-bottom: none;
+        border-left: 3px solid transparent;
+    }
+    .category-nav-link:hover,
+    .category-nav-link.active {
+        border-bottom: none;
+    }
+    .category-nav-link.cat-politik:hover, .category-nav-link.cat-politik.active { border-left-color: #e74c3c; border-bottom: none; }
+    .category-nav-link.cat-ekonomi:hover, .category-nav-link.cat-ekonomi.active { border-left-color: #f39c12; border-bottom: none; }
+    .category-nav-link.cat-hukum:hover, .category-nav-link.cat-hukum.active { border-left-color: #8e44ad; border-bottom: none; }
+    .category-nav-link.cat-olahraga:hover, .category-nav-link.cat-olahraga.active { border-left-color: #27ae60; border-bottom: none; }
+    .category-nav-link.cat-hiburan:hover, .category-nav-link.cat-hiburan.active { border-left-color: #e91e63; border-bottom: none; }
+    .category-nav-link.cat-kesehatan:hover, .category-nav-link.cat-kesehatan.active { border-left-color: #00bcd4; border-bottom: none; }
+    .category-nav-link.cat-pendidikan:hover, .category-nav-link.cat-pendidikan.active { border-left-color: #3f51b5; border-bottom: none; }
+    .category-nav-link.cat-gayahidup:hover, .category-nav-link.cat-gayahidup.active { border-left-color: #ff9800; border-bottom: none; }
+    .category-nav-link.cat-tentang:hover, .category-nav-link.cat-tentang.active { border-left-color: #607d8b; border-bottom: none; }
+    .home-item .category-nav-link.active {
+        border-left-color: #e74c3c;
+    }
+}
+
+@media (max-width: 767px) {
+    .brand-name {
+        font-size: 1.2rem;
+    }
+    .brand-tagline {
+        font-size: 0.6rem;
+    }
+    .about-title {
+        font-size: 1.6rem;
+    }
+}

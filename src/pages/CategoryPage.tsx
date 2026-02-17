@@ -3,6 +3,7 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import ArticleCard from "@/components/ArticleCard";
 import Sidebar from "@/components/Sidebar";
+import AdSlot from "@/components/AdSlot";
 import { useArticlesByCategory, useCategories } from "@/hooks/useArticles";
 
 const CategoryPage = () => {
@@ -47,9 +48,14 @@ const CategoryPage = () => {
             ) : categoryArticles.length === 0 ? (
               <p className="text-muted-foreground py-12 text-center">Belum ada berita di kategori ini.</p>
             ) : (
-              categoryArticles.map((article) => (
-                <ArticleCard key={article.id} article={article} variant="horizontal" />
-              ))
+              <>
+                {categoryArticles.map((article, idx) => (
+                  <div key={article.id}>
+                    <ArticleCard article={article} variant="horizontal" />
+                    {idx === 2 && <AdSlot position="in_feed" className="my-4" />}
+                  </div>
+                ))}
+              </>
             )}
           </div>
           <Sidebar />

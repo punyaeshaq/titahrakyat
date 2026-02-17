@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use App\Http\Controllers\Controller;
 use App\Models\Article;
 use App\Models\ActivityLog;
+use App\Models\Tag;
 use Illuminate\Http\Request;
 use Illuminate\Support\Str;
 
@@ -12,7 +13,11 @@ class ArticleController extends Controller
 {
     public function index(Request $request)
     {
-        $query = Article::with('category')->withCount('comments');
+        $query = Article::with(['category', 'tags'])->withCount([
+            'comments' => function ($q) {
+                $q->where('is_approved', true);
+            }
+        ]);
 
         // Filter by status
         if ($request->has('status')) {
@@ -34,9 +39,21 @@ class ArticleController extends Controller
             $query->featured();
         }
 
-        // Filter breaking
         if ($request->boolean('breaking')) {
             $query->breaking();
+        }
+
+        // Filter by author
+        if ($request->has('author')) {
+            $query->where('author', 'like', "%{$request->author}%");
+        }
+
+        // Filter by tag
+        if ($request->has('tag')) {
+            $tagSlug = $request->tag;
+            $query->whereHas('tags', function ($q) use ($tagSlug) {
+                $q->where('slug', $tagSlug);
+            });
         }
 
         // Search
@@ -63,8 +80,9 @@ class ArticleController extends Controller
     {
         $article = Article::with([
             'category',
+            'tags',
             'comments' => function ($q) {
-                $q->approved()->orderBy('created_at', 'desc');
+                $q->where('is_approved', true)->orderBy('created_at', 'desc');
             }
         ])->where('slug', $slug)->firstOrFail();
 
@@ -89,6 +107,8 @@ class ArticleController extends Controller
             'meta_description' => 'nullable|string',
             'published_at' => 'nullable|date',
             'scheduled_at' => 'nullable|date',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string',
         ]);
 
         if (isset($validated['slug'])) {
@@ -110,6 +130,18 @@ class ArticleController extends Controller
         }
 
         $article = Article::create($validated);
+
+        if ($request->has('tags')) {
+            $tagIds = [];
+            foreach ($request->tags as $tagName) {
+                $tag = Tag::firstOrCreate(
+                    ['slug' => Str::slug($tagName)],
+                    ['name' => $tagName]
+                );
+                $tagIds[] = $tag->id;
+            }
+            $article->tags()->sync($tagIds);
+        }
 
         // Log activity
         ActivityLog::create([
@@ -139,6 +171,8 @@ class ArticleController extends Controller
             'meta_description' => 'nullable|string',
             'published_at' => 'nullable|date',
             'scheduled_at' => 'nullable|date',
+            'tags' => 'nullable|array',
+            'tags.*' => 'string',
         ]);
 
         // Update slug if title changed
@@ -152,9 +186,13 @@ class ArticleController extends Controller
             $validated['slug'] = $slug;
         }
 
-        // Set published_at when status changes to published
-        if (isset($validated['status']) && $validated['status'] === 'published' && $article->status !== 'published') {
-            $validated['published_at'] = now();
+        // Set published_at only when first publishing (preserve original on edit)
+        if (isset($validated['status']) && $validated['status'] === 'published') {
+            if (empty($article->published_at) && empty($validated['published_at'])) {
+                $validated['published_at'] = now();
+            } elseif (!empty($article->published_at) && !isset($validated['published_at'])) {
+                unset($validated['published_at']);
+            }
         }
 
         // Handle image cleanup
@@ -164,6 +202,18 @@ class ArticleController extends Controller
         }
 
         $article->update($validated);
+
+        if ($request->has('tags')) {
+            $tagIds = [];
+            foreach ($request->tags as $tagName) {
+                $tag = Tag::firstOrCreate(
+                    ['slug' => Str::slug($tagName)],
+                    ['name' => $tagName]
+                );
+                $tagIds[] = $tag->id;
+            }
+            $article->tags()->sync($tagIds);
+        }
 
         // Log activity
         ActivityLog::create([

@@ -1,0 +1,44 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 500 500">
+  <defs>
+    <!-- Upper curve for top text -->
+    <path id="upperCurve" d="M 50,250 A 200,200 0 0,1 450,250" />
+    <!-- Lower curve for bottom text (reversed direction to keep text inside/upright) -->
+    <path id="lowerCurve" d="M 50,250 A 200,200 0 0,0 450,250" />
+  </defs>
+  
+  <!-- Red Circle Background -->
+  <circle cx="250" cy="250" r="250" fill="#FF0000" />
+  
+  <!-- Radio Tower Icon -->
+  <path d="M250 160 L290 420 H210 Z" fill="white" />
+  <circle cx="250" cy="160" r="15" fill="white" />
+  <line x1="250" y1="160" x2="250" y2="120" stroke="white" stroke-width="10" stroke-linecap="round" />
+  
+  <!-- Signal Waves (Left) -->
+  <path d="M210 160 A 40,40 0 0,0 170 160" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" />
+  <path d="M190 160 A 60,60 0 0,0 130 160" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" />
+  
+  <!-- Signal Waves (Right) -->
+  <path d="M290 160 A 40,40 0 0,1 330 160" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" />
+  <path d="M310 160 A 60,60 0 0,1 370 160" fill="none" stroke="white" stroke-width="8" stroke-linecap="round" />
+
+  <!-- Text -->
+  <text fill="white" font-family="serif" font-weight="bold" font-size="48" letter-spacing="1">
+    <textPath href="#upperCurve" startOffset="50%" text-anchor="middle">
+      MenaraPublik.News
+    </textPath>
+  </text>
+  
+  <!-- For bottom text, using a separate text element or transform might be safer for SVG compatibility, 
+       but textPath with dominant-baseline usually works. 
+       Actually, standard bottom text path needs to be drawn differently for outside-in reading.
+       Simplifying for robustness: Just straight text or carefully tuned path.
+       Using a reversed path for bottom text (M 450,250 A 200,200 0 0,1 50,250) would put text on the *inside*.
+  -->
+  <path id="bottomCurve" d="M 450,250 A 200,200 0 0,1 50,250" fill="none" />
+  <text fill="white" font-family="sans-serif" font-weight="bold" font-size="24" letter-spacing="3">
+    <textPath href="#bottomCurve" startOffset="50%" text-anchor="middle" dominant-baseline="hanging">
+      MENGAWAL KEPENTINGAN PUBLIK
+    </textPath>
+  </text>
+</svg>

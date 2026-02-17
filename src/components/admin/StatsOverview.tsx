@@ -1,12 +1,20 @@
-import { useArticles, useCategories } from "@/hooks/useArticles";
+import { useAllArticles, useCategories } from "@/hooks/useArticles";
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from "recharts";
 import { Eye, FileText, TrendingUp, Layers } from "lucide-react";
 
 const COLORS = ["hsl(0, 85%, 50%)", "hsl(210, 100%, 45%)", "hsl(45, 100%, 51%)", "hsl(150, 60%, 40%)", "hsl(280, 60%, 50%)", "hsl(30, 90%, 50%)"];
 
 const StatsOverview = () => {
-  const { data: articles = [] } = useArticles();
+  const { data: rawArticles = [] } = useAllArticles();
   const { data: categories = [] } = useCategories();
+
+  // Map raw backend data to usable format
+  const articles = rawArticles.map((a: any) => ({
+    title: a.title || "",
+    categoryId: a.category_id || a.category?.id || "",
+    category: a.category?.label || "Umum",
+    views: a.views || 0,
+  }));
 
   const totalArticles = articles.length;
   const totalViews = articles.reduce((sum, a) => sum + a.views, 0);

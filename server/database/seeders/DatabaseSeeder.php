@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use App\Models\Category;
 use App\Models\SiteSetting;
 use App\Models\User;
+use App\Models\Ad;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\Hash;
 
@@ -47,5 +48,25 @@ class DatabaseSeeder extends Seeder
         foreach ($settings as $setting) {
             SiteSetting::create($setting);
         }
+
+        // Create sample ads
+        Ad::create([
+            'title' => 'Contoh Iklan Header',
+            'image_url' => 'https://placehold.co/970x90/333/FFF?text=Space+Iklan+Header',
+            'target_url' => 'https://menarapublik.news',
+            'position' => 'header',
+            'is_active' => true,
+        ]);
+
+        Ad::create([
+            'title' => 'Contoh Iklan Sidebar',
+            'image_url' => 'https://placehold.co/300x250/333/FFF?text=Space+Iklan+Sidebar',
+            'target_url' => 'https://menarapublik.news',
+            'position' => 'sidebar',
+            'is_active' => true,
+        ]);
+
+        // Seed Polls
+        $this->call(PollSeeder::class);
     }
 }

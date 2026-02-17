@@ -4,9 +4,14 @@ import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import VideoEmbed from "@/components/VideoEmbed";
 import { Play, Star } from "lucide-react";
-import { useState } from "react";
+import { useState, useEffect } from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import SEO from "@/components/SEO";
+import { Skeleton } from "@/components/ui/skeleton";
 
 export default function VideoPage() {
+  const { id } = useParams<{ id: string }>();
+  const navigate = useNavigate();
   const [selectedVideo, setSelectedVideo] = useState<any>(null);
 
   const { data: videos = [], isLoading } = useQuery({
@@ -17,6 +22,20 @@ export default function VideoPage() {
     },
   });
 
+  // Effect to select video from URL param
+  useEffect(() => {
+    if (id && videos.length > 0) {
+      const video = videos.find((v: any) => v.id === id);
+      if (video) setSelectedVideo(video);
+    }
+  }, [id, videos]);
+
+  const handleSelect = (video: any) => {
+    setSelectedVideo(video);
+    navigate(`/video/${video.id}`);
+    window.scrollTo({ top: 0, behavior: "smooth" });
+  };
+
   const featured = videos.filter((v: any) => v.is_featured);
   const regular = videos.filter((v: any) => !v.is_featured);
 
@@ -24,6 +43,12 @@ export default function VideoPage() {
     <div className="min-h-screen bg-background flex flex-col">
       <SiteHeader />
       <main className="flex-1 container py-8">
+        <SEO
+          title={selectedVideo ? selectedVideo.title : "Video Berita"}
+          description={selectedVideo ? selectedVideo.description : "Kumpulan video berita terbaru dari MenaraPublik"}
+          type="video.other"
+          image={selectedVideo?.thumbnail_url}
+        />
         <h1 className="text-3xl font-black font-serif text-foreground mb-2">Video</h1>
         <p className="text-muted-foreground mb-8">Kumpulan video berita dan liputan terbaru</p>
 
@@ -45,7 +70,11 @@ export default function VideoPage() {
         )}
 
         {isLoading ? (
-          <p className="text-muted-foreground">Memuat video...</p>
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <Skeleton className="h-64 rounded-lg" />
+            <Skeleton className="h-64 rounded-lg" />
+            <Skeleton className="h-64 rounded-lg" />
+          </div>
         ) : videos.length === 0 ? (
           <p className="text-muted-foreground">Belum ada video.</p>
         ) : (
@@ -57,7 +86,7 @@ export default function VideoPage() {
                 </h2>
                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                   {featured.map((v: any) => (
-                    <VideoCard key={v.id} video={v} onSelect={setSelectedVideo} large />
+                    <VideoCard key={v.id} video={v} onSelect={handleSelect} large />
                   ))}
                 </div>
               </section>
@@ -69,7 +98,7 @@ export default function VideoPage() {
               )}
               <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-5">
                 {(selectedVideo ? videos.filter((v: any) => v.id !== selectedVideo.id) : regular.length > 0 ? regular : videos).map((v: any) => (
-                  <VideoCard key={v.id} video={v} onSelect={setSelectedVideo} />
+                  <VideoCard key={v.id} video={v} onSelect={handleSelect} />
                 ))}
               </div>
             </section>
@@ -84,7 +113,7 @@ export default function VideoPage() {
 function VideoCard({ video, onSelect, large }: { video: any; onSelect: (v: any) => void; large?: boolean }) {
   return (
     <button
-      onClick={() => { onSelect(video); window.scrollTo({ top: 0, behavior: "smooth" }); }}
+      onClick={() => onSelect(video)}
       className="bg-card border border-border rounded-lg overflow-hidden text-left hover:border-primary/50 transition-colors group"
     >
       <div className={`relative ${large ? "aspect-video" : "aspect-video"} bg-muted`}>

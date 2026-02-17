@@ -14,6 +14,7 @@ use App\Http\Controllers\Api\EditorialStaffController;
 use App\Http\Controllers\Api\SocialLinkController;
 use App\Http\Controllers\Api\ActivityLogController;
 use App\Http\Controllers\Api\UserController;
+use App\Http\Controllers\Api\AdController;
 
 /*
 |--------------------------------------------------------------------------
@@ -31,7 +32,8 @@ Route::get('/articles/{slug}', [ArticleController::class, 'show']);
 Route::get('/categories', [CategoryController::class, 'index']);
 Route::get('/categories/{id}', [CategoryController::class, 'show']);
 Route::get('/articles/{id}/comments', [CommentController::class, 'index']);
-Route::post('/articles/{id}/comments', [CommentController::class, 'store']);
+Route::post('/comments/{id}/like', [CommentController::class, 'like']);
+Route::post('/comments/{id}/report', [CommentController::class, 'report']);
 Route::get('/breaking-news', [BreakingNewsController::class, 'index']);
 Route::get('/settings', [SettingController::class, 'index']);
 Route::get('/settings/editorial-staff', [SettingController::class, 'editorialStaff']);
@@ -40,14 +42,24 @@ Route::get('/videos', [VideoController::class, 'index']);
 Route::get('/videos/{id}', [VideoController::class, 'show']);
 Route::get('/editorial-staff', [EditorialStaffController::class, 'index']);
 Route::get('/social-links', [SocialLinkController::class, 'index']);
+Route::get('/ads', [AdController::class, 'index']);
+Route::post('/ads/{id}/click', [AdController::class, 'click']);
 
-// Protected routes (require authentication)
+// Engagement
+Route::post('/newsletter/subscribe', [App\Http\Controllers\Api\NewsletterController::class, 'subscribe']);
+Route::get('/polls/active', [App\Http\Controllers\Api\PollController::class, 'getActive']);
+Route::middleware('throttle:60,1')->group(function () {
+    Route::post('/polls/{id}/vote', [App\Http\Controllers\Api\PollController::class, 'vote']);
+    Route::post('/articles/{id}/comments', [CommentController::class, 'store']);
+});
+
 // Protected routes (require authentication)
 Route::middleware('auth:sanctum')->group(function () {
     // Auth - accessible by all logged in users
     Route::post('/auth/logout', [AuthController::class, 'logout']);
     Route::get('/auth/me', [AuthController::class, 'me']);
     Route::post('/auth/change-password', [AuthController::class, 'changePassword']);
+    Route::put('/auth/profile', [AuthController::class, 'updateProfile']);
 
     // Content Management (Admin & Editor)
     Route::middleware('role:admin,editor')->group(function () {
@@ -63,6 +75,7 @@ Route::middleware('auth:sanctum')->group(function () {
         Route::delete('/categories/{id}', [CategoryController::class, 'destroy']);
 
         // Comment management
+        Route::get('/admin/comments/pending', [CommentController::class, 'pendingCount']);
         Route::get('/admin/comments', [CommentController::class, 'adminIndex']);
         Route::post('/comments/{id}/approve', [CommentController::class, 'approve']);
         Route::delete('/comments/{id}', [CommentController::class, 'destroy']);
@@ -90,8 +103,20 @@ Route::middleware('auth:sanctum')->group(function () {
         // File upload
         Route::post('/upload', [UploadController::class, 'store']);
 
+        // Ad management
+        Route::get('/admin/ads', [AdController::class, 'adminIndex']);
+        Route::post('/ads', [AdController::class, 'store']);
+        Route::put('/ads/{id}', [AdController::class, 'update']);
+        Route::delete('/ads/{id}', [AdController::class, 'destroy']);
+
         // Site Settings management (accessible by both Admin and Editor)
         Route::put('/settings', [SettingController::class, 'update']);
+
+        // Poll management
+        Route::get('/polls', [App\Http\Controllers\Api\PollController::class, 'index']);
+        Route::post('/polls', [App\Http\Controllers\Api\PollController::class, 'store']);
+        Route::put('/polls/{id}', [App\Http\Controllers\Api\PollController::class, 'update']);
+        Route::delete('/polls/{id}', [App\Http\Controllers\Api\PollController::class, 'destroy']);
     });
 
     // Admin-only routes

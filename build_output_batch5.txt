@@ -1,0 +1,189 @@
+﻿
+> menarapublik@0.0.0 build
+> vite build
+
+[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+[32mÔ£ô[39m 3503 modules transformed.
+node.exe : [1m[33m[p
+lugin:vite:reporter][
+39m[22m [33m[plugin 
+vite:reporter] 
+At C:\Program Files\no
+dejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_C
+LI_JS $args
++   ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: ([1m[33m[   
+ plugi...vite:repo    
+rter] :String) []    ,
+ RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+(!) C:/Users/eshaq/One
+Drive/Dokumen/fati vsc
+ode/menarapublik/src/l
+ib/api.ts is dynamical
+ly imported by C:/User
+s/eshaq/OneDrive/Dokum
+en/fati vscode/menarap
+ublik/src/components/a
+dmin/EditorialManager.
+tsx, C:/Users/eshaq/On
+eDrive/Dokumen/fati vs
+code/menarapublik/src/
+components/admin/Edito
+rialManager.tsx, C:/Us
+ers/eshaq/OneDrive/Dok
+umen/fati vscode/menar
+apublik/src/pages/admi
+n/AdminDashboard.tsx b
+ut also statically imp
+orted by C:/Users/esha
+q/OneDrive/Dokumen/fat
+i vscode/menarapublik/
+src/components/AdBanne
+r.tsx, C:/Users/eshaq/
+OneDrive/Dokumen/fati 
+vscode/menarapublik/sr
+c/components/AdSlot.ts
+x, C:/Users/eshaq/OneD
+rive/Dokumen/fati vsco
+de/menarapublik/src/co
+mponents/CommentSectio
+n.tsx, C:/Users/eshaq/
+OneDrive/Dokumen/fati 
+vscode/menarapublik/sr
+c/components/ImageUplo
+ad.tsx, C:/Users/eshaq
+/OneDrive/Dokumen/fati
+ vscode/menarapublik/s
+rc/components/Newslett
+erWidget.tsx, C:/Users
+/eshaq/OneDrive/Dokume
+n/fati vscode/menarapu
+blik/src/components/Po
+llWidget.tsx, C:/Users
+/eshaq/OneDrive/Dokume
+n/fati vscode/menarapu
+blik/src/components/Re
+latedArticles.tsx, C:/
+Users/eshaq/OneDrive/D
+okumen/fati vscode/men
+arapublik/src/componen
+ts/RichTextEditor.tsx,
+ C:/Users/eshaq/OneDri
+ve/Dokumen/fati vscode
+/menarapublik/src/comp
+onents/SiteFooter.tsx,
+ C:/Users/eshaq/OneDri
+ve/Dokumen/fati vscode
+/menarapublik/src/comp
+onents/admin/ActivityL
+og.tsx, C:/Users/eshaq
+/OneDrive/Dokumen/fati
+ vscode/menarapublik/s
+rc/components/admin/Ad
+Manager.tsx, C:/Users/
+eshaq/OneDrive/Dokumen
+/fati vscode/menarapub
+lik/src/components/adm
+in/CategoryManager.tsx
+, C:/Users/eshaq/OneDr
+ive/Dokumen/fati vscod
+e/menarapublik/src/com
+ponents/admin/CommentM
+anager.tsx, C:/Users/e
+shaq/OneDrive/Dokumen/
+fati vscode/menarapubl
+ik/src/components/admi
+n/EditorialManager.tsx
+, C:/Users/eshaq/OneDr
+ive/Dokumen/fati vscod
+e/menarapublik/src/com
+ponents/admin/SiteSett
+ingsManager.tsx, C:/Us
+ers/eshaq/OneDrive/Dok
+umen/fati vscode/menar
+apublik/src/components
+/admin/UserManager.tsx
+, C:/Users/eshaq/OneDr
+ive/Dokumen/fati vscod
+e/menarapublik/src/com
+ponents/admin/VideoMan
+ager.tsx, C:/Users/esh
+aq/OneDrive/Dokumen/fa
+ti vscode/menarapublik
+/src/hooks/useArticles
+.ts, C:/Users/eshaq/On
+eDrive/Dokumen/fati vs
+code/menarapublik/src/
+hooks/useAuth.ts, C:/U
+sers/eshaq/OneDrive/Do
+kumen/fati vscode/mena
+rapublik/src/hooks/use
+Settings.ts, C:/Users/
+eshaq/OneDrive/Dokumen
+/fati vscode/menarapub
+lik/src/pages/AboutPag
+e.tsx, C:/Users/eshaq/
+OneDrive/Dokumen/fati 
+vscode/menarapublik/sr
+c/pages/AuthorPage.tsx
+, C:/Users/eshaq/OneDr
+ive/Dokumen/fati vscod
+e/menarapublik/src/pag
+es/VideoPage.tsx, C:/U
+sers/eshaq/OneDrive/Do
+kumen/fati vscode/mena
+rapublik/src/pages/adm
+in/AdminDashboard.tsx,
+ dynamic import will n
+ot move module into an
+other chunk.
+[39m
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mregisterSW.js                        [39m[1m[2m    0.13 kB[22m[1m[22m
+[2mdist/[22m[32mmanifest.webmanifest                 [39m[1m[2m    0.34 kB[22m[1m[22m
+[2mdist/[22m[32mindex.html                           [39m[1m[2m    1.94 kB[22m[1m[22m[2m Ôöé gzip:   0.79 kB[22m
+[2mdist/[22m[32massets/hero-hukum-BiFdYRHX.jpg       [39m[1m[2m   62.29 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-opini-Bxk5SB1Q.jpg       [39m[1m[2m   71.92 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-publik-C04NMJ9P.jpg      [39m[1m[2m  100.31 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-daerah-OtvMVts8.jpg      [39m[1m[2m  146.89 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-lingkungan-MdybtRBN.jpg  [39m[1m[2m  167.15 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-nasional-BqR_ELST.jpg    [39m[1m[2m  343.42 kB[22m[1m[22m
+[2mdist/[22m[32massets/logo-menara-Ct45nSA1.png      [39m[1m[2m2,817.09 kB[22m[1m[22m
+[2mdist/[22m[35massets/index-CuezfRJm.css            [39m[1m[2m   70.22 kB[22m[1m[22m[2m Ôöé gzip:  12.45 kB[22m
+[2mdist/[22m[36massets/index-BvfeLIh0.js             [39m[1m[33m1,415.16 kB[39m[22m[2m Ôöé gzip: 415.39 kB[22m
+[33m
+(!) Some chunks are la
+rger than 500 kB after
+ minification. Conside
+r:
+- Using dynamic import
+() to code-split the a
+pplication
+- Use build.rollupOpti
+ons.output.manualChunk
+s to improve chunking:
+ https://rollupjs.org/
+configuration-options/
+#output-manualchunks
+- Adjust chunk size li
+mit for this warning v
+ia build.chunkSizeWarn
+ingLimit.[39m
+[32mÔ£ô built in 12.05s[39m
+
+PWA v1.2.0
+mode      generateSW
+precache  8 entries (1453.38 KiB)
+files generated
+  dist/sw.js
+  dist/workbox-8c29f6e4.js

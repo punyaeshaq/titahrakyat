@@ -15,6 +15,7 @@ export interface Article {
   isFeatured?: boolean;
   isBreaking?: boolean;
   commentCount?: number;
+  tags?: { id: string; name: string; slug: string }[];
 }
 
 export const categories = [

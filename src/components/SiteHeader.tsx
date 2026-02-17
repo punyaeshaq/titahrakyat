@@ -5,11 +5,28 @@ import { useState } from "react";
 import logoMenara from "@/assets/logo-menara.png";
 import ThemeToggle from "@/components/ThemeToggle";
 
+// Vibrant color palette for categories
+const CATEGORY_COLORS = [
+  { bg: "#DC2626", hover: "#B91C1C" },   // Red
+  { bg: "#1D4ED8", hover: "#1E40AF" },   // Blue
+  { bg: "#6D28D9", hover: "#5B21B6" },   // Purple
+  { bg: "#059669", hover: "#047857" },   // Green
+  { bg: "#0891B2", hover: "#0E7490" },   // Cyan
+  { bg: "#EA580C", hover: "#C2410C" },   // Orange
+  { bg: "#DB2777", hover: "#BE185D" },   // Pink
+  { bg: "#4F46E5", hover: "#4338CA" },   // Indigo
+  { bg: "#0D9488", hover: "#0F766E" },   // Teal
+  { bg: "#CA8A04", hover: "#A16207" },   // Yellow
+];
+
+const getCategoryColor = (index: number) => CATEGORY_COLORS[index % CATEGORY_COLORS.length];
+
 const SiteHeader = () => {
   const { data: categories = [] } = useCategories();
   const [searchOpen, setSearchOpen] = useState(false);
   const [menuOpen, setMenuOpen] = useState(false);
   const [query, setQuery] = useState("");
+  const [hoveredIndex, setHoveredIndex] = useState<number | null>(null);
   const navigate = useNavigate();
 
   const handleSearch = (e: React.FormEvent) => {
@@ -21,8 +38,18 @@ const SiteHeader = () => {
     }
   };
 
+  // Build the full list of nav items: categories + Video
+  const navItems = [
+    ...categories.map((cat) => ({
+      id: cat.id,
+      label: cat.label,
+      to: `/kategori/${cat.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "")}`,
+    })),
+    { id: "video", label: "Video", to: "/video" },
+  ];
+
   return (
-    <header className="sticky top-0 z-50 bg-card border-b border-border shadow-sm">
+    <header className="sticky top-0 z-50 bg-card shadow-sm">
       <div className="container flex items-center justify-between h-14">
         <div className="flex items-center gap-3">
           <button onClick={() => setMenuOpen(!menuOpen)} className="lg:hidden p-2 -ml-2 text-foreground" aria-label="Menu">
@@ -39,23 +66,6 @@ const SiteHeader = () => {
           </Link>
         </div>
 
-        <nav className="hidden lg:flex items-center gap-1">
-          {categories.map((cat) => {
-            const slug = cat.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-            return (
-              <Link key={cat.id} to={`/kategori/${slug}`} className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
-                {cat.label}
-              </Link>
-            );
-          })}
-          <Link to="/video" className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
-            Video
-          </Link>
-          <Link to="/tentang" className="px-3 py-1.5 text-sm font-medium text-muted-foreground hover:text-primary transition-colors rounded-md hover:bg-accent">
-            Tentang
-          </Link>
-        </nav>
-
         <div className="flex items-center gap-1">
           <ThemeToggle />
           {searchOpen ? (
@@ -71,23 +81,52 @@ const SiteHeader = () => {
         </div>
       </div>
 
-      {menuOpen && (
-        <nav className="lg:hidden border-t border-border bg-card px-4 py-3">
-          <div className="flex flex-wrap gap-2">
-            {categories.map((cat) => {
-              const slug = cat.label.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
+      {/* Colorful Category Bar - Desktop */}
+      <nav className="hidden lg:block border-t border-border/50">
+        <div className="container">
+          <div className="flex">
+            {navItems.map((item, index) => {
+              const color = getCategoryColor(index);
+              const isHovered = hoveredIndex === index;
               return (
-                <Link key={cat.id} to={`/kategori/${slug}`} onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
-                  {cat.label}
+                <Link
+                  key={item.id}
+                  to={item.to}
+                  className="flex-1 text-center py-2.5 text-sm font-bold text-white transition-all duration-200 uppercase tracking-wide"
+                  style={{
+                    backgroundColor: isHovered ? color.hover : color.bg,
+                    transform: isHovered ? "translateY(-1px)" : "none",
+                    boxShadow: isHovered ? "0 4px 12px rgba(0,0,0,0.2)" : "none",
+                  }}
+                  onMouseEnter={() => setHoveredIndex(index)}
+                  onMouseLeave={() => setHoveredIndex(null)}
+                >
+                  {item.label}
                 </Link>
               );
             })}
-            <Link to="/video" onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
-              Video
-            </Link>
-            <Link to="/tentang" onClick={() => setMenuOpen(false)} className="px-3 py-1.5 text-sm font-medium text-muted-foreground bg-secondary rounded-full hover:text-primary transition-colors">
-              Tentang
-            </Link>
+          </div>
+        </div>
+      </nav>
+
+      {/* Mobile Menu with Colorful Badges */}
+      {menuOpen && (
+        <nav className="lg:hidden border-t border-border bg-card px-4 py-3">
+          <div className="flex flex-wrap gap-2">
+            {navItems.map((item, index) => {
+              const color = getCategoryColor(index);
+              return (
+                <Link
+                  key={item.id}
+                  to={item.to}
+                  onClick={() => setMenuOpen(false)}
+                  className="px-4 py-2 text-sm font-bold text-white rounded-full transition-all duration-200 hover:opacity-90 hover:scale-105"
+                  style={{ backgroundColor: color.bg }}
+                >
+                  {item.label}
+                </Link>
+              );
+            })}
           </div>
         </nav>
       )}

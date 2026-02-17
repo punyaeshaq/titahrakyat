@@ -33,6 +33,26 @@ export function useArticles() {
   });
 }
 
+import { useInfiniteQuery } from "@tanstack/react-query";
+
+export function useInfiniteArticles() {
+  return useInfiniteQuery({
+    queryKey: ["articles", "infinite"],
+    queryFn: async ({ pageParam = 1 }) => {
+      const response = await articlesApi.getAll({ status: "published", page: pageParam });
+      // response is Paginator object. response.data is array.
+      const articles = (response.data || []).map(mapRow);
+      return {
+        articles,
+        nextPage: response.next_page_url ? pageParam + 1 : undefined,
+        total: response.total
+      };
+    },
+    getNextPageParam: (lastPage) => lastPage.nextPage,
+    initialPageParam: 1,
+  });
+}
+
 export function useArticleBySlug(slug: string) {
   return useQuery({
     queryKey: ["article", slug],
@@ -53,6 +73,18 @@ export function useArticlesByCategory(categoryId: string) {
       return (Array.isArray(data) ? data : []).map(mapRow);
     },
     enabled: !!categoryId,
+  });
+}
+
+export function useArticlesByTag(tagSlug: string) {
+  return useQuery({
+    queryKey: ["articles", "tag", tagSlug],
+    queryFn: async () => {
+      const response = await articlesApi.getAll({ tag: tagSlug, status: "published" } as any);
+      const data = response.data || response || [];
+      return (Array.isArray(data) ? data : []).map(mapRow);
+    },
+    enabled: !!tagSlug,
   });
 }
 
@@ -129,7 +161,8 @@ export function usePopularArticles(limit = 5) {
       const data = response.data || response || [];
       // Sort by views client-side since API may not support it
       const articles = (Array.isArray(data) ? data : []).map(mapRow);
-      return articles.sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, limit);
+      // Backend should handle sorting, but if doing client side, strictly slice after sort
+      return articles.slice().sort((a, b) => (b.views || 0) - (a.views || 0)).slice(0, limit);
     },
   });
 }
@@ -165,10 +198,13 @@ export function useRecommendedArticles(excludeIds: string[] = [], limit = 5) {
       const data = response.data || response || [];
 
       const filtered = (Array.isArray(data) ? data : []).filter((a: any) => !excludeIds.includes(a.id));
-      // Shuffle and pick
-      const shuffled = filtered.sort(() => Math.random() - 0.5);
-      return shuffled.slice(0, limit).map(mapRow);
+      // Deterministic shuffle using a simple hash or just slice. 
+      // For now, to keep cache hitting, we avoid Math.random() in queryFn.
+      // We can just take the first N items that are not excluded, or ask API for random if supported.
+      // Since we want stability, let's just reverse or take from middle to mix it up slightly without true random.
+      const mixed = [...filtered].sort((a, b) => a.id.localeCompare(b.id));
+      return mixed.slice(0, limit).map(mapRow);
     },
+    staleTime: 1000 * 60 * 5, // Keep recommended stable for 5 mins
   });
 }
-

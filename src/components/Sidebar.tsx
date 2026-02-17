@@ -1,5 +1,7 @@
 import { Link } from "react-router-dom";
 import { useCategories, usePopularArticles, useMostCommentedArticles, useRecommendedArticles } from "@/hooks/useArticles";
+import AdSlot from "@/components/AdSlot";
+import PollWidget from "@/components/PollWidget";
 import { TrendingUp, Star, MessageCircle } from "lucide-react";
 
 const Sidebar = () => {
@@ -33,6 +35,9 @@ const Sidebar = () => {
         </div>
       </div>
 
+      {/* Polling Widget */}
+      <PollWidget />
+
       {/* Berita Terpopuler */}
       <div className="bg-card rounded-lg p-4 border border-border">
         <h2 className="flex items-center gap-2 font-bold font-serif text-foreground text-lg mb-4">
@@ -56,6 +61,9 @@ const Sidebar = () => {
           ))}
         </div>
       </div>
+
+      {/* Sidebar Ad */}
+      <AdSlot position="sidebar" />
 
       {/* Komentar Terbanyak */}
       <div className="bg-card rounded-lg p-4 border border-border">

@@ -69,7 +69,7 @@ export const authApi = {
 
 // Articles API
 export const articlesApi = {
-    getAll: async (params?: { status?: string; category?: string; featured?: boolean; breaking?: boolean; search?: string; per_page?: number; page?: number }) =>
+    getAll: async (params?: { status?: string; category?: string; featured?: boolean; breaking?: boolean; search?: string; per_page?: number; page?: number; author?: string }) =>
         (await api.get('/articles', { params })).data,
     getAdminAll: async (params?: { page?: number; per_page?: number; search?: string; status?: string; category?: string }) =>
         (await api.get('/admin/articles', { params })).data,
@@ -91,10 +91,13 @@ export const categoriesApi = {
 // Comments API (public and admin)
 export const commentsApi = {
     getByArticle: async (articleId: string) => (await api.get(`/articles/${articleId}/comments`)).data,
-    create: async (articleId: string, data: { name: string; email: string; content: string }) =>
+    create: async (articleId: string, data: { name: string; email: string; content: string; parent_id?: string }) =>
         (await api.post(`/articles/${articleId}/comments`, data)).data,
+    like: async (id: string) => (await api.post(`/comments/${id}/like`)).data,
+    report: async (id: string, reason: string) => (await api.post(`/comments/${id}/report`, { reason })).data,
     // Admin endpoints
     getAll: async () => (await api.get('/admin/comments')).data,
+    getPendingCount: async () => (await api.get('/admin/comments/pending')).data,
     approve: async (id: string) => (await api.post(`/comments/${id}/approve`)).data,
     delete: async (id: string) => (await api.delete(`/comments/${id}`)).data,
 };
@@ -156,6 +159,18 @@ export const usersApi = {
     delete: async (id: string) => (await api.delete(`/admin/users/${id}`)).data,
 };
 
+// Ads API
+export const adsApi = {
+    getActive: async (position?: string) =>
+        (await api.get('/ads', { params: position ? { position } : {} })).data,
+    getAll: async () => (await api.get('/admin/ads')).data,
+    create: async (data: { title: string; image_url: string; target_url: string; positions: string[]; is_active?: boolean; start_date?: string | null; end_date?: string | null; sort_order?: number }) =>
+        (await api.post('/ads', data)).data,
+    update: async (id: string, data: any) => (await api.put(`/ads/${id}`, data)).data,
+    delete: async (id: string) => (await api.delete(`/ads/${id}`)).data,
+    trackClick: async (id: string) => (await api.post(`/ads/${id}/click`)).data,
+};
+
 // Upload API
 export const uploadApi = {
     uploadImage: async (file: File) => {
@@ -163,5 +178,22 @@ export const uploadApi = {
         formData.append('file', file);
         return (await api.post('/upload', formData, { headers: { 'Content-Type': 'multipart/form-data' } })).data;
     },
+};
+
+// Newsletter API
+export const newsletterApi = {
+    subscribe: async (email: string) => (await api.post('/newsletter/subscribe', { email })).data,
+    unsubscribe: async (email: string) => (await api.post('/newsletter/unsubscribe', { email })).data,
+};
+
+// Polls API
+export const pollsApi = {
+    getActive: async () => (await api.get('/polls/active')).data,
+    vote: async (id: string, optionId: string) => (await api.post(`/polls/${id}/vote`, { option_id: optionId })).data,
+    // Admin
+    getAll: async () => (await api.get('/polls')).data,
+    create: async (data: { question: string; options: string[]; expires_at?: string }) => (await api.post('/polls', data)).data,
+    update: async (id: string, data: any) => (await api.put(`/polls/${id}`, data)).data,
+    delete: async (id: string) => (await api.delete(`/polls/${id}`)).data,
 };
 

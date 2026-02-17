@@ -9,10 +9,13 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useQueryClient } from "@tanstack/react-query";
-import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye, Clock, Activity, MessageCircle, Video, Settings } from "lucide-react";
+import { LogOut, Plus, Pencil, Trash2, Newspaper, AlertTriangle, X, BarChart3, FolderOpen, Users, Building2, ChevronLeft, ChevronRight, Download, Eye, Clock, Activity, MessageCircle, Video, Settings, User, ExternalLink } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 import RichTextEditor from "@/components/RichTextEditor";
 import ImageUpload from "@/components/ImageUpload";
+import PollManager from "@/components/admin/PollManager";
+import AdManager from "@/components/admin/AdManager";
+import ProfileManager from "@/components/admin/ProfileManager";
 import CategoryManager from "@/components/admin/CategoryManager";
 import UserManager from "@/components/admin/UserManager";
 import StatsOverview from "@/components/admin/StatsOverview";
@@ -24,12 +27,29 @@ import SiteSettingsManager from "@/components/admin/SiteSettingsManager";
 import { logActivity } from "@/lib/activityLog";
 import ThemeToggle from "@/components/ThemeToggle";
 
-type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "comments" | "videos" | "users" | "logs" | "settings";
+type Tab = "stats" | "articles" | "breaking" | "categories" | "editorial" | "comments" | "videos" | "users" | "logs" | "settings" | "ads" | "polls" | "profile";
 
 const AdminDashboard = () => {
   const { user, isAdmin, loading: authLoading, signOut } = useAuth();
   const navigate = useNavigate();
-  const [tab, setTab] = useState<Tab>("stats");
+  const getTabFromHash = (): Tab => {
+    const hash = window.location.hash.replace("#", "");
+    const validTabs: Tab[] = ["stats", "articles", "breaking", "categories", "editorial", "comments", "videos", "users", "logs", "settings", "ads", "polls", "profile"];
+    return validTabs.includes(hash as Tab) ? (hash as Tab) : "stats";
+  };
+  const [tab, setTab] = useState<Tab>(getTabFromHash);
+
+  const changeTab = (newTab: Tab) => {
+    setTab(newTab);
+    window.location.hash = newTab;
+  };
+
+  // Sync tab when hash changes (e.g. browser back/forward)
+  useEffect(() => {
+    const onHashChange = () => setTab(getTabFromHash());
+    window.addEventListener("hashchange", onHashChange);
+    return () => window.removeEventListener("hashchange", onHashChange);
+  }, []);
 
   useEffect(() => {
     if (!authLoading && (!user || !isAdmin)) {
@@ -51,10 +71,12 @@ const AdminDashboard = () => {
     { id: "stats", label: "Statistik", icon: <BarChart3 size={16} /> },
     { id: "articles", label: "Berita", icon: <Newspaper size={16} /> },
     { id: "breaking", label: "Breaking", icon: <AlertTriangle size={16} /> },
+    { id: "polls", label: "Polling", icon: <BarChart3 size={16} /> },
     { id: "categories", label: "Kategori", icon: <FolderOpen size={16} /> },
     { id: "editorial", label: "Redaksi", icon: <Building2 size={16} /> },
     { id: "comments", label: "Komentar", icon: <MessageCircle size={16} /> },
     { id: "videos", label: "Video", icon: <Video size={16} /> },
+    { id: "ads", label: "Iklan", icon: <Newspaper size={16} /> },
     { id: "users", label: "Pengguna", icon: <Users size={16} /> },
     { id: "settings", label: "Pengaturan", icon: <Settings size={16} /> },
     { id: "logs", label: "Log", icon: <Activity size={16} /> },
@@ -64,7 +86,7 @@ const AdminDashboard = () => {
 
     // Editor sees content management only
     if (user?.role === 'editor') {
-      return ['stats', 'articles', 'breaking', 'comments', 'videos'].includes(tab.id);
+      return ['stats', 'articles', 'breaking', 'comments', 'videos', 'ads', 'polls'].includes(tab.id);
     }
 
     // Default (shouldn't happen for dashboard users)
@@ -80,7 +102,15 @@ const AdminDashboard = () => {
           </h1>
           <div className="flex items-center gap-2">
             <span className="text-sm text-muted-foreground hidden sm:inline">{user.email}</span>
+            <Button variant="outline" size="sm" asChild>
+              <a href="/" target="_blank" rel="noopener noreferrer">
+                <ExternalLink size={16} /> <span className="hidden sm:inline">Lihat Website</span>
+              </a>
+            </Button>
             <ThemeToggle />
+            <Button variant="ghost" size="sm" onClick={() => changeTab("profile")}>
+              <User size={16} />
+            </Button>
             <Button variant="ghost" size="sm" onClick={() => { signOut(); navigate("/admin/login"); }}>
               <LogOut size={16} /> Keluar
             </Button>
@@ -91,7 +121,7 @@ const AdminDashboard = () => {
       <div className="container py-6">
         <div className="flex flex-wrap gap-2 mb-6">
           {tabs.map((t) => (
-            <Button key={t.id} variant={tab === t.id ? "default" : "outline"} size="sm" onClick={() => setTab(t.id)}>
+            <Button key={t.id} variant={tab === t.id ? "default" : "outline"} size="sm" onClick={() => changeTab(t.id)}>
               {t.icon} {t.label}
             </Button>
           ))}
@@ -100,13 +130,16 @@ const AdminDashboard = () => {
         {tab === "stats" && <StatsOverview />}
         {tab === "articles" && <ArticlesManager />}
         {tab === "breaking" && <BreakingNewsManager />}
+        {tab === "polls" && <PollManager />}
         {tab === "categories" && <CategoryManager />}
         {tab === "editorial" && <EditorialManager />}
         {tab === "comments" && <CommentManager />}
         {tab === "videos" && <VideoManager />}
         {tab === "users" && <UserManager />}
         {tab === "settings" && <SiteSettingsManager />}
+        {tab === "ads" && <AdManager />}
         {tab === "logs" && <ActivityLog />}
+        {tab === "profile" && <ProfileManager />}
       </div>
     </div>
   );

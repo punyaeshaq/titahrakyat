@@ -1,0 +1,174 @@
+﻿
+> menarapublik@0.0.0 build
+> vite build
+
+[36mvite v5.4.19 [32mbuilding for production...[36m[39m
+transforming...
+node.exe : Browserslis
+t: browsers data (cani
+use-lite) is 8 months 
+old. Please run:
+At C:\Program Files\no
+dejs\npm.ps1:29 char:3
++   & $NODE_EXE $NPM_C
+LI_JS $args
++   ~~~~~~~~~~~~~~~~~~
+~~~~~~~~~~~
+    + CategoryInfo    
+          : NotSpeci  
+  fied: (Browsersli   
+ st: b...ld. Pleas    
+e run::String) []    ,
+ RemoteException
+    + FullyQualifiedE 
+   rrorId : NativeCo  
+  mmandError
+ 
+  npx update-browsersl
+ist-db@latest
+  Why you should do it
+ regularly: https://gi
+thub.com/browserslist/
+update-db#readme
+[32mÔ£ô[39m 3497 modules transformed.
+[1m[33m[plugin:vite:
+reporter][39m[22m [
+33m[plugin vite:report
+er] 
+(!) C:/Users/eshaq/One
+Drive/Dokumen/fati vsc
+ode/menarapublik/src/l
+ib/api.ts is dynamical
+ly imported by C:/User
+s/eshaq/OneDrive/Dokum
+en/fati vscode/menarap
+ublik/src/components/a
+dmin/EditorialManager.
+tsx, C:/Users/eshaq/On
+eDrive/Dokumen/fati vs
+code/menarapublik/src/
+components/admin/Edito
+rialManager.tsx, C:/Us
+ers/eshaq/OneDrive/Dok
+umen/fati vscode/menar
+apublik/src/pages/admi
+n/AdminDashboard.tsx b
+ut also statically imp
+orted by C:/Users/esha
+q/OneDrive/Dokumen/fat
+i vscode/menarapublik/
+src/components/AdBanne
+r.tsx, C:/Users/eshaq/
+OneDrive/Dokumen/fati 
+vscode/menarapublik/sr
+c/components/AdSlot.ts
+x, C:/Users/eshaq/OneD
+rive/Dokumen/fati vsco
+de/menarapublik/src/co
+mponents/CommentSectio
+n.tsx, C:/Users/eshaq/
+OneDrive/Dokumen/fati 
+vscode/menarapublik/sr
+c/components/ImageUplo
+ad.tsx, C:/Users/eshaq
+/OneDrive/Dokumen/fati
+ vscode/menarapublik/s
+rc/components/RichText
+Editor.tsx, C:/Users/e
+shaq/OneDrive/Dokumen/
+fati vscode/menarapubl
+ik/src/components/Site
+Footer.tsx, C:/Users/e
+shaq/OneDrive/Dokumen/
+fati vscode/menarapubl
+ik/src/components/admi
+n/ActivityLog.tsx, C:/
+Users/eshaq/OneDrive/D
+okumen/fati vscode/men
+arapublik/src/componen
+ts/admin/AdManager.tsx
+, C:/Users/eshaq/OneDr
+ive/Dokumen/fati vscod
+e/menarapublik/src/com
+ponents/admin/Category
+Manager.tsx, C:/Users/
+eshaq/OneDrive/Dokumen
+/fati vscode/menarapub
+lik/src/components/adm
+in/CommentManager.tsx,
+ C:/Users/eshaq/OneDri
+ve/Dokumen/fati vscode
+/menarapublik/src/comp
+onents/admin/Editorial
+Manager.tsx, C:/Users/
+eshaq/OneDrive/Dokumen
+/fati vscode/menarapub
+lik/src/components/adm
+in/SiteSettingsManager
+.tsx, C:/Users/eshaq/O
+neDrive/Dokumen/fati v
+scode/menarapublik/src
+/components/admin/User
+Manager.tsx, C:/Users/
+eshaq/OneDrive/Dokumen
+/fati vscode/menarapub
+lik/src/components/adm
+in/VideoManager.tsx, C
+:/Users/eshaq/OneDrive
+/Dokumen/fati vscode/m
+enarapublik/src/hooks/
+useArticles.ts, C:/Use
+rs/eshaq/OneDrive/Doku
+men/fati vscode/menara
+publik/src/hooks/useAu
+th.ts, C:/Users/eshaq/
+OneDrive/Dokumen/fati 
+vscode/menarapublik/sr
+c/hooks/useSettings.ts
+, C:/Users/eshaq/OneDr
+ive/Dokumen/fati vscod
+e/menarapublik/src/pag
+es/AboutPage.tsx, C:/U
+sers/eshaq/OneDrive/Do
+kumen/fati vscode/mena
+rapublik/src/pages/Vid
+eoPage.tsx, C:/Users/e
+shaq/OneDrive/Dokumen/
+fati vscode/menarapubl
+ik/src/pages/admin/Adm
+inDashboard.tsx, dynam
+ic import will not mov
+e module into another 
+chunk.
+[39m
+rendering chunks...
+computing gzip size...
+[2mdist/[22m[32mindex.html                           [39m[1m[2m    1.82 kB[22m[1m[22m[2m Ôöé gzip:   0.75 kB[22m
+[2mdist/[22m[32massets/hero-hukum-BiFdYRHX.jpg       [39m[1m[2m   62.29 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-opini-Bxk5SB1Q.jpg       [39m[1m[2m   71.92 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-publik-C04NMJ9P.jpg      [39m[1m[2m  100.31 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-daerah-OtvMVts8.jpg      [39m[1m[2m  146.89 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-lingkungan-MdybtRBN.jpg  [39m[1m[2m  167.15 kB[22m[1m[22m
+[2mdist/[22m[32massets/hero-nasional-BqR_ELST.jpg    [39m[1m[2m  343.42 kB[22m[1m[22m
+[2mdist/[22m[32massets/logo-menara-Ct45nSA1.png      [39m[1m[2m2,817.09 kB[22m[1m[22m
+[2mdist/[22m[35massets/index-DsU1KYKW.css            [39m[1m[2m   69.85 kB[22m[1m[22m[2m Ôöé gzip:  12.36 kB[22m
+[2mdist/[22m[36massets/index-Cfv2_QrB.js             [39m[1m[33m1,388.13 kB[39m[22m[2m Ôöé gzip: 408.85 kB[22m
+[33m
+(!) Some chunks are la
+rger than 500 kB after
+ minification. Conside
+r:
+- Using dynamic import
+() to code-split the a
+pplication
+- Use build.rollupOpti
+ons.output.manualChunk
+s to improve chunking:
+ https://rollupjs.org/
+configuration-options/
+#output-manualchunks
+- Adjust chunk size li
+mit for this warning v
+ia build.chunkSizeWarn
+ingLimit.[39m
+[32mÔ£ô built in 15.37s[39m

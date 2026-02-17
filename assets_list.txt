@@ -1,0 +1,75 @@
+--- Listing /var/www/menarapublik/dist/assets ---
+[sudo] password for deploy: 
+total 9328
+drwx------ 2 www-data www-data    4096 Feb 11 13:55 .
+drwx------ 3 www-data www-data    4096 Feb 10 08:41 ..
+-rw-rw-r-- 1 www-data www-data  146886 Feb 11 13:55 hero-daerah-OtvMVts8.jpg
+-rw-rw-r-- 1 www-data www-data   62292 Feb 11 13:55 hero-hukum-BiFdYRHX.jpg
+-rw-rw-r-- 1 www-data www-data  167146 Feb 11 13:55 hero-lingkungan-MdybtRBN.jpg
+-rw-rw-r-- 1 www-data www-data  343418 Feb 11 13:55 hero-nasional-BqR_ELST.jpg
+-rw-rw-r-- 1 www-data www-data   71916 Feb 11 13:55 hero-opini-Bxk5SB1Q.jpg
+-rw-rw-r-- 1 www-data www-data  100313 Feb 11 13:55 hero-publik-C04NMJ9P.jpg
+-rw-r--r-- 1 www-data www-data   69822 Feb 11 05:20 index-BzFMeTRk.css
+-rw-rw-r-- 1 www-data www-data 1377825 Feb 10 08:41 index-CPYvhnNH.js
+-rw-r--r-- 1 www-data www-data 1388298 Feb 11 04:51 index-CUhTxRFm.js
+-rw-r--r-- 1 www-data www-data 1388298 Feb 11 05:20 index-DhMcEGkG.js
+-rw-r--r-- 1 www-data www-data   69853 Feb 11 13:55 index-DsU1KYKW.css
+-rw-r--r-- 1 www-data www-data 1388906 Feb 11 13:55 index-oVg1jKno.js
+-rw-rw-r-- 1 www-data www-data   69228 Feb 10 08:41 index-tYYdo_B_.css
+-rw-rw-r-- 1 www-data www-data 2817087 Feb 11 13:55 logo-menara-Ct45nSA1.png
+
+--- Reading /var/www/menarapublik/dist/index.html ---
+[sudo] password for deploy: 
+<!doctype html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>MenaraPublik.News - Mengawal Kepentingan Publik</title>
+  <meta name="description"
+    content="Media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab.">
+  <meta name="author" content="MenaraPublik.News" />
+
+
+
+  <meta property="og:type" content="website" />
+  <meta property="og:image" content="https://menarapublik.news/og-default.jpg" />
+
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:site" content="@MenaraPublik" />
+  <meta name="twitter:image" content="https://menarapublik.news/og-default.jpg" />
+  <meta property="og:title" content="MenaraPublik.News - Mengawal Kepentingan Publik">
+  <meta name="twitter:title" content="MenaraPublik.News - Mengawal Kepentingan Publik">
+  <meta property="og:description"
+    content="Media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab.">
+  <meta name="twitter:description"
+    content="Media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab.">
+  <link rel="icon" type="image/x-icon"
+    href="https://storage.googleapis.com/gpt-engineer-file-uploads/N8NwrEm1YZWVFELB2RKuQj94VUH3/uploads/1770618292533-WhatsApp_Image_2026-02-09_at_11.15.47.jpeg">
+  <!-- Google AdSense -->
+  <script async src="https://pagead2.googlesyndication.com/pagead/js/adsbygoogle.js?client=ca-pub-3878761925278925"
+    crossorigin="anonymous"></script>
+  <script type="module" crossorigin src="/assets/index-oVg1jKno.js"></script>
+  <link rel="stylesheet" crossorigin href="/assets/index-DsU1KYKW.css">
+</head>
+
+<body>
+  <div id="root"></div>
+</body>
+
+</html>
+
+--- Checking Nginx Error Log (Last 20 lines) ---
+[sudo] password for deploy: 
+2026/02/11 01:23:14 [crit] 45997#45997: *4261 SSL_do_handshake() failed (SSL: error:0A00006C:SSL routines::bad key share) while SSL handshaking, client: 134.199.232.242, server: 0.0.0.0:443
+2026/02/11 04:43:16 [notice] 56738#56738: signal process started
+2026/02/11 04:47:04 [notice] 56944#56944: signal process started
+2026/02/11 04:49:01 [notice] 57123#57123: signal process started
+2026/02/11 04:50:01 [notice] 57216#57216: signal process started
+2026/02/11 04:51:30 [notice] 57328#57328: signal process started
+2026/02/11 05:03:37 [notice] 57463#57463: signal process started
+2026/02/11 05:20:04 [crit] 57464#57464: *5047 SSL_do_handshake() failed (SSL: error:0A00006C:SSL routines::bad key share) while SSL handshaking, client: 34.7.197.21, server: 0.0.0.0:443
+2026/02/11 05:20:52 [notice] 57733#57733: signal process started
+2026/02/11 14:59:12 [crit] 57734#57734: *7261 SSL_do_handshake() failed (SSL: error:0A00006C:SSL routines::bad key share) while SSL handshaking, client: 143.198.103.27, server: 0.0.0.0:443
+2026/02/11 15:08:28 [crit] 57734#57734: *7298 SSL_do_handshake() failed (SSL: error:0A00006C:SSL routines::bad key share) while SSL handshaking, client: 62.210.198.204, server: 0.0.0.0:443

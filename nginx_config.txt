@@ -1,0 +1,100 @@
+--- Reading menarapublik config ---
+server {
+    listen 443 ssl http2;
+    server_name menarapublik.news www.menarapublik.news;
+    client_max_body_size 64M;
+
+    ssl_certificate /etc/letsencrypt/live/menarapublik.news/fullchain.pem;
+    ssl_certificate_key /etc/letsencrypt/live/menarapublik.news/privkey.pem;
+    include /etc/letsencrypt/options-ssl-nginx.conf;
+    ssl_dhparam /etc/letsencrypt/ssl-dhparams.pem;
+
+    # ============================
+    # Laravel API (/api/*)
+    # ============================
+    location /api/ {
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME /var/www/menarapublik/server/public/index.php;
+        fastcgi_param DOCUMENT_ROOT /var/www/menarapublik/server/public;
+        fastcgi_param REQUEST_URI $request_uri;
+    }
+
+    # ============================
+    # OG Meta Tags for Social Media (/berita/*)
+    # ============================
+    # ============================
+    # OG Meta Tags for Social Media (/berita/*)
+    # ============================
+    location ~ ^/berita/(.+)$ {
+        set $is_social_bot 0;
+        if ($http_user_agent ~* "facebookexternalhit|twitterbot|whatsapp|telegrambot|discordbot|linkedinbot") {
+            set $is_social_bot 1;
+        }
+
+        if ($is_social_bot = 1) {
+            # Rewrite to special route for Laravel to handle
+            rewrite ^/berita/(.*)$ /bot-share/berita/$1 last;
+        }
+
+        # Regular Users: Serve React App (SPA)
+        root /var/www/menarapublik/dist;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Internal location for Bot Share (handled by Laravel)
+    location /bot-share/berita/ {
+        # internal; # checking locally might be harder with internal, keep open for now or use careful routing
+        
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME /var/www/menarapublik/server/public/index.php;
+        fastcgi_param DOCUMENT_ROOT /var/www/menarapublik/server/public;
+        # Ensure Laravel sees the rewritten URI
+        fastcgi_param REQUEST_URI $uri;
+    }
+
+    # ============================
+    # Storage/Uploads
+    # ============================
+    location /storage {
+        alias /var/www/menarapublik/server/storage/app/public;
+        try_files $uri $uri/ =404;
+    }
+
+    # ============================
+    # Frontend SPA (React/Vite)
+    # ============================
+
+    # Serve uploads from backend storage
+    location /uploads/ {
+        alias /var/www/menarapublik/server/public/uploads/;
+        access_log off;
+        expires max;
+    }
+
+    # Serve storage from backend storage (if linked)
+    location /storage/ {
+        alias /var/www/menarapublik/server/public/storage/;
+        access_log off;
+        expires max;
+    }
+
+    location / {
+        root /var/www/menarapublik/dist;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Deny access to hidden files
+    location ~ /\.ht {
+        deny all;
+    }
+}
+
+# HTTP to HTTPS redirect
+server {
+    listen 80;
+    server_name menarapublik.news www.menarapublik.news;
+    client_max_body_size 64M;
+    return 301 https://$host$request_uri;
+}

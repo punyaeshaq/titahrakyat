@@ -1,4 +1,4 @@
-﻿import { Link } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { useCategories } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
 import { settingsApi } from "@/lib/api";

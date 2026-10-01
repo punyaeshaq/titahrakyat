@@ -1,4 +1,4 @@
-﻿import { useQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { videosApi } from "@/lib/api";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";

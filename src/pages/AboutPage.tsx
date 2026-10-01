@@ -1,4 +1,4 @@
-﻿import SiteHeader from "@/components/SiteHeader";
+import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Shield, Scale, Eye, BookOpen, Users, Globe } from "lucide-react";
 import logoMenara from "@/assets/logo-menara.png";

@@ -1,4 +1,4 @@
-﻿import { useState, useEffect, useRef, useCallback } from "react";
+import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { authApi } from "@/lib/api";
 import { GOOGLE_CLIENT_ID } from "@/lib/google-config";

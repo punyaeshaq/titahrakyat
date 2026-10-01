@@ -1,4 +1,4 @@
-﻿import { useParams, Link } from "react-router-dom";
+import { useParams, Link } from "react-router-dom";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { useQuery } from "@tanstack/react-query";

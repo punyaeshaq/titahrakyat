@@ -14,12 +14,14 @@ class DatabaseSeeder extends Seeder
     public function run(): void
     {
         // Create admin user
-        User::create([
-            'name' => 'Admin',
-            'email' => 'admin@titahrakyat.com',
-            'password' => Hash::make('password123'),
-            'role' => 'admin',
-        ]);
+        User::firstOrCreate(
+            ['email' => 'admin@titahrakyat.com'],
+            [
+                'name' => 'Admin',
+                'password' => Hash::make('password123'),
+                'role' => 'admin',
+            ]
+        );
 
         // Create default categories
         $categories = [
@@ -34,37 +36,41 @@ class DatabaseSeeder extends Seeder
         ];
 
         foreach ($categories as $category) {
-            Category::create($category);
+            Category::firstOrCreate(['label' => $category['label']], $category);
         }
 
         // Create default site settings
         $settings = [
             ['key' => 'site_name', 'value' => 'TitahRakyat.Com'],
             ['key' => 'site_description', 'value' => 'Portal Berita Terpercaya'],
-            ['key' => 'contact_email', 'value' => 'redaksi@TitahRakyat.Com'],
+            ['key' => 'contact_email', 'value' => 'redaksi@titahrakyat.com'],
             ['key' => 'about_text', 'value' => 'TitahRakyat.Com adalah portal berita yang menyajikan informasi terkini dan terpercaya.'],
         ];
 
         foreach ($settings as $setting) {
-            SiteSetting::create($setting);
+            SiteSetting::firstOrCreate(['key' => $setting['key']], $setting);
         }
 
         // Create sample ads
-        Ad::create([
-            'title' => 'Contoh Iklan Header',
-            'image_url' => 'https://placehold.co/970x90/333/FFF?text=Space+Iklan+Header',
-            'target_url' => 'https://titahrakyat.com',
-            'positions' => json_encode(['header']),
-            'is_active' => true,
-        ]);
+        Ad::firstOrCreate(
+            ['title' => 'Contoh Iklan Header'],
+            [
+                'image_url' => 'https://placehold.co/970x90/333/FFF?text=Space+Iklan+Header',
+                'target_url' => 'https://titahrakyat.com',
+                'positions' => json_encode(['header']),
+                'is_active' => true,
+            ]
+        );
 
-        Ad::create([
-            'title' => 'Contoh Iklan Sidebar',
-            'image_url' => 'https://placehold.co/300x250/333/FFF?text=Space+Iklan+Sidebar',
-            'target_url' => 'https://titahrakyat.com',
-            'positions' => json_encode(['sidebar']),
-            'is_active' => true,
-        ]);
+        Ad::firstOrCreate(
+            ['title' => 'Contoh Iklan Sidebar'],
+            [
+                'image_url' => 'https://placehold.co/300x250/333/FFF?text=Space+Iklan+Sidebar',
+                'target_url' => 'https://titahrakyat.com',
+                'positions' => json_encode(['sidebar']),
+                'is_active' => true,
+            ]
+        );
 
         // Seed Polls
         $this->call(PollSeeder::class);

@@ -165,8 +165,9 @@ php artisan key:generate --force
 # Create storage link
 php artisan storage:link
 
-# Run migrations
+# Run migrations & seed
 php artisan migrate --force
+php artisan db:seed --force
 
 # Cache config for production
 php artisan config:cache

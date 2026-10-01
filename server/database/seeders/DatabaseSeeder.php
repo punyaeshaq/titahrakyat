@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         // Create admin user
         User::create([
             'name' => 'Admin',
-            'email' => 'admin@TitahRakyat.Com',
+            'email' => 'admin@titahrakyat.com',
             'password' => Hash::make('password123'),
             'role' => 'admin',
         ]);
@@ -53,16 +53,16 @@ class DatabaseSeeder extends Seeder
         Ad::create([
             'title' => 'Contoh Iklan Header',
             'image_url' => 'https://placehold.co/970x90/333/FFF?text=Space+Iklan+Header',
-            'target_url' => 'https://TitahRakyat.Com',
-            'position' => 'header',
+            'target_url' => 'https://titahrakyat.com',
+            'positions' => json_encode(['header']),
             'is_active' => true,
         ]);
 
         Ad::create([
             'title' => 'Contoh Iklan Sidebar',
             'image_url' => 'https://placehold.co/300x250/333/FFF?text=Space+Iklan+Sidebar',
-            'target_url' => 'https://TitahRakyat.Com',
-            'position' => 'sidebar',
+            'target_url' => 'https://titahrakyat.com',
+            'positions' => json_encode(['sidebar']),
             'is_active' => true,
         ]);
 

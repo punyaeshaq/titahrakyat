@@ -1,4 +1,4 @@
-# MenaraPublik
+﻿# TitahRakyat
 
 ## Project info
 
@@ -10,7 +10,7 @@ There are several ways of editing your application.
 
 **Use Lovable**
 
-Simply visit the - [MenaraPublik](http://localhost:8080) and start prompting.
+Simply visit the - [TitahRakyat](http://localhost:8080) and start prompting.
 
 Changes made via Lovable will be committed automatically to this repo.
 

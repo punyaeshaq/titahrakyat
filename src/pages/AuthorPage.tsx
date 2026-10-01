@@ -1,4 +1,4 @@
-import { useParams, Link } from "react-router-dom";
+﻿import { useParams, Link } from "react-router-dom";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { useQuery } from "@tanstack/react-query";
@@ -39,7 +39,7 @@ const AuthorPage = () => {
                     </div>
                     <div>
                         <h1 className="text-3xl font-serif font-bold mb-2">{decodedName}</h1>
-                        <p className="text-muted-foreground mb-4">Penulis di MenaraPublik.News</p>
+                        <p className="text-muted-foreground mb-4">Penulis di TitahRakyat.Com</p>
                         <div className="flex gap-4 text-sm text-muted-foreground">
                             <span className="flex items-center gap-1"><BookOpen size={16} /> {articles?.data?.length || 0} Artikel</span>
                             <span className="flex items-center gap-1"><Calendar size={16} /> Bergabung sejak 2024</span>

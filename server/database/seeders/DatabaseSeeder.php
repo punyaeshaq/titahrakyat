@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace Database\Seeders;
 
@@ -16,7 +16,7 @@ class DatabaseSeeder extends Seeder
         // Create admin user
         User::create([
             'name' => 'Admin',
-            'email' => 'admin@menarapublik.news',
+            'email' => 'admin@TitahRakyat.Com',
             'password' => Hash::make('password123'),
             'role' => 'admin',
         ]);
@@ -39,10 +39,10 @@ class DatabaseSeeder extends Seeder
 
         // Create default site settings
         $settings = [
-            ['key' => 'site_name', 'value' => 'MenaraPublik.News'],
+            ['key' => 'site_name', 'value' => 'TitahRakyat.Com'],
             ['key' => 'site_description', 'value' => 'Portal Berita Terpercaya'],
-            ['key' => 'contact_email', 'value' => 'redaksi@menarapublik.news'],
-            ['key' => 'about_text', 'value' => 'MenaraPublik.News adalah portal berita yang menyajikan informasi terkini dan terpercaya.'],
+            ['key' => 'contact_email', 'value' => 'redaksi@TitahRakyat.Com'],
+            ['key' => 'about_text', 'value' => 'TitahRakyat.Com adalah portal berita yang menyajikan informasi terkini dan terpercaya.'],
         ];
 
         foreach ($settings as $setting) {
@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
         Ad::create([
             'title' => 'Contoh Iklan Header',
             'image_url' => 'https://placehold.co/970x90/333/FFF?text=Space+Iklan+Header',
-            'target_url' => 'https://menarapublik.news',
+            'target_url' => 'https://TitahRakyat.Com',
             'position' => 'header',
             'is_active' => true,
         ]);
@@ -61,7 +61,7 @@ class DatabaseSeeder extends Seeder
         Ad::create([
             'title' => 'Contoh Iklan Sidebar',
             'image_url' => 'https://placehold.co/300x250/333/FFF?text=Space+Iklan+Sidebar',
-            'target_url' => 'https://menarapublik.news',
+            'target_url' => 'https://TitahRakyat.Com',
             'position' => 'sidebar',
             'is_active' => true,
         ]);

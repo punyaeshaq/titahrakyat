@@ -1,4 +1,4 @@
-<!doctype html>
+﻿<!doctype html>
 <html lang="id">
 
 <head>
@@ -6,7 +6,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
 
     {{-- Article-specific OG tags --}}
-    <title>{{ $title }} - MenaraPublik.News</title>
+    <title>{{ $title }} - TitahRakyat.Com</title>
     <meta name="description" content="{{ $description }}" />
 
     <meta property="og:type" content="article" />
@@ -14,7 +14,7 @@
     <meta property="og:title" content="{{ $title }}" />
     <meta property="og:description" content="{{ $description }}" />
     <meta property="og:image" content="{{ $image }}" />
-    <meta property="og:site_name" content="MenaraPublik.News" />
+    <meta property="og:site_name" content="TitahRakyat.Com" />
 
     <meta name="twitter:card" content="summary_large_image" />
     <meta name="twitter:title" content="{{ $title }}" />

@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+﻿<!DOCTYPE html>
 <html>
 
 <head>
@@ -33,7 +33,7 @@
                             <h2 style="color:#1e293b;margin:0 0 8px;font-size:20px;">Halo, {{ $userName }}!</h2>
                             <p style="color:#64748b;margin:0 0 24px;font-size:15px;line-height:1.6;">
                                 Berikut adalah kode verifikasi OTP Anda untuk menyelesaikan pendaftaran akun di
-                                MenaraPublik.News:
+                                TitahRakyat.Com:
                             </p>
 
                             <!-- OTP Code -->
@@ -60,7 +60,7 @@
                     <tr>
                         <td style="background:#f8fafc;padding:24px 40px;border-top:1px solid #e2e8f0;">
                             <p style="color:#94a3b8;font-size:12px;margin:0;text-align:center;">
-                                Email ini dikirim otomatis oleh MenaraPublik.News<br>
+                                Email ini dikirim otomatis oleh TitahRakyat.Com<br>
                                 Jika Anda tidak mendaftar, abaikan email ini.
                             </p>
                         </td>

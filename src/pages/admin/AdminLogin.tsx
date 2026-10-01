@@ -1,4 +1,4 @@
-import { useState, useEffect } from "react";
+﻿import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import logoMenara from "@/assets/logo-menara.png";
@@ -61,7 +61,7 @@ const AdminLogin = () => {
 
         <div className="relative z-10 max-w-lg text-white">
           <div className="flex items-center gap-4 mb-8">
-            <img src={logoMenara} alt="MenaraPublik" className="h-16 w-16 rounded-xl shadow-2xl shadow-black/20" />
+            <img src={logoMenara} alt="TitahRakyat" className="h-16 w-16 rounded-xl shadow-2xl shadow-black/20" />
             <div>
               <h1 className="text-3xl font-black tracking-tight">
                 Menara<span className="text-red-200">Publik</span>
@@ -78,7 +78,7 @@ const AdminLogin = () => {
               </span>
             </h2>
             <p className="text-white/70 text-lg leading-relaxed">
-              Kelola konten, pantau statistik, dan operasikan semua aspek portal berita MenaraPublik.News dari sini.
+              Kelola konten, pantau statistik, dan operasikan semua aspek portal berita TitahRakyat.Com dari sini.
             </p>
 
             <div className="flex flex-col gap-3 pt-4">
@@ -104,7 +104,7 @@ const AdminLogin = () => {
           {/* Mobile logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center gap-3">
-              <img src={logoMenara} alt="MenaraPublik" className="h-12 w-12 rounded-xl shadow-lg" />
+              <img src={logoMenara} alt="TitahRakyat" className="h-12 w-12 rounded-xl shadow-lg" />
               <div className="text-left">
                 <h1 className="text-xl font-black text-slate-900">Menara<span className="text-red-600">Publik</span></h1>
                 <p className="text-xs text-slate-500 tracking-widest">MENGAWAL KEPENTINGAN PUBLIK</p>
@@ -131,7 +131,7 @@ const AdminLogin = () => {
                   <Mail className="absolute left-4 top-1/2 -translate-y-1/2 w-4 h-4 text-slate-400 group-focus-within:text-red-500 transition-colors" />
                   <input type="email" value={email} onChange={(e) => setEmail(e.target.value)}
                     className="w-full pl-11 pr-4 py-3.5 bg-white border border-slate-200 rounded-xl text-slate-900 placeholder-slate-400 focus:outline-none focus:ring-2 focus:ring-red-500/20 focus:border-red-500/50 transition-all"
-                    placeholder="admin@menarapublik.news" required />
+                    placeholder="admin@TitahRakyat.Com" required />
                 </div>
               </div>
 

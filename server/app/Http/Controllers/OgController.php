@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Http\Controllers;
 
@@ -18,14 +18,14 @@ class OgController extends Controller
         if (!$article) {
             // If article not found, show default OG tags
             return view('og-article', [
-                'title' => 'MenaraPublik.News - Mengawal Kepentingan Publik',
+                'title' => 'TitahRakyat.Com - Mengawal Kepentingan Publik',
                 'description' => 'Media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab.',
                 'image' => url('/assets/og-default.jpg'),
-                'url' => config('app.frontend_url', 'https://menarapublik.news'),
+                'url' => config('app.frontend_url', 'https://TitahRakyat.Com'),
             ]);
         }
 
-        $frontendUrl = config('app.frontend_url', 'https://menarapublik.news');
+        $frontendUrl = config('app.frontend_url', 'https://TitahRakyat.Com');
         $articleUrl = $frontendUrl . '/berita/' . $article->slug;
 
         // Use article image, or fall back to a default

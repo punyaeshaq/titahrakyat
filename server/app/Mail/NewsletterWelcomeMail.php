@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Mail;
 
@@ -16,13 +16,13 @@ class NewsletterWelcomeMail extends Mailable
 
     public function __construct(string $unsubscribeToken)
     {
-        $this->unsubscribeUrl = config('app.frontend_url', 'https://menarapublik.news') . '/newsletter/unsubscribe?token=' . $unsubscribeToken;
+        $this->unsubscribeUrl = config('app.frontend_url', 'https://TitahRakyat.Com') . '/newsletter/unsubscribe?token=' . $unsubscribeToken;
     }
 
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Selamat Datang di Newsletter MenaraPublik.News!',
+            subject: 'Selamat Datang di Newsletter TitahRakyat.Com!',
         );
     }
 

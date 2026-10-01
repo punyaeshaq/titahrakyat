@@ -103,12 +103,12 @@ const SiteHeader = () => {
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
           <Link to="/" className="flex items-center gap-2 min-w-0">
-            <img src={logoMenara} alt="MenaraPublik.News" className="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover flex-shrink-0" />
+            <img src={logoMenara} alt="TitahRakyat.Com" className="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover flex-shrink-0" />
             <div className="flex flex-col leading-none min-w-0">
               <span className="text-sm sm:text-lg font-black font-serif text-primary tracking-tight whitespace-nowrap">
-                MenaraPublik<span className="text-muted-foreground font-medium text-[9px] sm:text-xs">.News</span>
+                TitahRakyat<span className="text-muted-foreground font-medium text-[9px] sm:text-xs">.Com</span>
               </span>
-              <span className="text-[7px] sm:text-[9px] font-medium text-muted-foreground tracking-widest uppercase whitespace-nowrap">Mengawal Kepentingan Publik</span>
+              <span className="text-[7px] sm:text-[9px] font-medium text-muted-foreground tracking-widest uppercase whitespace-nowrap">Media Online</span>
             </div>
           </Link>
         </div>
@@ -145,7 +145,7 @@ const SiteHeader = () => {
             <span className="w-px h-4 bg-border mx-0.5" />
 
             <a
-              href="https://menarapublik.news"
+              href="https://TitahRakyat.Com"
               className="flex items-center gap-1 px-2 py-1 text-muted-foreground hover:text-foreground transition-colors text-xs"
             >
               <Globe size={13} className="text-blue-500" />
@@ -281,7 +281,7 @@ const SiteHeader = () => {
                 <Radio size={13} className="animate-pulse" />
                 LIVE
               </Link>
-              <a href="https://menarapublik.news" onClick={() => setMenuOpen(false)} className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-secondary text-muted-foreground text-xs font-medium">
+              <a href="https://TitahRakyat.Com" onClick={() => setMenuOpen(false)} className="flex items-center gap-1.5 px-4 py-2 rounded-full bg-secondary text-muted-foreground text-xs font-medium">
                 <Globe size={13} className="text-blue-500" />
                 Network
               </a>

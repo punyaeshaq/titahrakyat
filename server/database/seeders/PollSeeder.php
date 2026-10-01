@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace Database\Seeders;
 
@@ -16,7 +16,7 @@ class PollSeeder extends Seeder
         }
 
         $poll = Poll::create([
-            'question' => 'Bagaimana pendapat Anda tentang tampilan baru MenaraPublik?',
+            'question' => 'Bagaimana pendapat Anda tentang tampilan baru TitahRakyat?',
             'is_active' => true,
             'expires_at' => now()->addDays(30),
         ]);

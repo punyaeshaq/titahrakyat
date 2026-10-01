@@ -1,4 +1,4 @@
-import { Helmet } from 'react-helmet-async';
+﻿import { Helmet } from 'react-helmet-async';
 
 interface SEOProps {
     title?: string;
@@ -19,11 +19,11 @@ const SEO = ({
     publishedTime,
     author
 }: SEOProps) => {
-    const siteTitle = "MenaraPublik.News";
+    const siteTitle = "TitahRakyat.Com";
     const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
     const metaDescription = description || "Portal Berita Terkini & Terpercaya. Mengawal Kepentingan Publik.";
-    const metaImage = image || "https://menarapublik.news/og-image-default.png"; // Fallback
-    const metaUrl = url || typeof window !== 'undefined' ? window.location.href : "https://menarapublik.news";
+    const metaImage = image || "https://TitahRakyat.Com/og-image-default.png"; // Fallback
+    const metaUrl = url || typeof window !== 'undefined' ? window.location.href : "https://TitahRakyat.Com";
 
     return (
         <Helmet>

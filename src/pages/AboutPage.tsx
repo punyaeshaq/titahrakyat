@@ -1,4 +1,4 @@
-import SiteHeader from "@/components/SiteHeader";
+﻿import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Shield, Scale, Eye, BookOpen, Users, Globe } from "lucide-react";
 import logoMenara from "@/assets/logo-menara.png";
@@ -68,9 +68,9 @@ const AboutPage = () => {
       <main className="container py-8 max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <img src={logoMenara} alt="MenaraPublik.News" className="h-28 w-28 rounded-full object-cover mx-auto mb-4" />
+          <img src={logoMenara} alt="TitahRakyat.Com" className="h-28 w-28 rounded-full object-cover mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-3">
-            <span className="text-primary">MenaraPublik</span><span className="text-muted-foreground text-lg">.News</span>
+            <span className="text-primary">TitahRakyat</span><span className="text-muted-foreground text-lg">.Com</span>
           </h1>
           <p className="text-lg italic text-muted-foreground">
             "Mengawal Kepentingan Publik"

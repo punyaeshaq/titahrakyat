@@ -1,4 +1,4 @@
-import { Link } from "react-router-dom";
+﻿import { Link } from "react-router-dom";
 import { useCategories } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
 import { settingsApi } from "@/lib/api";
@@ -26,9 +26,9 @@ const SiteFooter = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <Link to="/" className="flex items-center gap-2 mb-2">
-                <img src={logoMenara} alt="MenaraPublik.News" className="h-10 w-10 rounded-full object-cover" />
+                <img src={logoMenara} alt="TitahRakyat.Com" className="h-10 w-10 rounded-full object-cover" />
                 <span className="text-lg font-black font-serif text-primary">
-                  MenaraPublik<span className="text-muted-foreground font-medium text-sm">.News</span>
+                  TitahRakyat<span className="text-muted-foreground font-medium text-sm">.Com</span>
                 </span>
               </Link>
               <p className="text-xs italic text-muted-foreground mb-1">
@@ -79,7 +79,7 @@ const SiteFooter = () => {
             </div>
           </div>
           <div className="border-t border-border mt-6 pt-4 text-center text-xs text-muted-foreground">
-            © 2026 MenaraPublik.News. Seluruh hak cipta dilindungi.
+            © 2026 TitahRakyat.Com. Seluruh hak cipta dilindungi.
           </div>
         </div>
       </footer>

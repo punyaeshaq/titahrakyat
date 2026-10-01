@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef, useCallback } from "react";
+﻿import { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate, useSearchParams } from "react-router-dom";
 import { authApi } from "@/lib/api";
 import { GOOGLE_CLIENT_ID } from "@/lib/google-config";
@@ -185,7 +185,7 @@ const PublicRegister = () => {
                 {/* Logo */}
                 <div className="text-center mb-6">
                     <Link to="/" className="inline-flex items-center gap-3 group">
-                        <img src={logoMenara} alt="MenaraPublik" className="h-14 w-14 rounded-xl shadow-lg shadow-red-500/20 group-hover:scale-105 transition-transform" />
+                        <img src={logoMenara} alt="TitahRakyat" className="h-14 w-14 rounded-xl shadow-lg shadow-red-500/20 group-hover:scale-105 transition-transform" />
                         <div className="text-left">
                             <h1 className="text-2xl font-black text-slate-900 tracking-tight">
                                 Menara<span className="text-red-600">Publik</span>
@@ -218,7 +218,7 @@ const PublicRegister = () => {
                         <>
                             <div className="mb-5">
                                 <h2 className="text-xl font-bold text-slate-900 mb-1">Buat Akun Baru ✨</h2>
-                                <p className="text-slate-500 text-sm">Bergabung dengan komunitas pembaca MenaraPublik</p>
+                                <p className="text-slate-500 text-sm">Bergabung dengan komunitas pembaca TitahRakyat</p>
                             </div>
 
                             {/* Google Sign-In */}

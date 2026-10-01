@@ -1,4 +1,4 @@
-<?php
+﻿<?php
 
 namespace App\Mail;
 
@@ -24,7 +24,7 @@ class OtpMail extends Mailable
     public function envelope(): Envelope
     {
         return new Envelope(
-            subject: 'Kode Verifikasi OTP - MenaraPublik.News',
+            subject: 'Kode Verifikasi OTP - TitahRakyat.Com',
         );
     }
 

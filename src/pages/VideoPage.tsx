@@ -1,4 +1,4 @@
-import { useQuery } from "@tanstack/react-query";
+﻿import { useQuery } from "@tanstack/react-query";
 import { videosApi } from "@/lib/api";
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
@@ -45,7 +45,7 @@ export default function VideoPage() {
       <main className="flex-1 container py-8">
         <SEO
           title={selectedVideo ? selectedVideo.title : "Video Berita"}
-          description={selectedVideo ? selectedVideo.description : "Kumpulan video berita terbaru dari MenaraPublik"}
+          description={selectedVideo ? selectedVideo.description : "Kumpulan video berita terbaru dari TitahRakyat"}
           type="video.other"
           image={selectedVideo?.thumbnail_url}
         />

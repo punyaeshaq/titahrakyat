@@ -1,4 +1,4 @@
-import { useState, useEffect, useCallback } from "react";
+﻿import { useState, useEffect, useCallback } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { authApi } from "@/lib/api";
@@ -113,7 +113,7 @@ const PublicLogin = () => {
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <Link to="/" className="inline-flex items-center gap-3 group">
-                        <img src={logoMenara} alt="MenaraPublik" className="h-14 w-14 rounded-xl shadow-lg shadow-red-500/20 group-hover:scale-105 transition-transform" />
+                        <img src={logoMenara} alt="TitahRakyat" className="h-14 w-14 rounded-xl shadow-lg shadow-red-500/20 group-hover:scale-105 transition-transform" />
                         <div className="text-left">
                             <h1 className="text-2xl font-black text-slate-900 tracking-tight">
                                 Menara<span className="text-red-600">Publik</span>

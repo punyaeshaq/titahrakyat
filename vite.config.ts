@@ -1,4 +1,4 @@
-import { defineConfig } from "vite";
+﻿import { defineConfig } from "vite";
 import react from "@vitejs/plugin-react-swc";
 import path from "path";
 import { VitePWA } from "vite-plugin-pwa";
@@ -18,9 +18,9 @@ export default defineConfig(({ mode }) => ({
       registerType: 'autoUpdate',
       includeAssets: ['favicon.ico', 'robots.txt', 'logo.png'],
       manifest: {
-        name: 'MenaraPublik.News',
-        short_name: 'MenaraPublik',
-        description: 'MenaraPublik.News - Berita Terkini & Terpercaya',
+        name: 'TitahRakyat.Com',
+        short_name: 'TitahRakyat',
+        description: 'TitahRakyat.Com - Berita Terkini & Terpercaya',
         theme_color: '#ffffff',
         icons: [
           {

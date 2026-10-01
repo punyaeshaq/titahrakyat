@@ -25,6 +25,9 @@ use App\Http\Controllers\Api\AdController;
 // Public routes
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
+Route::post('/auth/verify-otp', [AuthController::class, 'verifyOtp']);
+Route::post('/auth/resend-otp', [AuthController::class, 'resendOtp']);
+Route::post('/auth/google', [AuthController::class, 'googleLogin']);
 
 // Public content routes
 Route::get('/articles', [ArticleController::class, 'index']);
@@ -47,6 +50,7 @@ Route::post('/ads/{id}/click', [AdController::class, 'click']);
 
 // Engagement
 Route::post('/newsletter/subscribe', [App\Http\Controllers\Api\NewsletterController::class, 'subscribe']);
+Route::post('/newsletter/unsubscribe-token', [App\Http\Controllers\Api\NewsletterController::class, 'unsubscribeByToken']);
 Route::get('/polls/active', [App\Http\Controllers\Api\PollController::class, 'getActive']);
 Route::middleware('throttle:60,1')->group(function () {
     Route::post('/polls/{id}/vote', [App\Http\Controllers\Api\PollController::class, 'vote']);

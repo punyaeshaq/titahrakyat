@@ -64,15 +64,28 @@ export function useAuth() {
   const signIn = async (email: string, password: string) => {
     try {
       const data = await authApi.login(email, password);
+      if (data.requires_otp) {
+        return {
+          data,
+          error: { message: data.message || 'Email belum terverifikasi. Kode OTP telah dikirim.' }
+        };
+      }
       setUser(data.user);
       const role = data.user?.role || '';
       setIsAdmin(role === 'admin' || role === 'editor');
       return { data, error: null };
     } catch (error: any) {
+      const resp = error.response;
+      if (resp?.status === 403 && resp?.data?.requires_otp) {
+        return {
+          data: resp.data,
+          error: { message: resp.data.message || 'Email belum terverifikasi.' }
+        };
+      }
       return {
         data: null,
         error: {
-          message: error.response?.data?.message || error.message || 'Login failed'
+          message: resp?.data?.message || error.message || 'Login failed'
         }
       };
     }

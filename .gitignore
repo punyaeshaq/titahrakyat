@@ -1,3 +1,10 @@
+# Dependencies
+node_modules
+
+# Build output
+dist
+dist-ssr
+
 # Logs
 logs
 *.log
@@ -7,10 +14,27 @@ yarn-error.log*
 pnpm-debug.log*
 lerna-debug.log*
 
-node_modules
-dist
-dist-ssr
+# Environment files (contains secrets)
+.env
+.env.local
+.env.*.local
 *.local
+
+# Build/debug output files
+build_errors.txt
+build_log.txt
+build_output*.txt
+assets_list.txt
+curl_output.txt
+lint_report.txt
+nginx_config.txt
+paramiko_debug.log
+
+# Deploy scripts (local dev tools)
+deploy/
+
+# Lock files (will regenerate on npm install)
+bun.lockb
 
 # Editor directories and files
 .vscode/*
@@ -22,3 +46,10 @@ dist-ssr
 *.njsproj
 *.sln
 *.sw?
+
+# OS files
+Thumbs.db
+Desktop.ini
+
+# Server vendor (Laravel)
+server/vendor/

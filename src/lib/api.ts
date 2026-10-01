@@ -56,6 +56,20 @@ export const authApi = {
         return response.data;
     },
 
+    verifyOtp: async (email: string, otp_code: string) => {
+        const response = await api.post('/auth/verify-otp', { email, otp_code });
+        if (response.data.access_token) {
+            localStorage.setItem('auth_token', response.data.access_token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+        }
+        return response.data;
+    },
+
+    resendOtp: async (email: string) => {
+        const response = await api.post('/auth/resend-otp', { email });
+        return response.data;
+    },
+
     logout: async () => {
         try { await api.post('/auth/logout'); }
         finally { localStorage.removeItem('auth_token'); localStorage.removeItem('user'); }
@@ -65,6 +79,15 @@ export const authApi = {
     getStoredUser: () => { const u = localStorage.getItem('user'); return u ? JSON.parse(u) : null; },
     isAuthenticated: () => !!localStorage.getItem('auth_token'),
     changePassword: async (data: any) => (await api.post('/auth/change-password', data)).data,
+
+    googleLogin: async (credential: string) => {
+        const response = await api.post('/auth/google', { credential });
+        if (response.data.access_token) {
+            localStorage.setItem('auth_token', response.data.access_token);
+            localStorage.setItem('user', JSON.stringify(response.data.user));
+        }
+        return response.data;
+    },
 };
 
 // Articles API

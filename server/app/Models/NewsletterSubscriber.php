@@ -10,5 +10,5 @@ class NewsletterSubscriber extends Model
 {
     use HasFactory, HasUuids;
 
-    protected $fillable = ['email'];
+    protected $fillable = ['email', 'verified', 'token'];
 }

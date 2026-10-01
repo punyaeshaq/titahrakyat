@@ -22,9 +22,20 @@ const AdSlot = ({
         staleTime: 5 * 60 * 1000,
     });
 
-    // If there's an active manual ad for this position, show it
+    // If there are active manual ads for this position, show all of them stacked
     if (ads.length > 0) {
-        return <AdBanner position={position} className={className} adData={ads[0]} />;
+        return (
+            <div className={`space-y-6 ${className}`}>
+                {ads.map((ad: any) => (
+                    <AdBanner
+                        key={ad.id}
+                        position={position}
+                        adData={ad}
+                        className="w-full"
+                    />
+                ))}
+            </div>
+        );
     }
 
     // Otherwise show Google AdSense placeholder

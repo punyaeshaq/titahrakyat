@@ -11,6 +11,8 @@ import SearchPage from "./pages/SearchPage";
 import AboutPage from "./pages/AboutPage";
 import VideoPage from "./pages/VideoPage";
 import NotFound from "./pages/NotFound";
+import PublicLogin from "./pages/PublicLogin";
+import PublicRegister from "./pages/PublicRegister";
 import AdminLogin from "./pages/admin/AdminLogin";
 import AdminDashboard from "./pages/admin/AdminDashboard";
 import AuthorPage from "./pages/AuthorPage";
@@ -35,6 +37,8 @@ const App = () => (
             <Route path="/tentang" element={<AboutPage />} />
             <Route path="/video" element={<VideoPage />} />
             <Route path="/video/:id" element={<VideoPage />} />
+            <Route path="/masuk" element={<PublicLogin />} />
+            <Route path="/daftar" element={<PublicRegister />} />
             <Route path="/admin/login" element={<AdminLogin />} />
             <Route path="/admin" element={<AdminDashboard />} />
             <Route path="/editor/login" element={<AdminLogin />} />
@@ -48,3 +52,4 @@ const App = () => (
 );
 
 export default App;
+

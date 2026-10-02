@@ -258,6 +258,43 @@ server {
         fastcgi_param REQUEST_URI $request_uri;
     }
 
+    # ============================
+    # OG Meta Tags for Social Media Bots (/berita/*)
+    # When WhatsApp/Facebook/Twitter/etc. crawl a link, serve
+    # server-rendered OG tags so the correct thumbnail appears.
+    # ============================
+    location ~ ^/berita/(.+)$ {
+        set $is_social_bot 0;
+        if ($http_user_agent ~* "facebookexternalhit|twitterbot|whatsapp|telegrambot|discordbot|linkedinbot|Slackbot|redditbot|Pinterest|Googlebot") {
+            set $is_social_bot 1;
+        }
+
+        if ($is_social_bot = 1) {
+            rewrite ^/berita/(.*)$ /bot-share/berita/$1 last;
+        }
+
+        # Regular users: serve React SPA
+        root /var/www/titahrakyat/dist;
+        try_files $uri $uri/ /index.html;
+    }
+
+    # Internal route for bot OG rendering (handled by Laravel)
+    location /bot-share/berita/ {
+        include fastcgi_params;
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME /var/www/titahrakyat/server/public/index.php;
+        fastcgi_param DOCUMENT_ROOT /var/www/titahrakyat/server/public;
+        fastcgi_param REQUEST_URI $uri;
+    }
+
+    # Serve uploaded images (article thumbnails etc.)
+    location /uploads/ {
+        alias /var/www/titahrakyat/server/public/uploads/;
+        access_log off;
+        expires 30d;
+        add_header Cache-Control "public, immutable";
+    }
+
     # Laravel storage/uploads
     location /storage {
         alias /var/www/titahrakyat/server/storage/app/public;
@@ -271,6 +308,21 @@ server {
         expires 1y;
         add_header Cache-Control "public, immutable";
         try_files $uri =404;
+    }
+
+    # Sitemap and RSS (handled by Laravel)
+    location = /sitemap.xml {
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME /var/www/titahrakyat/server/public/index.php;
+        include fastcgi_params;
+        fastcgi_param REQUEST_URI $request_uri;
+    }
+
+    location = /rss.xml {
+        fastcgi_pass unix:/var/run/php/php8.2-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME /var/www/titahrakyat/server/public/index.php;
+        include fastcgi_params;
+        fastcgi_param REQUEST_URI $request_uri;
     }
 
     # React SPA - all other routes

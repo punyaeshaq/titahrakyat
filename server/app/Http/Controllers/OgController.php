@@ -13,14 +13,14 @@ class OgController extends Controller
      */
     public function article(string $slug)
     {
-        $article = Article::with('category')->where('slug', $slug)->first();
+        $article = Article::with('category')->where('slug', $slug)->where('status', 'published')->first();
 
         if (!$article) {
             // If article not found, show default OG tags
             return view('og-article', [
                 'title' => 'TitahRakyat.Com - Mengawal Kepentingan Publik',
                 'description' => 'Media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab.',
-                'image' => url('/assets/og-default.jpg'),
+                'image' => config('app.frontend_url', 'https://TitahRakyat.Com') . '/og-image-default.png',
                 'url' => config('app.frontend_url', 'https://TitahRakyat.Com'),
             ]);
         }
@@ -28,8 +28,21 @@ class OgController extends Controller
         $frontendUrl = config('app.frontend_url', 'https://TitahRakyat.Com');
         $articleUrl = $frontendUrl . '/berita/' . $article->slug;
 
-        // Use article image, or fall back to a default
-        $image = $article->image_url ?: url('/assets/og-default.jpg');
+        // Build a fully-qualified image URL that social media crawlers can fetch
+        $image = null;
+        if ($article->image_url) {
+            if (str_starts_with($article->image_url, 'http')) {
+                // Already a full URL
+                $image = $article->image_url;
+            } else {
+                // Relative path — prepend the app URL
+                $image = rtrim(config('app.url', $frontendUrl), '/') . '/' . ltrim($article->image_url, '/');
+            }
+        }
+
+        if (!$image) {
+            $image = $frontendUrl . '/og-image-default.png';
+        }
 
         return view('og-article', [
             'title' => $article->meta_title ?: $article->title,

@@ -86,6 +86,11 @@ class ArticleController extends Controller
             }
         ])->where('slug', $slug)->firstOrFail();
 
+        // Only allow viewing published articles on public endpoint
+        if ($article->status !== 'published') {
+            abort(404);
+        }
+
         // Increment views
         $article->increment('views');
 

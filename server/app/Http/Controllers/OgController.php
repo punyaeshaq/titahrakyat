@@ -18,7 +18,7 @@ class OgController extends Controller
         if (!$article) {
             // If article not found, show default OG tags
             return view('og-article', [
-                'title' => 'TitahRakyat.Com - Mengawal Kepentingan Publik',
+                'title' => 'TitahRakyat.Com - Media Online',
                 'description' => 'Media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab.',
                 'image' => config('app.frontend_url', 'https://TitahRakyat.Com') . '/og-image-default.png',
                 'url' => config('app.frontend_url', 'https://TitahRakyat.Com'),

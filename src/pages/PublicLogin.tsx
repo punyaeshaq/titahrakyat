@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
 import { authApi } from "@/lib/api";
 import { GOOGLE_CLIENT_ID } from "@/lib/google-config";
-import logoMenara from "@/assets/logo-menara.png";
+import logoTitahRakyat from "@/assets/logo-titahrakyat.png";
 import { Eye, EyeOff, Mail, Lock, ArrowRight, Newspaper } from "lucide-react";
 
 declare global {
@@ -113,12 +113,12 @@ const PublicLogin = () => {
                 {/* Logo */}
                 <div className="text-center mb-8">
                     <Link to="/" className="inline-flex items-center gap-3 group">
-                        <img src={logoMenara} alt="TitahRakyat" className="h-14 w-14 rounded-xl shadow-lg shadow-red-500/20 group-hover:scale-105 transition-transform" />
+                        <img src={logoTitahRakyat} alt="TitahRakyat" className="h-14 w-14 rounded-xl shadow-lg shadow-red-500/20 group-hover:scale-105 transition-transform" />
                         <div className="text-left">
                             <h1 className="text-2xl font-black text-slate-900 tracking-tight">
-                                Menara<span className="text-red-600">Publik</span>
+                                Titah<span className="text-red-600">Rakyat</span>
                             </h1>
-                            <p className="text-xs text-slate-500 tracking-widest uppercase">Mengawal Kepentingan Publik</p>
+                            <p className="text-xs text-slate-500 tracking-widest uppercase">Media Online</p>
                         </div>
                     </Link>
                 </div>

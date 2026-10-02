@@ -2,7 +2,7 @@ import { Link } from "react-router-dom";
 import { useCategories } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
 import { settingsApi } from "@/lib/api";
-import logoMenara from "@/assets/logo-menara.png";
+import logoTitahRakyat from "@/assets/logo-titahrakyat.png";
 import AdSlot from "@/components/AdSlot";
 
 const SiteFooter = () => {
@@ -26,13 +26,13 @@ const SiteFooter = () => {
           <div className="flex flex-col md:flex-row items-start md:items-center justify-between gap-6">
             <div>
               <Link to="/" className="flex items-center gap-2 mb-2">
-                <img src={logoMenara} alt="TitahRakyat.Com" className="h-10 w-10 rounded-full object-cover" />
+                <img src={logoTitahRakyat} alt="TitahRakyat.Com" className="h-10 w-10 rounded-full object-cover" />
                 <span className="text-lg font-black font-serif text-primary">
                   TitahRakyat<span className="text-muted-foreground font-medium text-sm">.Com</span>
                 </span>
               </Link>
               <p className="text-xs italic text-muted-foreground mb-1">
-                "Mengawal Kepentingan Publik"
+                "Media Online"
               </p>
               <p className="text-sm text-muted-foreground max-w-xs">
                 Media online yang menyajikan informasi publik secara jernih, berimbang, dan bertanggung jawab.

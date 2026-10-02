@@ -1,7 +1,7 @@
 import SiteHeader from "@/components/SiteHeader";
 import SiteFooter from "@/components/SiteFooter";
 import { Shield, Scale, Eye, BookOpen, Users, Globe } from "lucide-react";
-import logoMenara from "@/assets/logo-menara.png";
+import logoTitahRakyat from "@/assets/logo-titahrakyat.png";
 import { useEditorialStaff } from "@/hooks/useArticles";
 import { useQuery } from "@tanstack/react-query";
 import { settingsApi, socialLinksApi } from "@/lib/api";
@@ -68,12 +68,12 @@ const AboutPage = () => {
       <main className="container py-8 max-w-4xl mx-auto">
         {/* Header */}
         <div className="text-center mb-12">
-          <img src={logoMenara} alt="TitahRakyat.Com" className="h-28 w-28 rounded-full object-cover mx-auto mb-4" />
+          <img src={logoTitahRakyat} alt="TitahRakyat.Com" className="h-28 w-28 rounded-full object-cover mx-auto mb-4" />
           <h1 className="text-3xl md:text-4xl font-bold font-serif text-foreground mb-3">
             <span className="text-primary">TitahRakyat</span><span className="text-muted-foreground text-lg">.Com</span>
           </h1>
           <p className="text-lg italic text-muted-foreground">
-            "Mengawal Kepentingan Publik"
+            "Media Online"
           </p>
         </div>
 

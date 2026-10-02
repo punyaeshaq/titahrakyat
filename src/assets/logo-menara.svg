@@ -25,7 +25,7 @@
   <!-- Text -->
   <text fill="white" font-family="serif" font-weight="bold" font-size="48" letter-spacing="1">
     <textPath href="#upperCurve" startOffset="50%" text-anchor="middle">
-      MenaraPublik.News
+      TitahRakyat.Com
     </textPath>
   </text>
   
@@ -38,7 +38,7 @@
   <path id="bottomCurve" d="M 450,250 A 200,200 0 0,1 50,250" fill="none" />
   <text fill="white" font-family="sans-serif" font-weight="bold" font-size="24" letter-spacing="3">
     <textPath href="#bottomCurve" startOffset="50%" text-anchor="middle" dominant-baseline="hanging">
-      MENGAWAL KEPENTINGAN PUBLIK
+      MEDIA ONLINE
     </textPath>
   </text>
 </svg>

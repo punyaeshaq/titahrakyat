@@ -3,7 +3,7 @@ import { Search, Menu, X, Radio, Globe, Users, LogIn, UserPlus, Calendar, LogOut
 import { useCategories } from "@/hooks/useArticles";
 import { useState, useEffect, useRef } from "react";
 import { useAuth } from "@/hooks/useAuth";
-import logoMenara from "@/assets/logo-menara.png";
+import logoTitahRakyat from "@/assets/logo-titahrakyat.png";
 import ThemeToggle from "@/components/ThemeToggle";
 
 // Vibrant color palette for categories
@@ -103,7 +103,7 @@ const SiteHeader = () => {
             {menuOpen ? <X size={22} /> : <Menu size={22} />}
           </button>
           <Link to="/" className="flex items-center gap-2 min-w-0">
-            <img src={logoMenara} alt="TitahRakyat.Com" className="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover flex-shrink-0" />
+            <img src={logoTitahRakyat} alt="TitahRakyat.Com" className="h-8 w-8 sm:h-10 sm:w-10 rounded-full object-cover flex-shrink-0" />
             <div className="flex flex-col leading-none min-w-0">
               <span className="text-sm sm:text-lg font-black font-serif text-primary tracking-tight whitespace-nowrap">
                 TitahRakyat<span className="text-muted-foreground font-medium text-[9px] sm:text-xs">.Com</span>

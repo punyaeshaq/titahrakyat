@@ -21,7 +21,7 @@ const SEO = ({
 }: SEOProps) => {
     const siteTitle = "TitahRakyat.Com";
     const fullTitle = title ? `${title} | ${siteTitle}` : siteTitle;
-    const metaDescription = description || "Portal Berita Terkini & Terpercaya. Mengawal Kepentingan Publik.";
+    const metaDescription = description || "Portal Berita Terkini & Terpercaya. Media Online.";
     const metaImage = image || "https://TitahRakyat.Com/og-image-default.png"; // Fallback
     const metaUrl = url || typeof window !== 'undefined' ? window.location.href : "https://TitahRakyat.Com";
 

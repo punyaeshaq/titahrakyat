@@ -18,12 +18,12 @@
                         <td
                             style="background: linear-gradient(135deg, #1e293b 0%, #0f172a 100%); padding:32px 40px; text-align:center;">
                             <h1 style="color:#ffffff;margin:0;font-size:24px;font-weight:800;letter-spacing:-0.5px;">
-                                Menara<span style="color:#ef4444;">Publik</span><span
-                                    style="color:#94a3b8;font-weight:400;font-size:14px;">.News</span>
+                                Titah<span style="color:#ef4444;">Rakyat</span><span
+                                    style="color:#94a3b8;font-weight:400;font-size:14px;">.Com</span>
                             </h1>
                             <p
                                 style="color:#94a3b8;margin:4px 0 0;font-size:11px;letter-spacing:2px;text-transform:uppercase;">
-                                Mengawal Kepentingan Publik</p>
+                                Media Online</p>
                         </td>
                     </tr>
 

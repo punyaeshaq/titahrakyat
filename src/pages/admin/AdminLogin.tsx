@@ -1,7 +1,7 @@
 import { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
 import { useAuth } from "@/hooks/useAuth";
-import logoMenara from "@/assets/logo-menara.png";
+import logoTitahRakyat from "@/assets/logo-titahrakyat.png";
 import { Eye, EyeOff, Mail, Lock, Shield, ArrowRight } from "lucide-react";
 
 const AdminLogin = () => {
@@ -61,12 +61,12 @@ const AdminLogin = () => {
 
         <div className="relative z-10 max-w-lg text-white">
           <div className="flex items-center gap-4 mb-8">
-            <img src={logoMenara} alt="TitahRakyat" className="h-16 w-16 rounded-xl shadow-2xl shadow-black/20" />
+            <img src={logoTitahRakyat} alt="TitahRakyat" className="h-16 w-16 rounded-xl shadow-2xl shadow-black/20" />
             <div>
               <h1 className="text-3xl font-black tracking-tight">
-                Menara<span className="text-red-200">Publik</span>
+                Titah<span className="text-red-200">Rakyat</span>
               </h1>
-              <p className="text-white/60 text-sm tracking-widest uppercase">Mengawal Kepentingan Publik</p>
+              <p className="text-white/60 text-sm tracking-widest uppercase">Media Online</p>
             </div>
           </div>
 
@@ -104,10 +104,10 @@ const AdminLogin = () => {
           {/* Mobile logo */}
           <div className="lg:hidden text-center mb-8">
             <div className="inline-flex items-center gap-3">
-              <img src={logoMenara} alt="TitahRakyat" className="h-12 w-12 rounded-xl shadow-lg" />
+              <img src={logoTitahRakyat} alt="TitahRakyat" className="h-12 w-12 rounded-xl shadow-lg" />
               <div className="text-left">
-                <h1 className="text-xl font-black text-slate-900">Menara<span className="text-red-600">Publik</span></h1>
-                <p className="text-xs text-slate-500 tracking-widest">MENGAWAL KEPENTINGAN PUBLIK</p>
+                <h1 className="text-xl font-black text-slate-900">Titah<span className="text-red-600">Rakyat</span></h1>
+                <p className="text-xs text-slate-500 tracking-widest">MEDIA ONLINE</p>
               </div>
             </div>
           </div>
